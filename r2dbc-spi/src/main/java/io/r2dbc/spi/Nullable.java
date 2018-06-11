@@ -40,6 +40,6 @@ import java.lang.annotation.Target;
 @Documented
 @Nonnull(when = When.MAYBE)
 @TypeQualifierNickname
-public @interface Nullable {
+@interface Nullable {
 
 }

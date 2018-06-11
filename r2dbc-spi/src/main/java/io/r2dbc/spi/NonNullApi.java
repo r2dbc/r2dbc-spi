@@ -38,6 +38,6 @@ import java.lang.annotation.Target;
 @Documented
 @Nonnull
 @TypeQualifierDefault({ElementType.METHOD, ElementType.PARAMETER})
-public @interface NonNullApi {
+@interface NonNullApi {
 
 }
