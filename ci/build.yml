@@ -11,7 +11,7 @@ inputs:
 - name: r2dbc-spi
 
 outputs:
-- name: distribution-repository
+- name: r2dbc-spi-artifactory
 
 caches:
 - path: maven
