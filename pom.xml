@@ -41,15 +41,17 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <reactive-streams.version>1.0.2</reactive-streams.version>
-        <reactor-core.version>3.1.8.RELEASE</reactor-core.version>
+        <reactor.version>Bismuth-SR10</reactor.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>io.projectreactor</groupId>
-                <artifactId>reactor-core</artifactId>
-                <version>${reactor-core.version}</version>
+                <artifactId>reactor-bom</artifactId>
+                <version>${reactor.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.reactivestreams</groupId>
