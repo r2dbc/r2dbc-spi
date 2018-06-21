@@ -14,27 +14,10 @@
  * limitations under the License.
  */
 
-package io.r2dbc.spi;
-
-import org.reactivestreams.Publisher;
-
 /**
- * A factory for creating {@link Connection}s.
+ * Mock implementations of the Service Provider Interface for R2DBC.
  */
-public interface ConnectionFactory {
 
-    /**
-     * Creates a new {@link Connection}.
-     *
-     * @return the newly created {@link Connection}
-     */
-    Publisher<? extends Connection> create();
+@NonNullApi
+package io.r2dbc.spi.test;
 
-    /**
-     * Returns the {@link ConnectionFactoryMetadata} about the product this {@link ConnectionFactory} is connected to.
-     *
-     * @return the {@link ConnectionFactoryMetadata} about the product this {@link ConnectionFactory} is connected to
-     */
-    ConnectionFactoryMetadata getMetadata();
-
-}

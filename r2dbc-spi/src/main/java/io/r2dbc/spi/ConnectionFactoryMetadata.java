@@ -16,25 +16,16 @@
 
 package io.r2dbc.spi;
 
-import org.reactivestreams.Publisher;
-
 /**
- * A factory for creating {@link Connection}s.
+ * Metadata about the product a {@link ConnectionFactory} is connected to.
  */
-public interface ConnectionFactory {
+public interface ConnectionFactoryMetadata {
 
     /**
-     * Creates a new {@link Connection}.
+     * Returns the name of the product a {@link ConnectionFactory} is connected to.
      *
-     * @return the newly created {@link Connection}
+     * @return the name of the product a {@link ConnectionFactory} is connected to
      */
-    Publisher<? extends Connection> create();
-
-    /**
-     * Returns the {@link ConnectionFactoryMetadata} about the product this {@link ConnectionFactory} is connected to.
-     *
-     * @return the {@link ConnectionFactoryMetadata} about the product this {@link ConnectionFactory} is connected to
-     */
-    ConnectionFactoryMetadata getMetadata();
+    String getName();
 
 }
