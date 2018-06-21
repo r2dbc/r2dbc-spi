@@ -49,6 +49,11 @@ public final class MockConnectionFactory implements ConnectionFactory {
     }
 
     @Override
+    public MockConnectionFactoryMetadata getMetadata() {
+        return MockConnectionFactoryMetadata.INSTANCE;
+    }
+
+    @Override
     public String toString() {
         return "MockConnectionFactory{" +
             "connection=" + this.connection +

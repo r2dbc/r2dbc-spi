@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package io.r2dbc.spi;
+package io.r2dbc.spi.test;
 
-import org.reactivestreams.Publisher;
+import io.r2dbc.spi.ConnectionFactoryMetadata;
 
-/**
- * A factory for creating {@link Connection}s.
- */
-public interface ConnectionFactory {
+public final class MockConnectionFactoryMetadata implements ConnectionFactoryMetadata {
 
-    /**
-     * Creates a new {@link Connection}.
-     *
-     * @return the newly created {@link Connection}
-     */
-    Publisher<? extends Connection> create();
+    public static final MockConnectionFactoryMetadata INSTANCE = new MockConnectionFactoryMetadata();
 
-    /**
-     * Returns the {@link ConnectionFactoryMetadata} about the product this {@link ConnectionFactory} is connected to.
-     *
-     * @return the {@link ConnectionFactoryMetadata} about the product this {@link ConnectionFactory} is connected to
-     */
-    ConnectionFactoryMetadata getMetadata();
+    public static final String NAME = "MockConnectionFactory";
 
+    private MockConnectionFactoryMetadata() {
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
 }
