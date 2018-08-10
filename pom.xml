@@ -41,7 +41,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <reactive-streams.version>1.0.2</reactive-streams.version>
-        <reactor.version>Californium-BUILD-SNAPSHOT</reactor.version>
+        <reactor.version>Bismuth-SR10</reactor.version>
     </properties>
 
     <dependencyManagement>
