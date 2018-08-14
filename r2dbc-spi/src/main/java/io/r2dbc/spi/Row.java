@@ -24,13 +24,26 @@ public interface Row {
     /**
      * Returns the value for a column in this row.
      *
-     * @param identifier the identifier fof the column
-     * @param type       the type of item to return
+     * @param identifier the identifier of the column
+     * @param type       the type of item to return. This type must be assignable to, and allows for variance.
      * @param <T>        the type of the item being returned
      * @return the value for a column in this row.  Value can be {@code null}.
      * @throws NullPointerException if {@code identifier} or {@code type} is {@code null}
      */
     @Nullable
     <T> T get(Object identifier, Class<T> type);
+
+    /**
+     * Returns the value for a column in this row using the default type mapping.  The default implementation of this method calls {@link #get(Object, Class)} passing {@link Object} as the type in
+     * order to allow the implementation to make the loosest possible match.
+     *
+     * @param identifier the identifier of the column
+     * @return the value for a column in this row.  Value can be {@code null}.
+     * @throws NullPointerException if {@code identifier} or {@code type} is {@code null}
+     */
+    @Nullable
+    default Object get(Object identifier) {
+        return get(identifier, Object.class);
+    }
 
 }
