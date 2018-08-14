@@ -36,7 +36,7 @@ public interface Statement {
      * @param identifier the identifier to bind to
      * @param value      the value to bind
      * @return this {@link Statement}
-     * * @throws NullPointerException if {@code identifier} or {@code value} is {@code null}
+     * @throws NullPointerException if {@code identifier} or {@code value} is {@code null}
      */
     Statement bind(Object identifier, Object value);
 
@@ -46,7 +46,7 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * * @throws NullPointerException if {@code index} or {@code value} is {@code null}
+     * @throws NullPointerException if {@code index} or {@code value} is {@code null}
      */
     Statement bind(Integer index, Object value);
 
