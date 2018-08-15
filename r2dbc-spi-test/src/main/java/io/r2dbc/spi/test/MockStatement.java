@@ -75,7 +75,7 @@ public final class MockStatement implements Statement {
     }
 
     @Override
-    public MockStatement bindNull(Object identifier, Object type) {
+    public MockStatement bindNull(Object identifier, Class<?> type) {
         Objects.requireNonNull(identifier);
         Objects.requireNonNull(type);
 

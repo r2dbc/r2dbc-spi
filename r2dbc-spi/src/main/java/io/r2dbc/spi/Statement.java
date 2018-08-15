@@ -58,7 +58,7 @@ public interface Statement {
      * @return this {@link Statement}
      * @throws NullPointerException if {@code identifier} or {@code type} is {@code null}
      */
-    Statement bindNull(Object identifier, Object type);
+    Statement bindNull(Object identifier, Class<?> type);
 
     /**
      * Executes one or more SQL statements and returns the {@link Result}s.
