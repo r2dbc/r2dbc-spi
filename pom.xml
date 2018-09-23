@@ -41,7 +41,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <reactive-streams.version>1.0.2</reactive-streams.version>
-        <reactor.version>Californium-RELEASE</reactor.version>
+        <reactor.version>Californium-M1</reactor.version>
     </properties>
 
     <dependencyManagement>
