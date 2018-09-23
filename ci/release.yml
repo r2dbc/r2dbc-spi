@@ -1,0 +1,20 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: openjdk
+    tag: 8-jdk-alpine
+
+inputs:
+- name: r2dbc-spi
+
+outputs:
+- name: r2dbc-spi-artifactory
+
+caches:
+- path: maven
+
+run:
+  path: r2dbc-spi/ci/release.sh
