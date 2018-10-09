@@ -19,7 +19,6 @@ package io.r2dbc.spi.test;
 import io.r2dbc.spi.Batch;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.IsolationLevel;
-import io.r2dbc.spi.Mutability;
 import io.r2dbc.spi.Statement;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
@@ -49,8 +48,6 @@ public final class MockConnection implements Connection {
     private String rollbackTransactionToSavepointName;
 
     private IsolationLevel setTransactionIsolationLevelIsolationLevel;
-
-    private Mutability setTransactionMutabilityMutability;
 
     private MockConnection(@Nullable Batch batch, @Nullable Statement statement) {
         this.batch = batch;
@@ -135,11 +132,6 @@ public final class MockConnection implements Connection {
         return this.setTransactionIsolationLevelIsolationLevel;
     }
 
-    @Nullable
-    public Mutability getSetTransactionMutabilityMutability() {
-        return this.setTransactionMutabilityMutability;
-    }
-
     public boolean isBeginTransactionCalled() {
         return this.beginTransactionCalled;
     }
@@ -181,12 +173,6 @@ public final class MockConnection implements Connection {
     }
 
     @Override
-    public Mono<Void> setTransactionMutability(Mutability mutability) {
-        this.setTransactionMutabilityMutability = Objects.requireNonNull(mutability);
-        return Mono.empty();
-    }
-
-    @Override
     public String toString() {
         return "MockConnection{" +
             "batch=" + this.batch +
@@ -200,7 +186,6 @@ public final class MockConnection implements Connection {
             ", rollbackTransactionCalled=" + this.rollbackTransactionCalled +
             ", rollbackTransactionToSavepointName='" + this.rollbackTransactionToSavepointName + '\'' +
             ", setTransactionIsolationLevelIsolationLevel=" + this.setTransactionIsolationLevelIsolationLevel +
-            ", setTransactionMutabilityMutability=" + this.setTransactionMutabilityMutability +
             '}';
     }
 

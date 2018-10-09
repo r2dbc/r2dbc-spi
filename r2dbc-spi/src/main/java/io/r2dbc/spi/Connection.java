@@ -103,13 +103,4 @@ public interface Connection {
      */
     Publisher<Void> setTransactionIsolationLevel(IsolationLevel isolationLevel);
 
-    /**
-     * Configures the mutability for the current transaction.
-     *
-     * @param mutability the mutability for this transaction
-     * @return a {@link Publisher} that indicates that mutability has been configured
-     * @throws NullPointerException if {@code mutability} is {@code null}
-     */
-    Publisher<Void> setTransactionMutability(Mutability mutability);
-
 }

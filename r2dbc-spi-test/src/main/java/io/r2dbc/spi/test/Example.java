@@ -18,7 +18,6 @@ package io.r2dbc.spi.test;
 
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
-import io.r2dbc.spi.R2dbcException;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import org.junit.jupiter.api.AfterEach;
@@ -33,8 +32,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
-
-import static io.r2dbc.spi.Mutability.READ_ONLY;
 
 public interface Example<T> {
 
@@ -109,22 +106,6 @@ public interface Example<T> {
             .expectNext(Collections.singletonList(100)).as("value from first select")
             .expectNext(Collections.singletonList(100)).as("value from second select")
             .verifyComplete();
-    }
-
-    @Test
-    default void connectionMutability() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Mono.from(connection
-
-                .setTransactionMutability(READ_ONLY))
-                .thenMany(Flux.from(connection.createStatement(String.format("INSERT INTO test VALUES (%s)", getPlaceholder(0)))
-                    .bind(getIdentifier(0), 100)
-                    .execute())
-                    .flatMap(Example::extractRowsUpdated))
-
-                .concatWith(close(connection)))
-            .as(StepVerifier::create)
-            .verifyError(R2dbcException.class);
     }
 
     @BeforeEach
@@ -282,24 +263,6 @@ public interface Example<T> {
             .expectNext(Arrays.asList(100, 200)).as("values from select")
             .expectNext(Arrays.asList(100, 200)).as("values from select")
             .verifyComplete();
-    }
-
-    @Test
-    default void transactionMutability() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Mono.from(connection
-
-                .beginTransaction())
-
-                .then(Mono.from(connection.setTransactionMutability(READ_ONLY)))
-                .thenMany(Flux.from(connection.createStatement(String.format("INSERT INTO test VALUES (%s)", getPlaceholder(0)))
-                    .bind(getIdentifier(0), 200)
-                    .execute())
-                    .flatMap(Example::extractRowsUpdated))
-
-                .concatWith(close(connection)))
-            .as(StepVerifier::create)
-            .verifyError(R2dbcException.class);
     }
 
     @Test
