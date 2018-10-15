@@ -21,7 +21,7 @@ import org.reactivestreams.Publisher;
 /**
  * A collection of statements that are executed in a batch for performance reasons.
  */
-public interface Batch {
+public interface Batch<SELF extends Batch<SELF>> {
 
     /**
      * Add a statement to this batch.
@@ -30,7 +30,7 @@ public interface Batch {
      * @return this {@link Batch}
      * @throws NullPointerException if {@code sql} is {@code null}
      */
-    Batch add(String sql);
+    SELF add(String sql);
 
     /**
      * Executes one or more SQL statements and returns the {@link Result}s.

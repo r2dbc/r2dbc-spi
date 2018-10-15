@@ -49,7 +49,7 @@ public interface Connection {
      *
      * @return a new {@link Batch} instance
      */
-    Batch createBatch();
+    Batch<?> createBatch();
 
     /**
      * Creates a savepoint in the current transaction.
@@ -67,7 +67,7 @@ public interface Connection {
      * @return a new {@link Statement} instance
      * @throws NullPointerException if {@code sql} is {@code null}
      */
-    Statement createStatement(String sql);
+    Statement<?> createStatement(String sql);
 
     /**
      * Releases a savepoint in the current transaction.

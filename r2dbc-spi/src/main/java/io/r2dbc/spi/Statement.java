@@ -20,15 +20,17 @@ import org.reactivestreams.Publisher;
 
 /**
  * A statement that can be executed multiple times in a prepared and optimized way.
+ *
+ * @param <SELF> the concrete type of the statement
  */
-public interface Statement {
+public interface Statement<SELF extends Statement<SELF>> {
 
     /**
      * Save the current binding and create a new one.
      *
      * @return this {@link Statement}
      */
-    Statement add();
+    SELF add();
 
     /**
      * Bind a value.
@@ -38,7 +40,7 @@ public interface Statement {
      * @return this {@link Statement}
      * @throws NullPointerException if {@code identifier} or {@code value} is {@code null}
      */
-    Statement bind(Object identifier, Object value);
+    SELF bind(Object identifier, Object value);
 
     /**
      * Bind a value to an index.  Indexes are zero-based.
@@ -46,9 +48,97 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * @throws NullPointerException if {@code index} or {@code value} is {@code null}
+     * @throws NullPointerException if {@code value} is {@code null}
      */
-    Statement bind(Integer index, Object value);
+    SELF bind(int index, Object value);
+
+    /**
+     * Bind a value to an index.  Indexes are zero-based.
+     *
+     * @param index the index to bind to
+     * @param value the value to bind
+     * @return this {@link Statement}
+     */
+    default SELF bind(int index, boolean value) {
+        return bind(index, (Boolean) value);
+    }
+
+    /**
+     * Bind a value to an index.  Indexes are zero-based.
+     *
+     * @param index the index to bind to
+     * @param value the value to bind
+     * @return this {@link Statement}
+     */
+    default SELF bind(int index, byte value) {
+        return bind(index, (Byte) value);
+    }
+
+    /**
+     * Bind a value to an index.  Indexes are zero-based.
+     *
+     * @param index the index to bind to
+     * @param value the value to bind
+     * @return this {@link Statement}
+     */
+    default SELF bind(int index, char value) {
+        return bind(index, (Character) value);
+    }
+
+    /**
+     * Bind a value to an index.  Indexes are zero-based.
+     *
+     * @param index the index to bind to
+     * @param value the value to bind
+     * @return this {@link Statement}
+     */
+    default SELF bind(int index, double value) {
+        return bind(index, (Double) value);
+    }
+
+    /**
+     * Bind a value to an index.  Indexes are zero-based.
+     *
+     * @param index the index to bind to
+     * @param value the value to bind
+     * @return this {@link Statement}
+     */
+    default SELF bind(int index, float value) {
+        return bind(index, (Float) value);
+    }
+
+    /**
+     * Bind a value to an index.  Indexes are zero-based.
+     *
+     * @param index the index to bind to
+     * @param value the value to bind
+     * @return this {@link Statement}
+     */
+    default SELF bind(int index, int value) {
+        return bind(index, (Integer) value);
+    }
+
+    /**
+     * Bind a value to an index.  Indexes are zero-based.
+     *
+     * @param index the index to bind to
+     * @param value the value to bind
+     * @return this {@link Statement}
+     */
+    default SELF bind(int index, long value) {
+        return bind(index, (Long) value);
+    }
+
+    /**
+     * Bind a value to an index.  Indexes are zero-based.
+     *
+     * @param index the index to bind to
+     * @param value the value to bind
+     * @return this {@link Statement}
+     */
+    default SELF bind(int index, short value) {
+        return bind(index, (Short) value);
+    }
 
     /**
      * Bind a {@code null} value.
@@ -58,7 +148,7 @@ public interface Statement {
      * @return this {@link Statement}
      * @throws NullPointerException if {@code identifier} or {@code type} is {@code null}
      */
-    Statement bindNull(Object identifier, Class<?> type);
+    SELF bindNull(Object identifier, Class<?> type);
 
     /**
      * Executes one or more SQL statements and returns the {@link Result}s.

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class MockBatch implements Batch {
+public final class MockBatch implements Batch<MockBatch> {
 
     private final Flux<Result> results;
 

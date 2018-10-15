@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public final class MockStatement implements Statement {
+public final class MockStatement implements Statement<MockStatement> {
 
     private final List<Map<Object, Object>> bindings = new ArrayList<>();
 
@@ -66,8 +66,7 @@ public final class MockStatement implements Statement {
     }
 
     @Override
-    public MockStatement bind(Integer index, Object value) {
-        Objects.requireNonNull(index);
+    public MockStatement bind(int index, Object value) {
         Objects.requireNonNull(value);
 
         getCurrent().put(index, value);

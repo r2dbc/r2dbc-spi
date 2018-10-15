@@ -19,7 +19,6 @@ package io.r2dbc.spi.test;
 import io.r2dbc.spi.Batch;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.IsolationLevel;
-import io.r2dbc.spi.Statement;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
 
@@ -27,9 +26,9 @@ import java.util.Objects;
 
 public final class MockConnection implements Connection {
 
-    private final Batch batch;
+    private final MockBatch batch;
 
-    private final Statement statement;
+    private final MockStatement statement;
 
     private boolean beginTransactionCalled = false;
 
@@ -49,7 +48,7 @@ public final class MockConnection implements Connection {
 
     private IsolationLevel setTransactionIsolationLevelIsolationLevel;
 
-    private MockConnection(@Nullable Batch batch, @Nullable Statement statement) {
+    private MockConnection(@Nullable MockBatch batch, @Nullable MockStatement statement) {
         this.batch = batch;
         this.statement = statement;
     }
@@ -81,7 +80,7 @@ public final class MockConnection implements Connection {
     }
 
     @Override
-    public Batch createBatch() {
+    public MockBatch createBatch() {
         if (this.batch == null) {
             throw new AssertionError("Unexpected call to createBatch()");
         }
@@ -96,7 +95,7 @@ public final class MockConnection implements Connection {
     }
 
     @Override
-    public Statement createStatement(String sql) {
+    public MockStatement createStatement(String sql) {
         Objects.requireNonNull(sql);
 
         if (this.statement == null) {
@@ -191,14 +190,14 @@ public final class MockConnection implements Connection {
 
     public static final class Builder {
 
-        private Batch batch;
+        private MockBatch batch;
 
-        private Statement statement;
+        private MockStatement statement;
 
         private Builder() {
         }
 
-        public Builder batch(Batch batch) {
+        public Builder batch(MockBatch batch) {
             this.batch = Objects.requireNonNull(batch);
             return this;
         }
@@ -207,7 +206,7 @@ public final class MockConnection implements Connection {
             return new MockConnection(this.batch, this.statement);
         }
 
-        public Builder statement(Statement statement) {
+        public Builder statement(MockStatement statement) {
             this.statement = Objects.requireNonNull(statement);
             return this;
         }
