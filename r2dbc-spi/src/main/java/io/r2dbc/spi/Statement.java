@@ -151,6 +151,16 @@ public interface Statement<SELF extends Statement<SELF>> {
     SELF bindNull(Object identifier, Class<?> type);
 
     /**
+     * Bind a {@code null} value.
+     *
+     * @param index the index to bind to
+     * @param type  the type of null value
+     * @return this {@link Statement}
+     * @throws NullPointerException if {@code type} is {@code null}
+     */
+    SELF bindNull(int index, Class<?> type);
+
+    /**
      * Executes one or more SQL statements and returns the {@link Result}s.
      *
      * @return the {@link Result}s, returned by each statement

@@ -83,6 +83,14 @@ public final class MockStatement implements Statement<MockStatement> {
     }
 
     @Override
+    public MockStatement bindNull(int index, Class<?> type) {
+        Objects.requireNonNull(type);
+
+        getCurrent().put(index, type);
+        return this;
+    }
+
+    @Override
     public Flux<Result> execute() {
         return this.results;
     }
