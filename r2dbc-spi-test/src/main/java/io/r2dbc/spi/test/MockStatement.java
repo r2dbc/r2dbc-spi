@@ -18,7 +18,6 @@ package io.r2dbc.spi.test;
 
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
@@ -93,11 +92,6 @@ public final class MockStatement implements Statement<MockStatement> {
     @Override
     public Flux<Result> execute() {
         return this.results;
-    }
-
-    @Override
-    public Publisher<? extends Result> executeReturningGeneratedKeys() {
-        return execute();
     }
 
     public List<Map<Object, Object>> getBindings() {

@@ -118,26 +118,6 @@ public interface Example<T> {
         getJdbcOperations().execute("DROP TABLE test");
     }
 
-    @Test
-    default void generatedKeys() {
-        getJdbcOperations().execute("CREATE TABLE test2 (id SERIAL PRIMARY KEY, value INTEGER)");
-
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection ->
-
-                Flux.from(connection.createStatement(String.format("INSERT INTO test2(value) VALUES (%s)", getPlaceholder(0)))
-                    .bind(getIdentifier(0), 100).add()
-                    .bind(getIdentifier(0), 200).add()
-                    .executeReturningGeneratedKeys())
-                    .flatMap(Example::extractIds)
-
-                    .concatWith(close(connection)))
-            .as(StepVerifier::create)
-            .expectNext(Collections.singletonList(1)).as("value from first insertion")
-            .expectNext(Collections.singletonList(2)).as("value from second insertion")
-            .verifyComplete();
-    }
-
     /**
      * Returns a {@link ConnectionFactory} for the connected database.
      *
