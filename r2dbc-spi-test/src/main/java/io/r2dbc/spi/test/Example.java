@@ -47,12 +47,6 @@ public interface Example<T> {
             .collectList();
     }
 
-    static Mono<List<Integer>> extractIds(Result result) {
-        return Flux.from(result
-            .map((row, rowMetadata) -> row.get("id", Integer.class)))
-            .collectList();
-    }
-
     static Mono<Integer> extractRowsUpdated(Result result) {
         return Mono.from(result.getRowsUpdated());
     }
