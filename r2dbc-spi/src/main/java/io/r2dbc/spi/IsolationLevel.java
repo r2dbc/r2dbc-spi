@@ -34,7 +34,7 @@ public enum IsolationLevel {
     READ_UNCOMMITTED("READ UNCOMMITTED"),
 
     /**
-     * THe repeatable read isolation level.
+     * The repeatable read isolation level.
      */
     REPEATABLE_READ("REPEATABLE READ"),
 
