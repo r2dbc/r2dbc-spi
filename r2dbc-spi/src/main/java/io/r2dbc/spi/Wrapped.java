@@ -17,23 +17,17 @@
 package io.r2dbc.spi;
 
 /**
- * Indicates the class wraps(delegate, proxy, etc.) any of R2DBC SPI instances.
- * <p>
- * This interface provides a common way to retrieve the original object.
- * Any wrapper(delegate, proxy, etc.) is required to implement this interface; so that, users
- * can extract original object through this interface.
- * <p>
- * It is wrapper's responsibility to implement this.
+ * Indicates that an instance wraps a concrete implementation of an R2DBC SPI interface.  A wrapper is expected to implement this interface so that callers can extract the original instance.
  *
- * @author Tadaya Tsuyukubo
+ * @param <T> The R2DBC SPI type being wrapped
  */
-public interface Wrapped {
+public interface Wrapped<T> {
 
     /**
-     * Provides the original object.
+     * Returns the original instance wrapped by this object.
      *
-     * @return original object
+     * @return the original instance wrapped by this object
      */
-    Object unwrap();
+    T unwrap();
 
 }
