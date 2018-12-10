@@ -17,11 +17,27 @@
 package io.r2dbc.spi;
 
 /**
- * Non-public assertion library for SPI testing.
+ * Non-public assertion library for SPI implementations.
  */
 abstract class Assert {
 
     private Assert() {
+    }
+
+    /**
+     * Checks that a specified {@link String} is not empty and throws a customized {@link IllegalArgumentException} if it is.
+     *
+     * @param s       the {@link String} to check for emptiness
+     * @param message the detail message to be used in the event that an {@link IllegalArgumentException} is thrown
+     * @return {@code s} if not empty
+     * @throws IllegalArgumentException if {@code s} is empty
+     */
+    static String requireNonEmpty(String s, String message) {
+        if (s.isEmpty()) {
+            throw new IllegalArgumentException(message);
+        }
+
+        return s;
     }
 
     /**
