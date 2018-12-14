@@ -1,0 +1,26 @@
+:numbered!:
+["preface",sectnum="0"]
+
+== Preface
+
+=== License
+
+include::license.adoc[]
+
+=== Foreword
+
+R2DBC is an endeavor to bring a reactive programming API to relational data stores.
+
+[[doc.organisation]]
+
+=== Organisation of this document
+
+This document is organized in x parts:
+
+* tbd
+
+
+
+
+:numbered:
+<<<

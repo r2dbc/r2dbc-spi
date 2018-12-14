@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
+
+    <id>resources</id>
+    <formats>
+        <format>dir</format>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <files>
+        <file>
+            <!--
+                Adds specification (pdf) to the distribution archive
+                under the 'docs/reference' directory see pom.xml 'maven-javadoc-plugin' declaration.
+            -->
+            <source>${project.build.directory}/generated-docs/index.pdf</source>
+            <destName>spec/pdf/r2dbc-spec-${project.version}.pdf</destName>
+        </file>
+    </files>
+    <fileSets>
+        <fileSet>
+            <!--
+                Adds readme and other textfiles to the root of the distribution archive.
+            -->
+            <directory>${project.basedir}/..</directory>
+            <includes>
+                <include>CHANGELOG</include>
+            </includes>
+            <outputDirectory/>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
+        <fileSet>
+            <!--
+                Adds reference manual (html) to the distribution archive
+                under the 'docs/reference' directory see pom.xml 'maven-javadoc-plugin' declaration.
+            -->
+            <directory>${project.build.directory}/generated-docs</directory>
+            <outputDirectory>spec/html</outputDirectory>
+            <excludes>
+                <exclude>*.pdf</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <!--
+                Adds javadoc html to the distribution archive under the 'docs/api'
+                directory see pom.xml 'maven-javadoc-plugin' declaration.
+            -->
+            <directory>${project.basedir}/../r2dbc-spi/target/apidocs</directory>
+            <outputDirectory>api</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>
