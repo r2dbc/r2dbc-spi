@@ -1,0 +1,16 @@
+R2DBC SPI Changelog
+=============================
+
+1.0.0.M6
+------------------
+* executeReturningGeneratedKeys() should allow keys to be specified #17
+* Publish a code formatting guideline #15
+* Drop Support for Transaction Mutability #14
+* R2DBC API: Statement.bind(Integer, Object) should be Statement.bind(int, Object) #6
+* R2DBC API: Provide Statement.bindNull(…) accepting integer index #5
+* Identifier Ambiguity #3
+
+1.0.0.M4
+------------------
+* R2DBC API: Provide Row.get(Object identifier) #4
+* Upgrade to Reactor Californium #1

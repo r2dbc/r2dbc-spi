@@ -144,6 +144,15 @@
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <id>spec</id>
+            <modules>
+                <module>r2dbc-spec</module>
+            </modules>
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
             <id>spring-milestones</id>
