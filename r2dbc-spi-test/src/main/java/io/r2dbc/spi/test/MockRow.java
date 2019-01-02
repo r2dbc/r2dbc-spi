@@ -28,7 +28,7 @@ public final class MockRow implements Row {
     private final Map<Identified, Object> identified;
 
     private MockRow(Map<Identified, Object> identified) {
-        this.identified = Objects.requireNonNull(identified);
+        this.identified = Assert.requireNonNull(identified, "identified must not be null");
     }
 
     public static Builder builder() {
@@ -43,8 +43,8 @@ public final class MockRow implements Row {
     @Nullable
     @SuppressWarnings("unchecked")
     public <T> T get(Object identifier, Class<T> type) {
-        Objects.requireNonNull(identifier);
-        Objects.requireNonNull(type);
+        Assert.requireNonNull(identifier, "identifier must not be null");
+        Assert.requireNonNull(type, "type must not be null");
 
         Identified identified = new Identified(identifier, type);
 
@@ -74,8 +74,8 @@ public final class MockRow implements Row {
         }
 
         public Builder identified(Object identifier, Class<?> type, @Nullable Object value) {
-            Objects.requireNonNull(identifier);
-            Objects.requireNonNull(type);
+            Assert.requireNonNull(identifier, "identifier must not be null");
+            Assert.requireNonNull(type, "type must not be null");
 
             this.identified.put(new Identified(identifier, type), value);
             return this;
@@ -96,8 +96,8 @@ public final class MockRow implements Row {
         private final Class<?> type;
 
         private Identified(Object identifier, Class<?> type) {
-            this.identifier = Objects.requireNonNull(identifier);
-            this.type = Objects.requireNonNull(type);
+            this.identifier = Assert.requireNonNull(identifier, "identifier must not be null");
+            this.type = Assert.requireNonNull(type, "type must not be null");
         }
 
         @Override

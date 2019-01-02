@@ -19,7 +19,6 @@ package io.r2dbc.spi.test;
 import io.r2dbc.spi.ColumnMetadata;
 import reactor.util.annotation.Nullable;
 
-import java.util.Objects;
 import java.util.Optional;
 
 public final class MockColumnMetadata implements ColumnMetadata {
@@ -35,9 +34,9 @@ public final class MockColumnMetadata implements ColumnMetadata {
     private final Integer type;
 
     private MockColumnMetadata(String name, @Nullable Integer precision, Integer type) {
-        this.name = Objects.requireNonNull(name);
+        this.name = Assert.requireNonNull(name, "name must not be null");
         this.precision = precision;
-        this.type = Objects.requireNonNull(type);
+        this.type = Assert.requireNonNull(type, "type must not be null");
     }
 
     public static Builder builder() {
@@ -91,12 +90,12 @@ public final class MockColumnMetadata implements ColumnMetadata {
         }
 
         public Builder name(String name) {
-            this.name = Objects.requireNonNull(name);
+            this.name = Assert.requireNonNull(name, "name must not be null");
             return this;
         }
 
         public Builder precision(Integer precision) {
-            this.precision = Objects.requireNonNull(precision);
+            this.precision = Assert.requireNonNull(precision, "precision must not be null");
             return this;
         }
 
@@ -110,7 +109,7 @@ public final class MockColumnMetadata implements ColumnMetadata {
         }
 
         public Builder type(Integer type) {
-            this.type = Objects.requireNonNull(type);
+            this.type = Assert.requireNonNull(type, "type must not be null");
             return this;
         }
 

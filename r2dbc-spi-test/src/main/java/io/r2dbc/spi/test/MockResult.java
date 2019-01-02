@@ -37,9 +37,9 @@ public final class MockResult implements Result {
     private final Flux<Integer> rowsUpdated;
 
     private MockResult(Mono<RowMetadata> rowMetadata, Flux<Row> rows, Flux<Integer> rowsUpdated) {
-        this.rowMetadata = Objects.requireNonNull(rowMetadata);
-        this.rows = Objects.requireNonNull(rows);
-        this.rowsUpdated = Objects.requireNonNull(rowsUpdated);
+        this.rowMetadata = Assert.requireNonNull(rowMetadata, "rowMetadata must not be null");
+        this.rows = Assert.requireNonNull(rows, "rows must not be null");
+        this.rowsUpdated = Assert.requireNonNull(rowsUpdated, "rowsUpdated must not be null");
     }
 
     public static Builder builder() {
@@ -57,7 +57,7 @@ public final class MockResult implements Result {
 
     @Override
     public <T> Flux<T> map(BiFunction<Row, RowMetadata, ? extends T> f) {
-        Objects.requireNonNull(f);
+        Assert.requireNonNull(f, "f must not be null");
 
         return this.rows
             .zipWith(this.rowMetadata.repeat())
@@ -94,7 +94,7 @@ public final class MockResult implements Result {
         }
 
         public Builder row(Row... rows) {
-            Objects.requireNonNull(rows);
+            Assert.requireNonNull(rows, "rows must not be null");
 
             Stream.of(rows)
                 .peek(Objects::requireNonNull)
@@ -104,12 +104,12 @@ public final class MockResult implements Result {
         }
 
         public Builder rowMetadata(RowMetadata rowMetadata) {
-            this.rowMetadata = Objects.requireNonNull(rowMetadata);
+            this.rowMetadata = Assert.requireNonNull(rowMetadata, "rowMetadata must not be null");
             return this;
         }
 
         public Builder rowsUpdated(Integer rowsUpdated) {
-            Objects.requireNonNull(rowsUpdated);
+            Assert.requireNonNull(rowsUpdated, "rowsUpdated must not be null");
 
             this.rowsUpdated.add(rowsUpdated);
             return this;

@@ -38,7 +38,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param identifier the identifier to bind to
      * @param value      the value to bind
      * @return this {@link Statement}
-     * @throws NullPointerException if {@code identifier} or {@code value} is {@code null}
+     * @throws IllegalArgumentException if {@code identifier} or {@code value} is {@code null}
      */
     SELF bind(Object identifier, Object value);
 
@@ -48,7 +48,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * @throws NullPointerException if {@code value} is {@code null}
+     * @throws IllegalArgumentException if {@code value} is {@code null}
      */
     SELF bind(int index, Object value);
 
@@ -146,7 +146,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param identifier the identifier to bind to
      * @param type       the type of null value
      * @return this {@link Statement}
-     * @throws NullPointerException if {@code identifier} or {@code type} is {@code null}
+     * @throws IllegalArgumentException if {@code identifier} or {@code type} is {@code null}
      */
     SELF bindNull(Object identifier, Class<?> type);
 
@@ -156,7 +156,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param index the index to bind to
      * @param type  the type of null value
      * @return this {@link Statement}
-     * @throws NullPointerException if {@code type} is {@code null}
+     * @throws IllegalArgumentException if {@code type} is {@code null}
      */
     SELF bindNull(int index, Class<?> type);
 

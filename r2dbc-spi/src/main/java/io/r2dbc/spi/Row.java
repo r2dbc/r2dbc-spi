@@ -28,7 +28,7 @@ public interface Row {
      * @param type       the type of item to return. This type must be assignable to, and allows for variance.
      * @param <T>        the type of the item being returned
      * @return the value for a column in this row.  Value can be {@code null}.
-     * @throws NullPointerException if {@code identifier} or {@code type} is {@code null}
+     * @throws IllegalArgumentException if {@code identifier} or {@code type} is {@code null}
      */
     @Nullable
     <T> T get(Object identifier, Class<T> type);
@@ -39,7 +39,7 @@ public interface Row {
      *
      * @param identifier the identifier of the column
      * @return the value for a column in this row.  Value can be {@code null}.
-     * @throws NullPointerException if {@code identifier} or {@code type} is {@code null}
+     * @throws IllegalArgumentException if {@code identifier} or {@code type} is {@code null}
      */
     @Nullable
     default Object get(Object identifier) {
