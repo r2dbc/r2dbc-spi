@@ -38,22 +38,24 @@ abstract class ConstantPool<T> {
     /**
      * Creates a new instance of the constant.  Implementations of this method should return a new instance each time.
      *
-     * @param name the name of the constant
+     * @param name      the name of the constant
+     * @param sensitive whether the value represented by this constant is sensitive
      * @return a new instance of the constant
      */
-    abstract T createConstant(String name);
+    abstract T createConstant(String name, boolean sensitive);
 
     /**
      * Returns a cached or newly created instance of a constant.
      *
-     * @param name the name of the constant
+     * @param name      the name of the constant
+     * @param sensitive whether the value represented by this constant is sensitive
      * @return a cached or newly created instance of a constant
      * @throws IllegalArgumentException if {@code name} is {@code null} or empty
      */
-    final T valueOf(String name) {
+    final T valueOf(String name, boolean sensitive) {
         Assert.requireNonNull(name, "name must not be null");
         Assert.requireNonEmpty(name, "name must not be empty");
 
-        return this.constants.computeIfAbsent(name, this::createConstant);
+        return this.constants.computeIfAbsent(name, n -> createConstant(n, sensitive));
     }
 }

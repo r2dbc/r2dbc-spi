@@ -17,7 +17,9 @@
 package io.r2dbc.spi;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,7 +50,7 @@ public final class ConnectionFactoryOptions {
     /**
      * Password for authentication.
      */
-    public static final Option<CharSequence> PASSWORD = Option.valueOf("password");
+    public static final Option<CharSequence> PASSWORD = Option.sensitiveValueOf("password");
 
     /**
      * Endpoint port number.
@@ -70,9 +72,9 @@ public final class ConnectionFactoryOptions {
      */
     public static final Option<String> USER = Option.valueOf("user");
 
-    private final Map<Option<?>, ?> options;
+    private final Map<Option<?>, Object> options;
 
-    private ConnectionFactoryOptions(Map<Option<?>, ?> options) {
+    private ConnectionFactoryOptions(Map<Option<?>, Object> options) {
         this.options = Assert.requireNonNull(options, "options must not be null");
     }
 
@@ -123,8 +125,20 @@ public final class ConnectionFactoryOptions {
     @Override
     public String toString() {
         return "ConnectionFactoryOptions{" +
-            "options=" + this.options +
+            "options=" + toString(this.options) +
             '}';
+    }
+
+    private static String toString(Map<Option<?>, Object> options) {
+        List<String> o = new ArrayList<>(options.size());
+
+        for (Map.Entry<Option<?>, Object> entry : options.entrySet()) {
+            String key = entry.getKey().name();
+            Object value = entry.getKey().sensitive() ? "REDACTED" : entry.getValue();
+            o.add(String.format("%s=%s", key, value));
+        }
+
+        return String.format("{%s}", String.join(", ", o));
     }
 
     /**
@@ -149,6 +163,20 @@ public final class ConnectionFactoryOptions {
         }
 
         /**
+         * Populates the builder with the existing values from a configured {@link ConnectionFactoryOptions}.
+         *
+         * @param connectionFactoryOptions a configured {@link ConnectionFactoryOptions}
+         * @return this {@link Builder}
+         * @throws IllegalArgumentException if {@code connectionFactoryOptions} is {@code null}
+         */
+        public Builder from(ConnectionFactoryOptions connectionFactoryOptions) {
+            Assert.requireNonNull(connectionFactoryOptions, "connectionFactoryOptions must not be null");
+
+            this.options.putAll(connectionFactoryOptions.options);
+            return this;
+        }
+
+        /**
          * Configure an {@link Option} value.
          *
          * @param option the {@link Option} to configure
@@ -168,7 +196,7 @@ public final class ConnectionFactoryOptions {
         @Override
         public String toString() {
             return "Builder{" +
-                "options=" + this.options +
+                "options=" + ConnectionFactoryOptions.toString(this.options) +
                 '}';
         }
 

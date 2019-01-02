@@ -26,16 +26,35 @@ public final class Option<T> {
     private static final ConstantPool<Option<?>> CONSTANTS = new ConstantPool<Option<?>>() {
 
         @Override
-        Option<?> createConstant(String name) {
-            return new Option<>(name);
+        Option<?> createConstant(String name, boolean sensitive) {
+            return new Option<>(name, sensitive);
         }
 
     };
 
     private final String name;
 
-    private Option(String name) {
-        this.name = Assert.requireNonNull(name, "name must not be null");
+    private final boolean sensitive;
+
+    private Option(String name, boolean sensitive) {
+        this.name = name;
+        this.sensitive = sensitive;
+    }
+
+    /**
+     * Returns a constant singleton instance of the sensitive option.
+     *
+     * @param name the name of the option to return
+     * @param <T>  the value type of the option
+     * @return a constant singleton instance of the option
+     * @throws IllegalArgumentException if {@code name} is {@code null} or empty
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Option<T> sensitiveValueOf(String name) {
+        Assert.requireNonNull(name, "name must not be null");
+        Assert.requireNonEmpty(name, "name must not be empty");
+
+        return (Option<T>) CONSTANTS.valueOf(name, true);
     }
 
     /**
@@ -51,7 +70,7 @@ public final class Option<T> {
         Assert.requireNonNull(name, "name must not be null");
         Assert.requireNonEmpty(name, "name must not be empty");
 
-        return (Option<T>) CONSTANTS.valueOf(name);
+        return (Option<T>) CONSTANTS.valueOf(name, false);
     }
 
     /**
@@ -66,7 +85,12 @@ public final class Option<T> {
     @Override
     public String toString() {
         return "Option{" +
-            "name='" + this.name + '\'' +
+            "name='" + name + '\'' +
+            ", sensitive=" + sensitive +
             '}';
+    }
+
+    boolean sensitive() {
+        return this.sensitive;
     }
 }
