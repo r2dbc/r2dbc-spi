@@ -21,14 +21,13 @@ import io.r2dbc.spi.RowMetadata;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public final class MockRowMetadata implements RowMetadata {
 
     private final List<ColumnMetadata> columnMetadatas;
 
     private MockRowMetadata(List<ColumnMetadata> columnMetadatas) {
-        this.columnMetadatas = Objects.requireNonNull(columnMetadatas);
+        this.columnMetadatas = Assert.requireNonNull(columnMetadatas, "columnMetadatas must not be null");
     }
 
     public static Builder builder() {
@@ -41,7 +40,7 @@ public final class MockRowMetadata implements RowMetadata {
 
     @Override
     public ColumnMetadata getColumnMetadata(Object identifier) {
-        Objects.requireNonNull(identifier);
+        Assert.requireNonNull(identifier, "identifier must not be null");
 
         return this.columnMetadatas.get((Integer) identifier);
     }
@@ -70,7 +69,7 @@ public final class MockRowMetadata implements RowMetadata {
         }
 
         public Builder columnMetadata(ColumnMetadata columnMetadata) {
-            Objects.requireNonNull(columnMetadata);
+            Assert.requireNonNull(columnMetadata, "columnMetadata must not be null");
 
             this.columnMetadatas.add(columnMetadata);
             return this;

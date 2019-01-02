@@ -16,13 +16,10 @@
 
 package io.r2dbc.spi.test;
 
-import io.r2dbc.spi.Batch;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.IsolationLevel;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
-
-import java.util.Objects;
 
 public final class MockConnection implements Connection {
 
@@ -90,13 +87,13 @@ public final class MockConnection implements Connection {
 
     @Override
     public Mono<Void> createSavepoint(String name) {
-        this.createSavepointName = Objects.requireNonNull(name);
+        this.createSavepointName = Assert.requireNonNull(name, "name must not be null");
         return Mono.empty();
     }
 
     @Override
     public MockStatement createStatement(String sql) {
-        Objects.requireNonNull(sql);
+        Assert.requireNonNull(sql, "sql must not be null");
 
         if (this.statement == null) {
             throw new AssertionError("Unexpected call to createStatement(String)");
@@ -149,7 +146,7 @@ public final class MockConnection implements Connection {
 
     @Override
     public Mono<Void> releaseSavepoint(String name) {
-        this.releaseSavepointName = Objects.requireNonNull(name);
+        this.releaseSavepointName = Assert.requireNonNull(name, "name must not be null");
         return Mono.empty();
     }
 
@@ -161,13 +158,13 @@ public final class MockConnection implements Connection {
 
     @Override
     public Mono<Void> rollbackTransactionToSavepoint(String name) {
-        this.rollbackTransactionToSavepointName = Objects.requireNonNull(name);
+        this.rollbackTransactionToSavepointName = Assert.requireNonNull(name, "name must not be null");
         return Mono.empty();
     }
 
     @Override
     public Mono<Void> setTransactionIsolationLevel(IsolationLevel isolationLevel) {
-        this.setTransactionIsolationLevelIsolationLevel = Objects.requireNonNull(isolationLevel);
+        this.setTransactionIsolationLevelIsolationLevel = Assert.requireNonNull(isolationLevel, "isolation level must not be null");
         return Mono.empty();
     }
 
@@ -198,7 +195,7 @@ public final class MockConnection implements Connection {
         }
 
         public Builder batch(MockBatch batch) {
-            this.batch = Objects.requireNonNull(batch);
+            this.batch = Assert.requireNonNull(batch, "batch must not be null");
             return this;
         }
 
@@ -207,7 +204,7 @@ public final class MockConnection implements Connection {
         }
 
         public Builder statement(MockStatement statement) {
-            this.statement = Objects.requireNonNull(statement);
+            this.statement = Assert.requireNonNull(statement, "statement must not be null");
             return this;
         }
 

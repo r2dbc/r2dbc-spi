@@ -21,8 +21,6 @@ import io.r2dbc.spi.ConnectionFactory;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
 
-import java.util.Objects;
-
 public final class MockConnectionFactory implements ConnectionFactory {
 
     private final Mono<Connection> connection;
@@ -72,7 +70,7 @@ public final class MockConnectionFactory implements ConnectionFactory {
         }
 
         public Builder connection(Connection connection) {
-            this.connection = Objects.requireNonNull(connection);
+            this.connection = Assert.requireNonNull(connection, "connection must not be null");
             return this;
         }
 

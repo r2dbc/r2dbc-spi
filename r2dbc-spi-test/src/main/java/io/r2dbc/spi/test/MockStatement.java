@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public final class MockStatement implements Statement<MockStatement> {
 
@@ -37,7 +36,7 @@ public final class MockStatement implements Statement<MockStatement> {
     private Map<Object, Object> current;
 
     private MockStatement(Flux<Result> results) {
-        this.results = Objects.requireNonNull(results);
+        this.results = Assert.requireNonNull(results, "results must not be null");
     }
 
     public static Builder builder() {
@@ -57,8 +56,8 @@ public final class MockStatement implements Statement<MockStatement> {
 
     @Override
     public MockStatement bind(Object identifier, Object value) {
-        Objects.requireNonNull(identifier);
-        Objects.requireNonNull(value);
+        Assert.requireNonNull(identifier, "identifier must not be null");
+        Assert.requireNonNull(value, "value must not be null");
 
         getCurrent().put(identifier, value);
         return this;
@@ -66,7 +65,7 @@ public final class MockStatement implements Statement<MockStatement> {
 
     @Override
     public MockStatement bind(int index, Object value) {
-        Objects.requireNonNull(value);
+        Assert.requireNonNull(value, "value must not be null");
 
         getCurrent().put(index, value);
         return this;
@@ -74,8 +73,8 @@ public final class MockStatement implements Statement<MockStatement> {
 
     @Override
     public MockStatement bindNull(Object identifier, Class<?> type) {
-        Objects.requireNonNull(identifier);
-        Objects.requireNonNull(type);
+        Assert.requireNonNull(identifier, "identifier must not be null");
+        Assert.requireNonNull(type, "type must not be null");
 
         getCurrent().put(identifier, type);
         return this;
@@ -83,7 +82,7 @@ public final class MockStatement implements Statement<MockStatement> {
 
     @Override
     public MockStatement bindNull(int index, Class<?> type) {
-        Objects.requireNonNull(type);
+        Assert.requireNonNull(type, "type must not be null");
 
         getCurrent().put(index, type);
         return this;
@@ -132,7 +131,7 @@ public final class MockStatement implements Statement<MockStatement> {
         }
 
         public Builder result(Result result) {
-            Objects.requireNonNull(result);
+            Assert.requireNonNull(result, "result must not be null");
 
             this.results.add(result);
             return this;

@@ -28,7 +28,7 @@ public interface Batch<SELF extends Batch<SELF>> {
      *
      * @param sql the statement to add
      * @return this {@link Batch}
-     * @throws NullPointerException if {@code sql} is {@code null}
+     * @throws IllegalArgumentException if {@code sql} is {@code null}
      */
     SELF add(String sql);
 

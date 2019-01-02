@@ -16,8 +16,6 @@
 
 package io.r2dbc.spi;
 
-import java.util.Objects;
-
 /**
  * SQL transaction isolation levels.
  */
@@ -46,7 +44,7 @@ public enum IsolationLevel {
     private final String sql;
 
     IsolationLevel(String sql) {
-        this.sql = Objects.requireNonNull(sql, "sql must not be null");
+        this.sql = Assert.requireNonNull(sql, "sql must not be null");
     }
 
     /**
