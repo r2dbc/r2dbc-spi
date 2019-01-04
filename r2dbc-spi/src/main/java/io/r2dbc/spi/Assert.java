@@ -17,7 +17,7 @@
 package io.r2dbc.spi;
 
 /**
- * Non-public assertion library for SPI implementations.
+ * Non-public assertion library for SPI testing.
  */
 abstract class Assert {
 
