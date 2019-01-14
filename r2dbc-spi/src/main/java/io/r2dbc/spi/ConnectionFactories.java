@@ -25,6 +25,9 @@ import java.util.ServiceLoader;
  */
 public final class ConnectionFactories {
 
+    private ConnectionFactories() {
+    }
+
     /**
      * Returns a {@link ConnectionFactory} if an available implementation can be created from a collection of {@link ConnectionFactoryOptions}.
      *
@@ -33,7 +36,7 @@ public final class ConnectionFactories {
      * @throws IllegalArgumentException if {@code connectionSpecification} is {@code null}
      */
     @Nullable
-    public ConnectionFactory find(ConnectionFactoryOptions connectionFactoryOptions) {
+    public static ConnectionFactory find(ConnectionFactoryOptions connectionFactoryOptions) {
         Assert.requireNonNull(connectionFactoryOptions, "connectionFactoryOptions must not be null");
 
         for (ConnectionFactoryProvider provider : loadProviders()) {
@@ -53,7 +56,7 @@ public final class ConnectionFactories {
      * @throws IllegalArgumentException if {@code connectionFactoryOptions} is {@code null}
      * @throws IllegalStateException    if no available implementation can create a {@link ConnectionFactory}
      */
-    public ConnectionFactory get(ConnectionFactoryOptions connectionFactoryOptions) {
+    public static ConnectionFactory get(ConnectionFactoryOptions connectionFactoryOptions) {
         ConnectionFactory connectionFactory = find(connectionFactoryOptions);
 
         if (connectionFactory == null) {
@@ -70,7 +73,7 @@ public final class ConnectionFactories {
      * @return {@code true} if a {@link ConnectionFactory} can be created from a collection of {@link ConnectionFactoryOptions}, {@code false} otherwise.
      * @throws IllegalArgumentException if {@code connectionFactoryOptions} is {@code null}
      */
-    public boolean supports(ConnectionFactoryOptions connectionFactoryOptions) {
+    public static boolean supports(ConnectionFactoryOptions connectionFactoryOptions) {
         Assert.requireNonNull(connectionFactoryOptions, "connectionFactoryOptions must not be null");
 
         for (ConnectionFactoryProvider provider : loadProviders()) {
@@ -82,7 +85,7 @@ public final class ConnectionFactories {
         return false;
     }
 
-    private ServiceLoader<ConnectionFactoryProvider> loadProviders() {
+    private static ServiceLoader<ConnectionFactoryProvider> loadProviders() {
         return AccessController.doPrivileged((PrivilegedAction<ServiceLoader<ConnectionFactoryProvider>>) () -> ServiceLoader.load(ConnectionFactoryProvider.class,
             ConnectionFactoryProvider.class.getClassLoader()));
     }

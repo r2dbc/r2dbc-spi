@@ -122,6 +122,19 @@ public final class ConnectionFactoryOptions {
         return (T) this.options.get(option);
     }
 
+    /**
+     * Returns {@code true} if the option exists, otherwise {@code false}.
+     *
+     * @param option the option to test for
+     * @return {@code true} if the option exists, otherwise {@code false}
+     * @throws IllegalArgumentException if {@code option} is {@code null}
+     */
+    public boolean hasOption(Option<?> option) {
+        Assert.requireNonNull(option, "option must not be null");
+
+        return this.options.containsKey(option);
+    }
+
     @Override
     public String toString() {
         return "ConnectionFactoryOptions{" +
