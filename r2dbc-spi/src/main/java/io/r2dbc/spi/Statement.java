@@ -165,4 +165,14 @@ public interface Statement {
      */
     Publisher<? extends Result> execute();
 
+    /**
+     * Configures {@link Statement} to return the generated values from any rows created by this {@link Statement} in the {@link Result} returned from {@link #execute()}.  If no columns are specified,
+     * implementations are free to choose which columns will be returned.  If called multiple times, only the columns requested in the final invocation will be returned.
+     *
+     * @param columns the names of the columns to return
+     * @return this {@code Statement}
+     * @throws IllegalArgumentException if {@code columns}, or any item in {@code columns} is {@code null}
+     */
+    Statement returnGeneratedValues(String... columns);
+
 }

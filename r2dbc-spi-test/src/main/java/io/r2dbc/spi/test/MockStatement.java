@@ -21,6 +21,7 @@ import io.r2dbc.spi.Statement;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,8 @@ public final class MockStatement implements Statement {
     private boolean addCalled = false;
 
     private Map<Object, Object> current;
+
+    private String[] generatedValuesColumns;
 
     private MockStatement(Flux<Result> results) {
         this.results = Assert.requireNonNull(results, "results must not be null");
@@ -97,16 +100,28 @@ public final class MockStatement implements Statement {
         return this.bindings;
     }
 
+    public String[] getGeneratedValuesColumns() {
+        return this.generatedValuesColumns;
+    }
+
     public boolean isAddCalled() {
         return this.addCalled;
     }
 
     @Override
+    public Statement returnGeneratedValues(String... columns) {
+        this.generatedValuesColumns = columns;
+        return this;
+    }
+
+    @Override
     public String toString() {
         return "MockStatement{" +
-            "bindings=" + this.bindings +
-            ", results=" + this.results +
-            ", current=" + this.current +
+            "bindings=" + bindings +
+            ", results=" + results +
+            ", addCalled=" + addCalled +
+            ", current=" + current +
+            ", generatedValuesColumns=" + Arrays.toString(generatedValuesColumns) +
             '}';
     }
 
