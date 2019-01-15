@@ -10,9 +10,11 @@ include::license.adoc[]
 === Foreword
 
 R2DBC is an endeavor to bring a reactive programming API to relational data stores.
+<<introduction>> contains more details about its origins and will explain its goals.
+
+This document describes the first and initial generation of R2DBC.
 
 [[doc.organisation]]
-
 === Organisation of this document
 
 This document is organized in x parts:

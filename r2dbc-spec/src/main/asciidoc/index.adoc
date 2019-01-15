@@ -15,3 +15,7 @@ NOTE: Copies of this document may be made for your own use and for distribution 
 toc::[]
 
 include::preface.adoc[]
+
+include::introduction.adoc[leveloffset=+1]
+
+include::goals.adoc[leveloffset=+1]
