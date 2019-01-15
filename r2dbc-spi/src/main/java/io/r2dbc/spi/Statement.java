@@ -20,17 +20,15 @@ import org.reactivestreams.Publisher;
 
 /**
  * A statement that can be executed multiple times in a prepared and optimized way.
- *
- * @param <SELF> the concrete type of the statement
  */
-public interface Statement<SELF extends Statement<SELF>> {
+public interface Statement {
 
     /**
      * Save the current binding and create a new one.
      *
      * @return this {@link Statement}
      */
-    SELF add();
+    Statement add();
 
     /**
      * Bind a value.
@@ -40,7 +38,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @return this {@link Statement}
      * @throws IllegalArgumentException if {@code identifier} or {@code value} is {@code null}
      */
-    SELF bind(Object identifier, Object value);
+    Statement bind(Object identifier, Object value);
 
     /**
      * Bind a value to an index.  Indexes are zero-based.
@@ -50,7 +48,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @return this {@link Statement}
      * @throws IllegalArgumentException if {@code value} is {@code null}
      */
-    SELF bind(int index, Object value);
+    Statement bind(int index, Object value);
 
     /**
      * Bind a value to an index.  Indexes are zero-based.
@@ -59,7 +57,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param value the value to bind
      * @return this {@link Statement}
      */
-    default SELF bind(int index, boolean value) {
+    default Statement bind(int index, boolean value) {
         return bind(index, (Boolean) value);
     }
 
@@ -70,7 +68,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param value the value to bind
      * @return this {@link Statement}
      */
-    default SELF bind(int index, byte value) {
+    default Statement bind(int index, byte value) {
         return bind(index, (Byte) value);
     }
 
@@ -81,7 +79,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param value the value to bind
      * @return this {@link Statement}
      */
-    default SELF bind(int index, char value) {
+    default Statement bind(int index, char value) {
         return bind(index, (Character) value);
     }
 
@@ -92,7 +90,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param value the value to bind
      * @return this {@link Statement}
      */
-    default SELF bind(int index, double value) {
+    default Statement bind(int index, double value) {
         return bind(index, (Double) value);
     }
 
@@ -103,7 +101,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param value the value to bind
      * @return this {@link Statement}
      */
-    default SELF bind(int index, float value) {
+    default Statement bind(int index, float value) {
         return bind(index, (Float) value);
     }
 
@@ -114,7 +112,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param value the value to bind
      * @return this {@link Statement}
      */
-    default SELF bind(int index, int value) {
+    default Statement bind(int index, int value) {
         return bind(index, (Integer) value);
     }
 
@@ -125,7 +123,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param value the value to bind
      * @return this {@link Statement}
      */
-    default SELF bind(int index, long value) {
+    default Statement bind(int index, long value) {
         return bind(index, (Long) value);
     }
 
@@ -136,7 +134,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @param value the value to bind
      * @return this {@link Statement}
      */
-    default SELF bind(int index, short value) {
+    default Statement bind(int index, short value) {
         return bind(index, (Short) value);
     }
 
@@ -148,7 +146,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @return this {@link Statement}
      * @throws IllegalArgumentException if {@code identifier} or {@code type} is {@code null}
      */
-    SELF bindNull(Object identifier, Class<?> type);
+    Statement bindNull(Object identifier, Class<?> type);
 
     /**
      * Bind a {@code null} value.
@@ -158,7 +156,7 @@ public interface Statement<SELF extends Statement<SELF>> {
      * @return this {@link Statement}
      * @throws IllegalArgumentException if {@code type} is {@code null}
      */
-    SELF bindNull(int index, Class<?> type);
+    Statement bindNull(int index, Class<?> type);
 
     /**
      * Executes one or more SQL statements and returns the {@link Result}s.
