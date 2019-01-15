@@ -23,7 +23,7 @@ import reactor.core.publisher.Flux;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class MockBatch implements Batch<MockBatch> {
+public final class MockBatch implements Batch {
 
     private final Flux<Result> results;
 

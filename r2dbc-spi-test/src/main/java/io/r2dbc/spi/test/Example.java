@@ -146,7 +146,7 @@ public interface Example<T> {
     default void prepareStatement() {
         Mono.from(getConnectionFactory().create())
             .flatMapMany(connection -> {
-                Statement<?> statement = connection.createStatement(String.format("INSERT INTO test VALUES(%s)", getPlaceholder(0)));
+                Statement statement = connection.createStatement(String.format("INSERT INTO test VALUES(%s)", getPlaceholder(0)));
 
                 IntStream.range(0, 10)
                     .forEach(i -> statement.bind(getIdentifier(0), i).add());
