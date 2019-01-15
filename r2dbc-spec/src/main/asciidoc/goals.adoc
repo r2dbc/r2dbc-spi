@@ -1,0 +1,71 @@
+[[goals]]
+= Goals
+
+This section outlines the goals for R2DBC and the design philosophy for its SPI.
+
+[[goals.enabling]]
+== Enable Reactive Relational Database Connectivity
+
+The R2DBC specification aims for establishing an interface with a minimal API surface to integrate with relational databases using a reactive programming model.
+The most significant goals are honoring and embracing the properties of reactive programming:
+
+* Non-blocking I/O
+* Deferred execution
+* Treat application control as series of events (data, errors, completion)
+* No longer assume control of resources but leave resource scheduling to the runtime/platform („React to resource availability“)
+* Efficient usage of resources
+* Leave flow control to be handled by the runtime
+* Stream-oriented data consumption
+* Functional programming within operators
+* Remove assumptions over concurrency from the programming model and leave this aspect up the runtime
+* Use back-pressure to allow flow control, to defer the actual execution and to not overwhelm consumers
+
+[[goals.reactive-jvm]]
+== Fit into Reactive JVM platforms
+
+R2DBC aims for seamless integration of reactive JVM platforms targeting Java as its primary platform.
+R2DBC should also be usable from other platforms such as Kotlin or Scala without scarifying its SPI for the sake of idiomatic use in a different platform.
+
+[[goals.standardization]]
+== Offer vendor-neutral access to standard features
+
+R2DBC SPI strives to provide access to features that are commonly found across different vendor implementations.
+The goal here is providing a balance between features that are implemented in a driver and these that are better implemented in a client library.
+
+[[goals.vendor-specifics]]
+== Embrace vendor-specific features
+
+Each database comes with its very own feature set and how these are implemented.
+R2DBC's goal here is to define a minimal standard over commonly used functionality and allow for vendor-specific deviation.
+Drivers can implement additional functionality or make these transparent through R2DBC SPI.
+
+[[goals.sql]]
+== Keep the focus on SQL
+
+The focus of R2DBC is on accessing relational data from the Java programming language using databases that provide a SQL interface to interact with.
+
+The goal here is not to limit implementations to relational-only databases.
+Instead, providing guidance for uniform reactive data access using tabular data consumption patterns.
+
+[[goals.kiss]]
+== Keep it minimal and simple
+
+R2DBC does not aim for being a general purpose data access API.
+
+R2DBC specializes in reactive data access and common usage patterns that result from relational data interaction.
+R2DBC does not aim for abstracting common functionality that needs to be re-implemented by driver vendors in a similar manner. It aims for leaving this functionality to client libraries of which there are typically fewer implementations than drivers.
+
+[[goals.foundation]]
+== Provide a foundation for tools and higher-level APIs
+
+R2DBC SPI aims for being primarily consumed though client library implementations.
+
+It does not aim for being an end-user or application developer programming interface.
+
+Having a uniform reactive relational data access SPI makes R2DBC a valuable target platform for tool vendors and application developers who want to create portable tools and applications.
+
+[[goals.requirements]]
+== Specify requirements unambiguously
+
+The requirements for R2DBC compliance should be unambiguous and easy to identify.
+The R2DBC specification and the API documentation (Javadoc) clarify which features are required and which are optional.
