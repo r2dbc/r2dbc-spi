@@ -11,12 +11,14 @@ The most significant goals are honoring and embracing the properties of reactive
 
 * Non-blocking I/O
 * Deferred execution
-* Flow control
-* High efficiency
+* Treat application control as series of events (data, errors, completion)
+* No longer assume control of resources but leave resource scheduling to the runtime/platform („React to resource availability“)
+* Efficient usage of resources
+* Leave flow control to be handled by the runtime
 * Stream-oriented data consumption
 * Functional programming within operators
-* Potential asynchronicity/concurrency
-* Propagation of backpressure
+* Remove assumptions over concurrency from the programming model and leave this aspect up the runtime
+* Use back-pressure to allow flow control, to defer the actual execution and to not overwhelm consumers
 
 [[goals.reactive-jvm]]
 == Fit into Reactive JVM platforms
@@ -51,7 +53,7 @@ Instead, providing guidance for uniform reactive data access using tabular data 
 R2DBC does not aim for being a general purpose data access API.
 
 R2DBC specializes in reactive data access and common usage patterns that result from relational data interaction.
-R2DBC aims not for abstracting common functionality that needs to be re-implemented by driver vendors in a similar manner. It aims for leaving this functionality to client libraries of which there are typically fewer implementations than drivers.
+R2DBC does not aim for abstracting common functionality that needs to be re-implemented by driver vendors in a similar manner. It aims for leaving this functionality to client libraries of which there are typically fewer implementations than drivers.
 
 [[goals.foundation]]
 == Provide a foundation for tools and higher-level APIs
@@ -60,7 +62,7 @@ R2DBC SPI aims for being primarily consumed though client library implementation
 
 It does not aim for being an end-user or application developer programming interface.
 
-Having a uniform reactive relational data access SPI makes R2DBC a valueable target platform for tool vendors and application developers who want to create portable tools and applications.
+Having a uniform reactive relational data access SPI makes R2DBC a valuable target platform for tool vendors and application developers who want to create portable tools and applications.
 
 [[goals.requirements]]
 == Specify requirements unambiguously

@@ -10,14 +10,13 @@ R2DBC started as experiment and proof of concept to enable integration of relati
 [[introduction.r2dbc-spi]]
 == The R2DBC SPI
 
-The R2DBC SPI provides reactive programmatic access to relational databases from the Java programming languages  and other JVM-based programming languages.
+The R2DBC SPI provides reactive programmatic access to relational databases from the Java and other JVM-based programming languages.
 
 R2DBC specifies a service-provider interface (SPI) intended to be implemented by driver vendors and used by client libraries.
 Using the R2DBC SPI, applications written in a JVM programming language can execute SQL statements, and retrieve results using an underlying data source.
 The R2DBC SPI can also be used to interact with multiple data sources in a distributed, heterogeneous environment.
-R2DBC targets primarily relational databases.
-R2DBC is not limited to relational databases only.
-Instead, it aims for a range of databases whose query and statement interface is based on SQL (or a SQL-like dialect) and represent their data in a tabular form.
+R2DBC targets primarily, but is not limited to, relational databases.
+It aims for a range of data sources whose query and statement interface is based on SQL (or a SQL-like dialect) and represent their data in a tabular form.
 
 A key difference between R2DBC and imperative data access SPIs is the deferred nature of execution. R2DBC is therefore based on http://www.reactive-streams.org/[Reactive Streams] to use the concept of `Publisher` and `Subscriber` to allow non-blocking backpressure-aware data access.
 
