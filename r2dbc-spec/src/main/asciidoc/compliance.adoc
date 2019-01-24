@@ -1,0 +1,64 @@
+[[compliance]]
+= Compliance
+
+This chapter identifies the required features of a D2DBC driver implementation to claim compliance.
+Any not identified features are considered optional.
+
+[[compliance.definitions]]
+== Definitions
+
+To avoid ambiguity, we will use the following terms in the compliance section and across this specification:
+
+* _R2DBC driver implementation_ (short: driver): A driver implementing the R2DBC SPI.
+A driver may provide support for features which are not implemented by the underlying database or expose functionality that is not declared by the R2DBC SPI (_"Extension"_).
+
+* _Supported feature_: A feature for which the R2DBC API implementation supports standard syntax and semantics.
+
+* _Partially supported feature_: A feature for which some methods are implemented via standard syntax and semantics and some required methods are not implemented, typically covered by `default` interface methods.
+
+* _Extension_: A feature that is not covered by R2DBC or a non-standard implementation of a feature that is covered.
+
+* _Fully implemented_: Term to express that an interface has all its methods implemented to support the semantics defined in this specification.
+
+* _Must implement_: Term to express that an interface must be implemented although some methods on the interface are considered optional. Methods that are not implemented rely on the `default` implementation.
+
+[[compliance.guidelines]]
+== Guidelines and Requirements
+
+The following guidelines apply to R2DBC compliance:
+
+* An R2DBC API should implement SQL support as its primary interface. R2DBC does not rely upon, nor does it presume a specific SQL version. SQL and aspects of statements can be entirely handled in the data source or as part of the driver.
+
+* The specification consists of this specification document and specifications documented in each interface's Javadoc.
+
+* Drivers must support bind parameter markers.
+
+* Drivers must support transactions.
+
+* Drivers must support native and indexed access to column and parameter references.
+
+* Index references to columns and parameters are zero-based. The first index begins with `0`.
+
+== R2DBC API Compliance
+
+A driver that is compliant with the R2DBC specification must do the following:
+
+* Adhere to the guidelines and requirements above.
+* Support `ConnectionFactory` discovery through Java Service Loader of `ConnectionFactoryProvider`.
+* Implement a non-blocking I/O layer.
+* Fully implement the following interfaces:
+  ** `io.r2dbc.spi.ConnectionFactory`
+  ** `io.r2dbc.spi.ConnectionFactoryMetadata`
+  ** `io.r2dbc.spi.ConnectionFactoryProvider`
+  ** `io.r2dbc.spi.Result`
+  ** `io.r2dbc.spi.Row`
+  ** `io.r2dbc.spi.RowMetadata`
+  ** `io.r2dbc.spi.Batch`
+* Must implement `io.r2dbc.spi.Statement` interface with the exception of the following optional methods:
+  ** `returnGeneratedValues(…)`: Calling this method should be a no-op for drivers not supporting key generation.
+* Must implement `io.r2dbc.spi.ColumnMetadata` interface with the exception of the following optional methods:
+  ** `getPrecision()`
+  ** `getScale()`
+  ** `getNullability()`
+  ** `getJavaType()`
+  ** `getNativeTypeMetadata()`
