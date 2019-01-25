@@ -1,0 +1,72 @@
+[[rowmetadata]]
+= Column and Row Metadata
+
+The `RowMetadata` interface is implemented by R2DBC drivers to provide information about tabular results.
+It is used primarily by libraries and applications to determine the properties of a row and its columns.
+
+In cases where the result properties of a SQL statement are unknown until execution, the `RowMetadata` can be used to determine the actual properties of a row.
+
+`RowMetadata` exposes `ColumnMetadata` for each column in the result.
+Drivers should provide `ColumnMetadata` on a best-effort basis.
+Column metadata is typically a by-product of statement execution.
+The amount of available information is vendor-dependent.
+Metadata retrieval can require additional lookups (internal query execution) to provide a complete metadata descriptor.
+Issuing queries during result processing conflicts with the streaming nature of R2DBC and so `ColumnMetadata` declares two sets of methods: Methods that must be implemented and methods that can optionally be implemented by drivers.
+
+== Obtaining a `RowMetadata` Object
+
+A `RowMetadata` object is created during tabular results consumption through `Result.map(…)`.
+It is created for each row. The following example illustrates retrieval and usage using an anonymous inner class:
+
+.Using `RowMetadata` and retieving `ColumnMetadata`
+====
+[source,java]
+----
+// result is a Result object
+result.map(new BiFunction<Row, RowMetadata, Object>() {
+
+    @Override
+    public Object apply(Row row, RowMetadata rowMetadata) {
+        ColumnMetadata my_column = rowMetadata.getColumnMetadata("my_column");
+        ColumnMetadata.Nullability nullability = my_column.getNullability();
+        // …
+    }
+})
+----
+====
+
+[[columnmetadata]]
+== Retrieving `ColumnMetadata`
+
+`RowMetadata` methods are used to retrieve metadata for a single or all columns.
+
+* `getColumnMetadata(…)` returns the `ColumnMetadata` by using a column identifier. The identifier is either a zero-based index or the column name, see <<compliance.guidelines>>.
+* `getColumnMetadatas()` returns an unmodifiable collection of `ColumnMetadata` objects.
+
+== Retrieving General Information for a Column
+
+`ColumnMetadata` declares methods to access column metadata on a best-effort basis.
+Column metadata that is available as a by-product of statement execution must be made available through `ColumnMetadata`.
+Metadata exposure requiring interaction with the database (e.g. issuing queries to information schema entities to resolve type properties) should not be exposed as methods on `ColumnMetadata` are expected to be non-blocking.
+
+NOTE: Implementation note: Drivers can use metadata from a static mapping or obtain metadata indexes on connection creation.
+
+The following example illustrates how to consume `ColumnMetadata` using lambdas:
+
+.Retrieving `ColumnMetadata` information
+====
+[source,java]
+----
+// row is a RowMetadata object
+row.getColumnMetadatas().forEach(columnMetadata -> {
+
+    String name = columnMetadata.getName();
+    Integer precision = columnMetadata.getPrecision();
+    Integer scale = columnMetadata.getScale();
+});
+----
+====
+
+See the API specification for more details.
+
+
