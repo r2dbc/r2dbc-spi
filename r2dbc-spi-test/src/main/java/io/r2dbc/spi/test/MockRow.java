@@ -17,7 +17,6 @@
 package io.r2dbc.spi.test;
 
 import io.r2dbc.spi.Row;
-import reactor.util.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
