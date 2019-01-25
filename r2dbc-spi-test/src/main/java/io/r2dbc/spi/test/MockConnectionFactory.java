@@ -19,7 +19,6 @@ package io.r2dbc.spi.test;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
 import reactor.core.publisher.Mono;
-import reactor.util.annotation.Nullable;
 
 public final class MockConnectionFactory implements ConnectionFactory {
 
