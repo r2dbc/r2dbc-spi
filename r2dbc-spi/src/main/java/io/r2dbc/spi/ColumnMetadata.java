@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the original author or authors.
+ * Copyright 2017-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public interface ColumnMetadata {
     String getName();
 
     /**
-     * Return the precision of the column.
+     * Returns the precision of the column.
      * <p>
      * For numeric data, this is the maximum precision.
      * For character data, this is the length in characters.
@@ -53,7 +53,7 @@ public interface ColumnMetadata {
      * Returns the scale of the column.
      * <p>
      * This is the number of digits to right of the decimal point.
-     * Returns {@code null} for data types where the scale is not applicable  or if the precision cannot be provided.
+     * Returns {@code null} for data types where the scale is not applicable or if the precision cannot be provided.
      * <p>
      * <strong>Implementation notes</strong>
      * Implementation of this method is optional. The default implementation returns {@code null}.
@@ -69,13 +69,13 @@ public interface ColumnMetadata {
      * Returns the nullability of column values.
      * <p>
      * <strong>Implementation notes</strong>
-     * Implementation of this method is optional. The default implementation returns {@link Nullability#Unknown}.
+     * Implementation of this method is optional. The default implementation returns {@link Nullability#UNKNOWN}.
      *
      * @return the nullability of column values.
      * @see Nullability
      */
     default Nullability getNullability() {
-        return Nullability.Unknown;
+        return Nullability.UNKNOWN;
     }
 
     /**
@@ -105,27 +105,6 @@ public interface ColumnMetadata {
     @Nullable
     default Object getNativeTypeMetadata() {
         return null;
-    }
-
-    /**
-     * Constants indicating nullability of column values.
-     */
-    enum Nullability {
-
-        /**
-         * Indicating that a column does allow {@code NULL} values.
-         */
-        Nullable,
-
-        /**
-         * Indicating that a column does not allow {@code NULL} values.
-         */
-        NonNull,
-
-        /**
-         * Indicating that the nullability of a column's values is unknown.
-         */
-        Unknown
     }
 
 }

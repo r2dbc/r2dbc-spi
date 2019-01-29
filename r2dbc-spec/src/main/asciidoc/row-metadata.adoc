@@ -68,5 +68,3 @@ row.getColumnMetadatas().forEach(columnMetadata -> {
 ====
 
 See the API specification for more details.
-
-

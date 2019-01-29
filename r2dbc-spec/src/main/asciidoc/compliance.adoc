@@ -27,7 +27,7 @@ A driver may provide support for features which are not implemented by the under
 
 The following guidelines apply to R2DBC compliance:
 
-* An R2DBC API should implement SQL support as its primary interface. R2DBC does not rely upon, nor it presumes a specific SQL version. SQL and aspects of statements can be entirely handled in the data source or as part of the driver.
+* An R2DBC API should implement SQL support as its primary interface. R2DBC does not rely upon, nor does it presume a specific SQL version. SQL and aspects of statements can be entirely handled in the data source or as part of the driver.
 
 * The specification consists of this specification document and specifications documented in each interface's Javadoc.
 
@@ -35,7 +35,7 @@ The following guidelines apply to R2DBC compliance:
 
 * Drivers must support transactions.
 
-* Drivers must support named and indexed access to column and parameter references.
+* Drivers must support native and indexed access to column and parameter references.
 
 * Index references to columns and parameters are zero-based. The first index begins with `0`.
 
