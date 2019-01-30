@@ -19,3 +19,7 @@ include::preface.adoc[]
 include::introduction.adoc[leveloffset=+1]
 
 include::goals.adoc[leveloffset=+1]
+
+include::compliance.adoc[leveloffset=+1]
+
+include::row-metadata.adoc[leveloffset=+1]
