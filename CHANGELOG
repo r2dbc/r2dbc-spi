@@ -1,6 +1,17 @@
 R2DBC SPI Changelog
 =============================
 
+1.0.0.M7
+------------------
+* Update changelong for M7 #45
+* Improved documentation (spec, license, guide) #32, #36
+* Nullability enforcement returns accurate exception #31
+* Reinstated generated value retrieval #25
+* Removed recursive generics in Statement and Batch #24
+* Improved support for column metadata #22
+* Add support for ConnectionFactory discovery #10
+* Add support for observability/tracing with the r2dbc-proxy project #9, #29
+
 1.0.0.M6
 ------------------
 * executeReturningGeneratedKeys() should allow keys to be specified #17
