@@ -88,6 +88,18 @@ public final class ConnectionFactoryOptions {
     }
 
     /**
+     * Parses a R2DBC Connection URL and returns the parsed {@link ConnectionFactoryOptions}.
+     * URL format:
+     * {@code r2dbc:driver[:protocol[:subprotocols]}://[user:password@]host[:port][/path][?option=value]}.
+     *
+     * @param url the R2DBC URL.
+     * @return the parsed {@link ConnectionFactoryOptions}.
+     */
+    public static ConnectionFactoryOptions parse(CharSequence url) {
+        return ConnectionUrlParser.parseQuery(Assert.requireNonNull(url, "R2DBC Connection URL must not be null"));
+    }
+
+    /**
      * Returns the value for an option if it exists.
      *
      * @param option the option to retrieve the value for
@@ -155,7 +167,7 @@ public final class ConnectionFactoryOptions {
     }
 
     /**
-     * A builder for {@link ConnectionFactoryOptions} isntances.
+     * A builder for {@link ConnectionFactoryOptions} instances.
      * <p>
      * <i>This class is not threadsafe</i>
      */
@@ -214,4 +226,5 @@ public final class ConnectionFactoryOptions {
         }
 
     }
+
 }
