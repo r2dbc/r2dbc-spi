@@ -49,6 +49,20 @@ public final class ConnectionFactories {
     }
 
     /**
+     * Returns a {@link ConnectionFactory} from an available implementation, created from a R2DBC Connection URL.
+     * R2DBC URL format is:
+     * {@code r2dbc:driver[:protocol]}://[user:password@]host[:port][/path][?option=value]}.
+     *
+     * @param url the R2DBC connection url
+     * @return the created {@link ConnectionFactory}
+     * @throws IllegalArgumentException if {@code url} is {@code null}
+     * @throws IllegalStateException    if no available implementation can create a {@link ConnectionFactory}
+     */
+    public static ConnectionFactory get(String url) {
+        return get(ConnectionFactoryOptions.parse(Assert.requireNonNull(url, "R2DBC Connection URL must not be null")));
+    }
+
+    /**
      * Returns a {@link ConnectionFactory} from an available implementation, created from a collection of {@link ConnectionFactoryOptions}.
      *
      * @param connectionFactoryOptions a collection of {@link ConnectionFactoryOptions}
