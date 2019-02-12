@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 /**
  * Parser for R2DBC URL's.
  */
-class ConnectionUrlParser {
+abstract class ConnectionUrlParser {
 
     private static final Set<String> PROHIBITED_QUERY_OPTIONS = Stream.of(ConnectionFactoryOptions.DATABASE,
         ConnectionFactoryOptions.DRIVER, ConnectionFactoryOptions.HOST, ConnectionFactoryOptions.PASSWORD,
@@ -159,8 +159,28 @@ class ConnectionUrlParser {
         return builder.build();
     }
 
-    private static boolean hasText(@Nullable String s) {
-        return s != null && !s.isEmpty();
+    /**
+     * Parse a {@link CharSequence query string} and decode percent encoding according to RFC3986, section 2.4.
+     * Percent-encoded octets are decoded using UTF-8.
+     *
+     * @param s             input text
+     * @param tupleConsumer consumer notified on tuple creation
+     * @link https://tools.ietf.org/html/rfc3986#section-2.4
+     * @see StandardCharsets#UTF_8
+     */
+    static void parseQuery(CharSequence s, BiConsumer<String, String> tupleConsumer) {
+
+        QueryStringParser parser = QueryStringParser.create(s);
+
+        while (!parser.isFinished()) {
+
+            CharSequence name = parser.parseName();
+            CharSequence value = parser.isFinished() ? null : parser.parseValue();
+
+            if (name.length() != 0 && value != null) {
+                tupleConsumer.accept(decode(name).toString(), decode(value).toString());
+            }
+        }
     }
 
     private static void parseUserinfo(String s, ConnectionFactoryOptions.Builder builder) {
@@ -254,28 +274,11 @@ class ConnectionUrlParser {
         return (encoded ? sb : s);
     }
 
-    /**
-     * Parse a {@link CharSequence query string} and decode percent encoding according to RFC3986, section 2.4.
-     * Percent-encoded octets are decoded using UTF-8.
-     *
-     * @param s             input text
-     * @param tupleConsumer consumer notified on tuple creation
-     * @link https://tools.ietf.org/html/rfc3986#section-2.4
-     * @see StandardCharsets#UTF_8
-     */
-    static void parseQuery(CharSequence s, BiConsumer<String, String> tupleConsumer) {
+    private static boolean hasText(@Nullable String s) {
+        return s != null && !s.isEmpty();
+    }
 
-        QueryStringParser parser = QueryStringParser.create(s);
-
-        while (!parser.isFinished()) {
-
-            CharSequence name = parser.parseName();
-            CharSequence value = parser.isFinished() ? null : parser.parseValue();
-
-            if (name.length() != 0 && value != null) {
-                tupleConsumer.accept(decode(name).toString(), decode(value).toString());
-            }
-        }
+    private ConnectionUrlParser() {
     }
 
     /**

@@ -102,6 +102,18 @@ final class ConnectionUrlParserUnitTests {
         assertThat(parseQuery("r2dbc:foo://myhost/database?foo=a%26b%26c%3Dd")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasNoPort().hasDatabase("database").hasOption("foo", "a&b&c=d");
     }
 
+    @Test
+    void rejectsWellKnownPropertiesInQueryString() {
+
+        assertThatThrownBy(() -> parseQuery("r2dbc:foo://myhost/database?driver=foo")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> parseQuery("r2dbc:foo://myhost/database?protocol=foo")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> parseQuery("r2dbc:foo://myhost/database?user=foo")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> parseQuery("r2dbc:foo://myhost/database?password=foo")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> parseQuery("r2dbc:foo://myhost/database?host=foo")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> parseQuery("r2dbc:foo://myhost/database?port=foo")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> parseQuery("r2dbc:foo://myhost/database?database=foo")).isInstanceOf(IllegalArgumentException.class);
+    }
+
     /**
      * Create an assertion for a {@link ConnectionFactoryOptions}.
      *
