@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Parser for R2DBC URL's.
+ * Parser for R2DBC Connection URL's.
  */
 abstract class ConnectionUrlParser {
 

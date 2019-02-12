@@ -51,7 +51,7 @@ public final class ConnectionFactories {
     /**
      * Returns a {@link ConnectionFactory} from an available implementation, created from a R2DBC Connection URL.
      * R2DBC URL format is:
-     * {@code r2dbc:driver[:protocol[:subprotocols]}://[user:password@]host[:port][/path][?option=value]}.
+     * {@code r2dbc:driver[:protocol]}://[user:password@]host[:port][/path][?option=value]}.
      *
      * @param url the R2DBC connection url
      * @return the created {@link ConnectionFactory}
