@@ -91,7 +91,7 @@ public final class ConnectionFactoryOptions {
     /**
      * Parses a R2DBC Connection URL and returns the parsed {@link ConnectionFactoryOptions}.
      * URL format:
-     * {@code r2dbc:driver[:protocol[:subprotocols]}://[user:password@]host[:port][/path][?option=value]}.
+     * {@code r2dbc:driver[:protocol]}://[user:password@]host[:port][/path][?option=value]}.
      *
      * @param url the R2DBC URL.
      * @return the parsed {@link ConnectionFactoryOptions}.
