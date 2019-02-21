@@ -1,0 +1,249 @@
+[[datatypes]]
+= Data Types
+
+This chapter discusses the use of data types from Java and database perspectives.
+The R2DBC SPI gives applications access to data types defined as of SQL. R2DBC is not limited to SQL types, and in fact, the SPI is type-agnostic.
+
+If a data source does not support a data type described in this chapter, a driver for that data source is not required to implement the methods and interfaces associated with that data type.
+
+[[datatypes.mapping]]
+== Mapping of Data Types
+
+This section explains how SQL-specific types are mapped to Java types.
+The list is nonexhaustive and should be received as a guideline for drivers.
+R2DBC drivers should use modern types and type descriptors to exchange data for consumption by applications and consumption by the driver.
+Driver implementations should implement the following type mapping and can support additional type mappings.
+
+* <<datatypes.mapping.char,Character Types>>
+* <<datatypes.mapping.boolean,Boolean Types>>
+* <<datatypes.mapping.binary,Binary Types>>
+* <<datatypes.mapping.numeric,Numeric Types>>
+* <<datatypes.mapping.datetime,Datetime Types>>
+* <<datatypes.mapping.collection,Collection Types>>
+
+[[datatypes.mapping.char]]
+.SQL Type Mapping for Character Types
+|===
+|SQL Type|Description |Java Type
+
+| `CHARACTER` (`CHAR`)
+| Character string, fixed length.
+| `java.lang.String`
+
+| `CHARACTER VARYING` (`VARCHAR`)
+| Variable-length character string, maximum length fixed.
+| `java.lang.String`
+
+| `NATIONAL CHARACTER` (`NCHAR`)
+| `NATIONAL CHARACTER` type is the same as `CHARACTER` except that it holds standardized multibyte characters or Unicode characters.
+| `java.lang.String`
+
+| `NATIONAL CHARACTER VARYING` (`NVARCHAR`)
+| `NATIONAL CHARACTER VARYING` type is the same as `CHARACTER VARYING` except that it holds standardized multibyte characters or Unicode characters.
+| `java.lang.String`
+
+| `CHARACTER LARGE OBJECT` (`CLOB`)
+| A Character Large OBject (or `CLOB`) is a collection of character data in a DBMS, usually stored in a separate location that is referenced in the table itself.
+| `io.r2dbc.spi.Clob`
+
+| `NATIONAL CHARACTER LARGE OBJECT` (`NCLOB`)
+| `NATIONAL CHARACTER LARGE OBJECT` type is the same as `CHARACTER LARGE OBJECT` except that it holds standardized multibyte characters or Unicode characters.
+| `io.r2dbc.spi.Clob`
+
+|===
+
+[[datatypes.mapping.boolean]]
+.SQL Type Mapping for Boolean Types
+|===
+|SQL Type|Description |Java Type
+
+| `BOOLEAN`
+| Single-bit representing a boolean state.
+| `java.lang.Boolean`
+
+|===
+
+[[datatypes.mapping.binary]]
+.SQL Type Mapping for Binary Types
+|===
+|SQL Type|Description |Java Type
+
+| `BINARY`
+| Binary data, fixed length.
+| `java.nio.ByteBuffer`
+
+| `BINARY VARYING` (`VARBINARY`)
+| Variable-length character string, maximum length fixed.
+| `java.nio.ByteBuffer`
+
+| `BINARY LARGE OBJECT` (`BLOB`)
+| A Binary Large OBject (or `BLOB`) is a collection of binary data in a database management system, usually stored in a separate location that is referenced in the table itself.
+| `io.r2dbc.spi.Blob`
+
+|===
+
+[[datatypes.mapping.numeric]]
+.SQL Type Mapping for Numeric Types
+|===
+|SQL Type|Description |Java Type
+
+| `INTEGER`
+| Represents an integer. The minimum and maximum values depend on the DBMS, typically 4-byte precision.
+| `java.lang.Integer`
+
+| `SMALLINT`
+| Same as `INTEGER` type except that it might hold a smaller range of values, depending on the DBMS, typically 1- or 2-byte precision.
+| `java.lang.Short`
+
+| `BIGINT`
+| Same as `INTEGER` type except that it might hold a larger range of values, depending on the DBMS, typically 8-byte precision.
+| `java.lang.Long`
+
+| `DECIMAL(p, s)`, `NUMERIC(p, s)`
+| Fixed precision and scale numbers with precision `p`, scale `s`. A decimal number, that is a number that can have a decimal point in it. The size argument has two parts: precision and scale.
+| `java.math.BigDecimal`
+
+| `FLOAT(p)`
+| Represents an approximate numerical with mantissa precision `p`.
+| `java.lang.Double`
+
+| `REAL`
+| Same as `FLOAT` type except that the DBMS defines the precision.
+| `java.lang.Double`
+
+|===
+
+[[datatypes.mapping.datetime]]
+.SQL Type Mapping for Datetime Types
+|===
+|SQL Type|Description |Java Type
+
+| `DATE`
+| Represents a date without specifying a time part and without timezone.
+| `java.time.LocalDate`
+
+| `TIME`
+| Represents a time without a date part and without timezone.
+| `java.time.LocalTime`
+
+| `TIMESTAMP`
+| Represents a date/time without a timezone.
+| `java.time.LocalDateTime`
+
+| `TIMESTAMP` with Timezone Offset
+| Represents a date/time with a timezone offset.
+| `java.time.OffsetDateTime`
+
+| `TIMESTAMP` with Timezone
+| Represents a date/time with a timezone.
+| `java.time.ZonedDateTime`
+
+| `INTERVAL`
+| Interval date types such as `YEAR`, `MONTH`, `DAY`, `HOUR` and similar representing a time quantity.
+| `java.time.Duration`
+
+|===
+
+[[datatypes.mapping.collection]]
+.SQL Type Mapping for Collection Types
+|===
+|SQL Type|Description |Java Type
+
+| `COLLECTION`
+( `ARRAY`, `MULTISET` )
+| Represents a collection of items with a base type.
+| Array-Variant of the corresponding Java type (e.g. `Integer[]` for `INTEGER ARRAY`)
+
+|===
+
+Vendor-specific types (such as spatial data types, structured JSON/XML data, user-defined types) are subject to vendor-specific mapping.
+
+[[datatypes.mapping.advanced]]
+== Mapping of Advanced Data Types
+
+The R2DBC API declares default mappings for advanced data types. The following list describes data types and the interfaces to which they map:
+
+* `BLOB` — the `Blob` interface
+* `CLOB` — the `Clob` interface
+
+[[datatypes.lob]]
+=== `Blob` and `Clob` Objects
+
+An implementation of a `Blob` or `Clob` object may either be locator based or fully materialize the object in the driver.
+Drivers should prefer locator-based `Blob` and `Clob` interface implementations to reduce pressure on the client when materializing results.
+
+For implementations that fully materialize the Large Objects (LOB), the `Blob` and `Clob` objects remain valid until the LOB is consumed or the `discard()` method is called.
+
+Portable applications should not depend upon the LOB validity past the end of a transaction.
+
+[[datatypes.lob.create]]
+=== Creating `Blob` and `Clob` Objects
+
+Large Objects are backed by a `Publisher` emitting the component type of the large object such as `ByteBuffer` for `BLOB` and `CharSequence` (or a subtype of it) for `CLOB`.
+
+Both interfaces provide factory methods to create implementations to be used with `Statement`. The following example explains how to create a `Clob` object:
+
+.Creating and using a `Clob` object
+====
+[source,java]
+----
+// charstream is a Publisher<String> object
+  // statement is a Statement object
+Clob clob = Clob.from(charstream)
+statement.bind("text", clob);
+----
+====
+
+[[datatypes.lob.retrieve]]
+=== Retrieving `Blob` and `Clob` Objects from a `Row`
+
+The binary large object (`BLOB`) and character large object (`CLOB`) data types are treated similarly to primitive built-in types. Values of these types can be retrieved by calling the `get(…)` methods on the `Row` interface.
+
+.Retrieving a `Clob` object
+====
+[source,java]
+----
+// result is a Row object
+Publisher<Clob> clob = result.map((row, rowMetadata) -> row.get("clob", Clob.class));
+----
+====
+
+The `Clob` interface contains methods for returning the content and for releasing resources associated with the `Clob` object instance.
+The API documentation provides more details.
+
+[[datatypes.lob.data]]
+=== Accessing `Blob` and `Clob` Data
+
+The `Blob` and `Clob` interfaces declare methods to consume the content of each type.
+Content streams follow Reactive Streams specifications and reflect the stream nature of large objects hence `Blob` and `Clob` objects can be consumed only once.
+Large object data consumption can be canceled by either calling the `discard()` method if the content stream was not consumed at all. Alternatively, if the content stream was consumed, a `Subscription` cancellation releases resources associated with the large object.
+
+The following example explains how to consume `Clob` contents:
+
+.Creating and using a `Clob` object
+====
+[source,java]
+----
+// clob is a Clob object
+Publisher<CharSequence> charstream = clob.stream();
+----
+====
+
+[[datatypes.lob.releasing]]
+=== Releasing `Blob` and `Clob`
+
+`Blob` and `Clob` objects remain valid for at least the duration of the transaction in which they are created.
+This could potentially result in an application running out of resources during a long-running transaction.
+Applications may release `Blob` and `Clob` by either consuming the content stream or disposing of resources by calling the `discard()` method.
+
+The following example shows how to free `Clob` resources without consuming it:
+
+.Freeing `Clob` object resources
+====
+[source,java]
+----
+// clob is a Clob object
+Publisher<Void> charstream = clob.discard();
+charstream.subscribe(…);
+----
+====
