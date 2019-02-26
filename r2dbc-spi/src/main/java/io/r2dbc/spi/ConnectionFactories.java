@@ -60,20 +60,7 @@ public final class ConnectionFactories {
         ConnectionFactory connectionFactory = find(connectionFactoryOptions);
 
         if (connectionFactory == null) {
-            StringBuilder availableDrivers = new StringBuilder();
-
-            String separator = "";
-            for (ConnectionFactoryProvider provider : loadProviders()) {
-                availableDrivers.append(separator);
-                availableDrivers.append(provider.getDriver());
-                separator = ", ";
-            }
-
-            if (availableDrivers.length() < 1) {
-                availableDrivers.append("None");
-            }
-
-            throw new IllegalStateException(String.format("Unable to create a ConnectionFactory for '%s'. Available drivers: [ %s ]", connectionFactoryOptions, availableDrivers));
+            throw new IllegalStateException(String.format("Unable to create a ConnectionFactory for '%s'. Available drivers: [ %s ]", connectionFactoryOptions, getAvailableDrivers()));
         }
 
         return connectionFactory;
@@ -96,6 +83,23 @@ public final class ConnectionFactories {
         }
 
         return false;
+    }
+
+    private static String getAvailableDrivers() {
+        StringBuilder availableDrivers = new StringBuilder();
+
+        for (ConnectionFactoryProvider provider : loadProviders()) {
+            if (availableDrivers.length() != 0) {
+                availableDrivers.append(", ");
+            }
+            availableDrivers.append(provider.getDriver());
+        }
+
+        if (availableDrivers.length() == 0) {
+            availableDrivers.append("None");
+        }
+
+        return availableDrivers.toString();
     }
 
     private static ServiceLoader<ConnectionFactoryProvider> loadProviders() {
