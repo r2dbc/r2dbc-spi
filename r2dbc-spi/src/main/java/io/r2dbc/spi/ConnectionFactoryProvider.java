@@ -40,4 +40,12 @@ public interface ConnectionFactoryProvider {
      */
     boolean supports(ConnectionFactoryOptions connectionFactoryOptions);
 
+    /**
+     * Returns the driver identifier used by the driver.
+     * The identifier for drivers would be the value applicable to {@link ConnectionFactoryOptions#DRIVER}
+     *
+     * @return The driver identifier used by the driver
+     */
+    String getDriver();
+
 }
