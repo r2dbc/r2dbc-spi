@@ -1,0 +1,74 @@
+[[exceptions]]
+= Exceptions
+
+This section explains how R2DBC uses and declares exceptions to provide information about various types of failures.
+
+An exception is thrown by a driver when an error occurs during interaction with the driver or a data source.
+R2DBC differentiates between generic and data source-specific error cases.
+
+[[exceptions.general]]
+== General Exceptions
+
+[[exceptions.iae]]
+=== `IllegalArgumentException`
+
+Drivers throw `IllegalArgumentException` if a method has been received an illegal or inappropriate argument, such as values that are out of bounds or an expected parameter is `null`. This exception is a generic exception that is not associated with an error code or a SQLstate.
+
+[[exceptions.ise]]
+=== `IllegalStateException`
+
+Drivers throw `IllegalStateException` if a method has received an argument  that is invalid in the current state when an argument-less method is invoked in a state that does not allow execution in the current state, such as interacting with a connection object which is closed. This exception is a generic exception that is not associated with an error code or a SQLstate.
+
+[[exceptions.uoe]]
+=== `UnsupportedOperationException`
+
+Drivers throw `UnsupportedOperationException` if the driver does not support certain functionality, such as a method implementation cannot be provided. This exception is a generic exception that is not associated with an error code or a SQLstate.
+
+[[exceptions.r2e]]
+=== `R2dbcException`
+
+Drivers throw an instance of `R2dbcException` when an error occurs during an interaction with a data source.
+
+The exception contains the following information:
+
+* A textual description of the error. The `String` containing the description can be retrieved by invoking `R2dbcException.getMessage()`. Drivers may provide a localized message variant.
+* A SQLState. The `String` containing the `String` can be retrieved by calling the method `R2dbcException.getSqlState`.
+The value of the SQLState string will depend on the underlying data source.
+* An error code. The code is an integer value identifying the error that caused the `R2dbcException` to be thrown. Its value and meaning are implementation specific and may be the actual error code returned by the underlying data source. The error code can be retrieved using the `R2dbcException.getErrorCode()` method.
+* A cause. This is another `Throwable` which caused this `R2dbcException` to occur.
+
+[[exceptions.categorized]]
+== Categorized Exceptions
+
+Categorized exceptions provide a standard mapping to common error states. An R2DBC driver should provide specific subclasses to indicate affinity with the driver.
+Categorized exceptions provide a standardized approach for R2DBC clients and R2DBC users to translate common exceptions into an application-specific state without the need to implement an SQLState-based exception translation resulting in more portable error-handling code.
+
+R2DBC categorizes exceptions into two top-level categories:
+
+* `R2dbcNonTransientException`
+* `R2dbcTransientException`
+
+[[exceptions.categorized.non-transient]]
+=== Non-Transient Exceptions
+
+A non-transient exception must extend the abstract class `R2dbcNonTransientException`.
+A non-transient exception is thrown when a retry of the same operation would fail unless the cause of the is corrected.
+After a non-transient exception other than `R2dbcNonTransientResourceException`, the application may assume that a connection is still valid.
+
+R2DBC defines the following subclasses of non-transient exceptions:
+
+* `R2dbcBadGrammarException`: thrown when the SQL statement has a problem in its syntax.
+* `R2dbcDataIntegrityViolationException`:  thrown when an attempt to insert or update data results in a violation of an integrity constraint.
+* `R2dbcPermissionDeniedException`: thrown when the underlying resource denied a permission to access a specific element, such as a specific database table.
+* `R2dbcNonTransientException`: thrown when a resource fails completely and the failure is permanent. A connection may not be considered valid if this exception is thrown.
+
+[[exceptions.categorized.transient]]
+=== Transient Exceptions
+
+A transient exception must extend the abstract class `R2dbcTransientException`.
+A transient exception is thrown when a previously failed operation might be able to succeed if the operation is retried without any intervention an application-level functionality.
+After a non-transient exception other than `R2dbcTransientResourceException`, the application may assume that a connection is still valid.
+
+* `R2dbcRollbackException`: thrown when an attempt to commit a transaction resulted in an unexpected rollback due to deadlock or transaction serialization failures.
+* `R2dbcTimeoutException`: thrown when the timeout specified by a database operation (query, login) is exceeded. This could have different causes depending on the database API in use but most likely thrown after the database interrupts or stops the processing of a query before it has completed.
+* `R2dbcNonTransientException`: thrown when a resource fails temporarily and the operation can be retried. A connection may not be considered valid if this exception is thrown.

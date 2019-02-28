@@ -22,4 +22,6 @@ include::goals.adoc[leveloffset=+1]
 
 include::compliance.adoc[leveloffset=+1]
 
+include::exceptions.adoc[leveloffset=+1]
+
 include::row-metadata.adoc[leveloffset=+1]
