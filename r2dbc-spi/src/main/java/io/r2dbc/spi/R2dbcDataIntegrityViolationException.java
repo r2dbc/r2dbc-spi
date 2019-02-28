@@ -13,46 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.r2dbc.spi;
 
 /**
- *  Will be thrown when the current SQL statement has a problem with the data.
- *
- *  Some cases when this could happen: data conversion, div by zero, invalid arguments in functions, violated integrity of a constraint etc.
+ * Exception thrown when an attempt to insert or update data results in a violation of an integrity constraint.
  */
 public class R2dbcDataIntegrityViolationException extends R2dbcNonTransientException {
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcDataIntegrityViolationException}.
      */
     public R2dbcDataIntegrityViolationException() {
         super();
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcDataIntegrityViolationException}.
      *
-     * @param reason the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      */
     public R2dbcDataIntegrityViolationException(@Nullable String reason) {
         super(reason);
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcDataIntegrityViolationException}.
      *
-     * @param reason   the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     *                 conventions
      */
     public R2dbcDataIntegrityViolationException(@Nullable String reason, @Nullable String sqlState) {
         super(reason, sqlState);
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcDataIntegrityViolationException}.
      *
-     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
      */
     public R2dbcDataIntegrityViolationException(@Nullable String reason, @Nullable String sqlState, int errorCode) {
@@ -60,32 +61,36 @@ public class R2dbcDataIntegrityViolationException extends R2dbcNonTransientExcep
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcDataIntegrityViolationException}.
      *
-     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
      * @param cause     the cause
      */
-    public R2dbcDataIntegrityViolationException(@Nullable String reason, @Nullable String sqlState, int errorCode, @Nullable Throwable cause) {
+    public R2dbcDataIntegrityViolationException(@Nullable String reason, @Nullable String sqlState, int errorCode,
+                                                @Nullable Throwable cause) {
         super(reason, sqlState, errorCode, cause);
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcDataIntegrityViolationException}.
      *
-     * @param reason   the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     *                 conventions
      * @param cause    the cause
      */
-    public R2dbcDataIntegrityViolationException(@Nullable String reason, @Nullable String sqlState, @Nullable Throwable cause) {
+    public R2dbcDataIntegrityViolationException(@Nullable String reason, @Nullable String sqlState,
+                                                @Nullable Throwable cause) {
         super(reason, sqlState, cause);
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcDataIntegrityViolationException}.
      *
-     * @param reason the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param cause  the cause
      */
     public R2dbcDataIntegrityViolationException(@Nullable String reason, @Nullable Throwable cause) {
@@ -93,7 +98,7 @@ public class R2dbcDataIntegrityViolationException extends R2dbcNonTransientExcep
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcDataIntegrityViolationException}.
      *
      * @param cause the cause
      */

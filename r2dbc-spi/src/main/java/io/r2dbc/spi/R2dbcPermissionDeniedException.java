@@ -13,46 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.r2dbc.spi;
 
 /**
- *  Will be thrown when the current SQL statement has a problem trying to access the database/data.
- *
- *  Some cases when this could happen: login failure, access denied to objects, etc.
+ * Exception thrown when the underlying resource denied a permission to access a specific element, such as a specific
+ * database table.
  */
 public class R2dbcPermissionDeniedException extends R2dbcNonTransientException {
-    
+
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcPermissionDeniedException}.
      */
     public R2dbcPermissionDeniedException() {
         super();
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcPermissionDeniedException}.
      *
-     * @param reason the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      */
     public R2dbcPermissionDeniedException(@Nullable String reason) {
         super(reason);
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcPermissionDeniedException}.
      *
-     * @param reason   the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     *                 conventions
      */
     public R2dbcPermissionDeniedException(@Nullable String reason, @Nullable String sqlState) {
         super(reason, sqlState);
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcPermissionDeniedException}.
      *
-     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
      */
     public R2dbcPermissionDeniedException(@Nullable String reason, @Nullable String sqlState, int errorCode) {
@@ -60,22 +62,25 @@ public class R2dbcPermissionDeniedException extends R2dbcNonTransientException {
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcPermissionDeniedException}.
      *
-     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
      * @param cause     the cause
      */
-    public R2dbcPermissionDeniedException(@Nullable String reason, @Nullable String sqlState, int errorCode, @Nullable Throwable cause) {
+    public R2dbcPermissionDeniedException(@Nullable String reason, @Nullable String sqlState, int errorCode,
+                                          @Nullable Throwable cause) {
         super(reason, sqlState, errorCode, cause);
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcPermissionDeniedException}.
      *
-     * @param reason   the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     *                 conventions
      * @param cause    the cause
      */
     public R2dbcPermissionDeniedException(@Nullable String reason, @Nullable String sqlState, @Nullable Throwable cause) {
@@ -83,9 +88,9 @@ public class R2dbcPermissionDeniedException extends R2dbcNonTransientException {
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcPermissionDeniedException}.
      *
-     * @param reason the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param cause  the cause
      */
     public R2dbcPermissionDeniedException(@Nullable String reason, @Nullable Throwable cause) {
@@ -93,7 +98,7 @@ public class R2dbcPermissionDeniedException extends R2dbcNonTransientException {
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcPermissionDeniedException}.
      *
      * @param cause the cause
      */

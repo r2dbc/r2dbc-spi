@@ -17,51 +17,53 @@
 package io.r2dbc.spi;
 
 /**
- * Exception thrown when a resource fails completely and the failure is permanent.
+ * Exception thrown when the timeout specified by a database operation (query, login) is exceeded. This could have
+ * different causes depending on the database API in use but most likely thrown after the database interrupts or stops
+ * the processing of a query before it has completed.
  */
-public class R2dbcNonTransientResourceException extends R2dbcNonTransientException {
+public class R2dbcTimeoutException extends R2dbcTransientException {
 
     /**
-     * Creates a new {@link R2dbcNonTransientResourceException}.
+     * Creates a new {@link R2dbcTimeoutException}.
      */
-    public R2dbcNonTransientResourceException() {
+    public R2dbcTimeoutException() {
         super();
     }
 
     /**
-     * Creates a new {@link R2dbcNonTransientResourceException}.
+     * Creates a new {@link R2dbcTimeoutException}.
      *
      * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      */
-    public R2dbcNonTransientResourceException(@Nullable String reason) {
+    public R2dbcTimeoutException(@Nullable String reason) {
         super(reason);
     }
 
     /**
-     * Creates a new {@link R2dbcNonTransientResourceException}.
+     * Creates a new {@link R2dbcTimeoutException}.
      *
      * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
      *                 conventions
      */
-    public R2dbcNonTransientResourceException(@Nullable String reason, @Nullable String sqlState) {
+    public R2dbcTimeoutException(@Nullable String reason, @Nullable String sqlState) {
         super(reason, sqlState);
     }
 
     /**
-     * Creates a new {@link R2dbcNonTransientResourceException}.
+     * Creates a new {@link R2dbcTimeoutException}.
      *
      * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
      *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
      */
-    public R2dbcNonTransientResourceException(@Nullable String reason, @Nullable String sqlState, int errorCode) {
+    public R2dbcTimeoutException(@Nullable String reason, @Nullable String sqlState, int errorCode) {
         super(reason, sqlState, errorCode);
     }
 
     /**
-     * Creates a new {@link R2dbcNonTransientResourceException}.
+     * Creates a new {@link R2dbcTimeoutException}.
      *
      * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
@@ -69,40 +71,39 @@ public class R2dbcNonTransientResourceException extends R2dbcNonTransientExcepti
      * @param errorCode a vendor-specific error code representing this failure
      * @param cause     the cause
      */
-    public R2dbcNonTransientResourceException(@Nullable String reason, @Nullable String sqlState, int errorCode,
-                                              @Nullable Throwable cause) {
+    public R2dbcTimeoutException(@Nullable String reason, @Nullable String sqlState, int errorCode,
+                                 @Nullable Throwable cause) {
         super(reason, sqlState, errorCode, cause);
     }
 
     /**
-     * Creates a new {@link R2dbcNonTransientResourceException}.
+     * Creates a new {@link R2dbcTimeoutException}.
      *
      * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
      *                 conventions
      * @param cause    the cause
      */
-    public R2dbcNonTransientResourceException(@Nullable String reason, @Nullable String sqlState,
-                                              @Nullable Throwable cause) {
+    public R2dbcTimeoutException(@Nullable String reason, @Nullable String sqlState, @Nullable Throwable cause) {
         super(reason, sqlState, cause);
     }
 
     /**
-     * Creates a new {@link R2dbcNonTransientResourceException}.
+     * Creates a new {@link R2dbcTimeoutException}.
      *
      * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param cause  the cause
      */
-    public R2dbcNonTransientResourceException(@Nullable String reason, @Nullable Throwable cause) {
+    public R2dbcTimeoutException(@Nullable String reason, @Nullable Throwable cause) {
         super(reason, cause);
     }
 
     /**
-     * Creates a new {@link R2dbcNonTransientResourceException}.
+     * Creates a new {@link R2dbcTimeoutException}.
      *
      * @param cause the cause
      */
-    public R2dbcNonTransientResourceException(@Nullable Throwable cause) {
+    public R2dbcTimeoutException(@Nullable Throwable cause) {
         super(cause);
     }
 }
