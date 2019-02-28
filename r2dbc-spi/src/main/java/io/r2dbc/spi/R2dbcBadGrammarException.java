@@ -41,7 +41,7 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      * Creates a new {@link R2dbcBadGrammarException}.
      *
      * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     * @param sqlState the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                 conventions
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState) {
@@ -52,7 +52,7 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      * Creates a new {@link R2dbcBadGrammarException}.
      *
      * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
      */
@@ -64,7 +64,7 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      * Creates a new {@link R2dbcBadGrammarException}.
      *
      * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
      * @param cause     the cause
@@ -78,7 +78,7 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      * Creates a new {@link R2dbcBadGrammarException}.
      *
      * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003
+     * @param sqlState the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                 conventions
      * @param cause    the cause
      */

@@ -12,17 +12,17 @@ R2DBC differentiates between generic and data source-specific error cases.
 [[exceptions.iae]]
 === `IllegalArgumentException`
 
-Drivers throw `IllegalArgumentException` if a method has been received an illegal or inappropriate argument, such as values that are out of bounds or an expected parameter is `null`. This exception is a generic exception that is not associated with an error code or a SQLstate.
+Drivers throw `IllegalArgumentException` if a method has been received an illegal or inappropriate argument, such as values that are out of bounds or an expected parameter is `null`. This exception is a generic exception that is not associated with an error code or a SQLState.
 
 [[exceptions.ise]]
 === `IllegalStateException`
 
-Drivers throw `IllegalStateException` if a method has received an argument  that is invalid in the current state when an argument-less method is invoked in a state that does not allow execution in the current state, such as interacting with a connection object which is closed. This exception is a generic exception that is not associated with an error code or a SQLstate.
+Drivers throw `IllegalStateException` if a method has received an argument  that is invalid in the current state when an argument-less method is invoked in a state that does not allow execution in the current state, such as interacting with a connection object which is closed. This exception is a generic exception that is not associated with an error code or a SQLState.
 
 [[exceptions.uoe]]
 === `UnsupportedOperationException`
 
-Drivers throw `UnsupportedOperationException` if the driver does not support certain functionality, such as a method implementation cannot be provided. This exception is a generic exception that is not associated with an error code or a SQLstate.
+Drivers throw `UnsupportedOperationException` if the driver does not support certain functionality, such as a method implementation cannot be provided. This exception is a generic exception that is not associated with an error code or a SQLState.
 
 [[exceptions.r2e]]
 === `R2dbcException`
