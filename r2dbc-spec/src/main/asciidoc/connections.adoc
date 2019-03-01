@@ -36,6 +36,7 @@ public interface ConnectionFactory {
     Publisher<? extends Connection> create();
 
     ConnectionFactoryMetadata getMetadata();
+
 }
 ----
 ====
@@ -48,6 +49,7 @@ It may create connections by itself, wrap a `ConnectionFactory` or apply connect
 * A `ConnectionFactory` uses deferred initialization and should initiate connection resource allocation after requesting the item (`Subscription.request(1)`).
 * Connection creation must emit exactly one `Connection` or an error signal.
 * Connection creation must be cancellable (`Subscription.cancel()`). Canceling connection creation must release ("close") the connection and all associated resources.
+* A `ConnectionFactory` should expect that it can be wrapped. Wrappers must implement the `Wrapped<ConnectionFactory>` interface and return the underlying `ConnectionFactory` when `Wrapped.unwrap()` gets called.
 
 **ConnectionFactory Metadata**
 
@@ -65,7 +67,6 @@ public interface ConnectionFactoryMetadata {
 }
 ----
 ====
-
 
 See the R2DBC SPI Specification for more details.
 
@@ -171,9 +172,12 @@ Options are identified by a literal.
 |Connection timeout to obtain a connection.
 |===
 
-The set of options is extensible.
-Drivers can declare which well-known options that they require and which they support.
-Drivers can declare which extended options they require and which they support.
+The following rules apply:
+
+* The set of options is extensible.
+* Drivers can declare which well-known options that they require and which they support.
+* Drivers can declare which extended options they require and which they support.
+* Drivers should not fail in creating a connection if more options are declared than the driver consumes as a `ConnectionFactory` should expect to be wrapped.
 
 .Configuration of `ConnectionFactoryOptions`
 ====
@@ -188,7 +192,6 @@ ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
 ====
 
 See the R2DBC SPI Specification for more details.
-
 
 == Obtaining `Connection` Objects
 
