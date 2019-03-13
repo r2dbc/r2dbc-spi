@@ -19,8 +19,12 @@ package io.r2dbc.spi.test;
 import io.r2dbc.spi.ColumnMetadata;
 import io.r2dbc.spi.RowMetadata;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Collection;
+import java.util.Set;
+import java.util.Collections;
+import java.util.ArrayList;
 
 public final class MockRowMetadata implements RowMetadata {
 
@@ -48,6 +52,15 @@ public final class MockRowMetadata implements RowMetadata {
     @Override
     public List<ColumnMetadata> getColumnMetadatas() {
         return this.columnMetadatas;
+    }
+
+    @Override
+    public Collection<String> getColumnNames() {
+        Set<String> columnNames = new LinkedHashSet<>();
+        for(ColumnMetadata columnMetadata : columnMetadatas) {
+            columnNames.add(columnMetadata.getName());
+        }
+        return Collections.unmodifiableCollection(columnNames);
     }
 
     @Override

@@ -16,6 +16,7 @@
 
 package io.r2dbc.spi;
 
+import java.util.Collection;
 import java.util.NoSuchElementException;
 
 /**
@@ -40,5 +41,16 @@ public interface RowMetadata {
      * @return the {@link ColumnMetadata} for all columns in this row
      */
     Iterable<? extends ColumnMetadata> getColumnMetadatas();
+
+    /**
+     * Returns an unmodifiable collection of unique column names, and any attempts to modify the returned
+     * collection, whether direct or via its iterator, result in an {@link UnsupportedOperationException}.
+     * The order of the column names depends on the actual query and also column name lookup depends on the database
+     * sorting rules and some databases support escape characters to enforce a particular mode of comparison. If the
+     * query uses an alias for column names, this method will return an alias otherwise column names.
+     *
+     * @return the column names.
+     */
+    Collection<String> getColumnNames();
 
 }
