@@ -18,7 +18,7 @@ The R2DBC SPI can also be used to interact with multiple data sources in a distr
 R2DBC targets primarily, but is not limited to, relational databases.
 It aims for a range of data sources whose query and statement interface is based on SQL (or a SQL-like dialect) and represent their data in a tabular form.
 
-A key difference between R2DBC and imperative data access SPIs is the deferred nature of execution. R2DBC is therefore based on http://www.reactive-streams.org/[Reactive Streams] to use the concept of `Publisher` and `Subscriber` to allow non-blocking backpressure-aware data access.
+A key difference between R2DBC and imperative data access SPIs is the deferred nature of execution. R2DBC is therefore based on https://www.reactive-streams.org/[Reactive Streams] to use the concept of `Publisher` and `Subscriber` to allow non-blocking backpressure-aware data access.
 
 [[introduction.target-audience]]
 == Target Audience
@@ -45,7 +45,7 @@ Thanks also go to Ollie without whom this initiative would not even exist.
 [[introduction.following]]
 == Following Development
 
-For information on R2DBC source code repositories, nightly builds, and snapshot artifacts, see the http://r2dbc.io/resources/[R2DBC] homepage.
+For information on R2DBC source code repositories, nightly builds, and snapshot artifacts, see the https://r2dbc.io/resources/[R2DBC] homepage.
 You can help make R2DBC best serve the needs of the community by interacting with developers through the community.
 To follow developer activity, look for the mailing list information on the R2DBC homepage.
 If you encounter a bug or want to suggest an improvement, please create a ticket on the R2DBC issue tracker.
