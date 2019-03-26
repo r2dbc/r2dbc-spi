@@ -73,10 +73,10 @@ Backports to prior versions will be considered on a case-by-case basis and refle
 3. Use short branch names, preferably based on the GitHub issue (e.g. `gh-1234`), or otherwise using succinct, lower-case, dash (-) delimited names, such as `fix-warnings`.
 
 4. Choose the granularity of your commits consciously and squash commits that represent multiple edits or corrections of the same logical change. 
-See http://git-scm.com/book/en/Git-Tools-Rewriting-History[Rewriting History section of Pro Git] for an overview of streamlining commit history.
+See https://git-scm.com/book/en/Git-Tools-Rewriting-History[Rewriting History section of Pro Git] for an overview of streamlining commit history.
 
 5. Format commit messages using 55 characters for the subject line, 72 lines for the description, followed by related issues, e.g. `[resolves #1234]`
-See the http://git-scm.com/book/en/Distributed-Git-Contributing-to-a-Project#Commit-Guidelines[Commit Guidelines section of Pro Git] for best practices around commit messages and use `git log` to see some examples.
+See the https://git-scm.com/book/en/Distributed-Git-Contributing-to-a-Project#Commit-Guidelines[Commit Guidelines section of Pro Git] for best practices around commit messages and use `git log` to see some examples.
 
 5. List the GitHub issue number in the PR description.
 
