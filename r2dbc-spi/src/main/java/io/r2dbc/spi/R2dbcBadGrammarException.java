@@ -20,6 +20,7 @@ package io.r2dbc.spi;
  * Exception thrown when the SQL statement has a problem in its syntax.
  */
 public class R2dbcBadGrammarException extends R2dbcNonTransientException {
+    private String offendingSql;
 
     /**
      * Creates a new {@link R2dbcBadGrammarException}.
@@ -67,11 +68,42 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
+     * @param offendingSql the SQL statement that caused this error
+     */
+    public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode,
+                                    @Nullable String offendingSql) {
+        super(reason, sqlState, errorCode);
+        this.offendingSql = offendingSql;
+    }
+
+    /**
+     * Creates a new {@link R2dbcBadGrammarException}.
+     *
+     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                  conventions
+     * @param errorCode a vendor-specific error code representing this failure
      * @param cause     the cause
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode,
                                     @Nullable Throwable cause) {
         super(reason, sqlState, errorCode, cause);
+    }
+
+    /**
+     * Creates a new {@link R2dbcBadGrammarException}.
+     *
+     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                  conventions
+     * @param errorCode a vendor-specific error code representing this failure
+     * @param offendingSql the SQL statement that caused this error
+     * @param cause     the cause
+     */
+    public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode,
+                                    @Nullable String offendingSql, @Nullable Throwable cause) {
+        super(reason, sqlState, errorCode, cause);
+        this.offendingSql = offendingSql;
     }
 
     /**
