@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * A holder for configuration options related to {@link ConnectionFactory}s.
@@ -85,6 +86,27 @@ public final class ConnectionFactoryOptions {
      */
     public static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Parses a R2DBC Connection URL and returns the parsed {@link ConnectionFactoryOptions}.
+     * URL format:
+     * {@code r2dbc:driver[:protocol]}://[user:password@]host[:port][/path][?option=value]}.
+     *
+     * @param url the R2DBC URL.
+     * @return the parsed {@link ConnectionFactoryOptions}.
+     */
+    public static ConnectionFactoryOptions parse(CharSequence url) {
+        return ConnectionUrlParser.parseQuery(Assert.requireNonNull(url, "R2DBC Connection URL must not be null"));
+    }
+
+    /**
+     * Returns a new {@link Builder} initialized with this {@link ConnectionFactoryOptions}.
+     *
+     * @return a new {@link Builder}
+     */
+    public Builder mutate() {
+        return new Builder().from(this);
     }
 
     /**
@@ -155,7 +177,7 @@ public final class ConnectionFactoryOptions {
     }
 
     /**
-     * A builder for {@link ConnectionFactoryOptions} isntances.
+     * A builder for {@link ConnectionFactoryOptions} instances.
      * <p>
      * <i>This class is not threadsafe</i>
      */
@@ -183,9 +205,27 @@ public final class ConnectionFactoryOptions {
          * @throws IllegalArgumentException if {@code connectionFactoryOptions} is {@code null}
          */
         public Builder from(ConnectionFactoryOptions connectionFactoryOptions) {
-            Assert.requireNonNull(connectionFactoryOptions, "connectionFactoryOptions must not be null");
+            return from(connectionFactoryOptions, it -> true);
+        }
 
-            this.options.putAll(connectionFactoryOptions.options);
+        /**
+         * Populates the builder with the existing values from a configured {@link ConnectionFactoryOptions} allowing to {@link Predicate filter} which values to include.
+         *
+         * @param connectionFactoryOptions a configured {@link ConnectionFactoryOptions}
+         * @param filter                   a {@link Predicate filter function} to include/exclude existing {@link Option}s.
+         * @return this {@link Builder}
+         * @throws IllegalArgumentException if {@code connectionFactoryOptions} or {@code filter} is {@code null}
+         */
+        public Builder from(ConnectionFactoryOptions connectionFactoryOptions, Predicate<Option<?>> filter) {
+            Assert.requireNonNull(connectionFactoryOptions, "connectionFactoryOptions must not be null");
+            Assert.requireNonNull(filter, "filter must not be null");
+
+            connectionFactoryOptions.options.forEach((k, v) -> {
+                if (filter.test(k)) {
+                    this.options.put(k, v);
+                }
+            });
+
             return this;
         }
 
@@ -214,4 +254,5 @@ public final class ConnectionFactoryOptions {
         }
 
     }
+
 }

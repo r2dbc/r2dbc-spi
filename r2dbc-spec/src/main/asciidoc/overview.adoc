@@ -1,0 +1,163 @@
+[[overview]]
+= Overview
+
+R2DBC provides an API for Java programs to access one or more sources of data.
+In the majority of cases, the data source is a relational DBMS, and its data is accessed using SQL.
+R2DBC drivers are not limited to RDBMS but can be implemented on top of other data sources, including stream-oriented systems
+and object-oriented systems.
+A primary motivation for R2DBC API is providing a standard API for reactive applications to integrate with a wide variety of data sources.
+This chapter gives an overview of the API and the key concepts of the R2DBC API.
+
+[[overview.connection]]
+== Establishing a Connection
+
+R2DBC uses the `Connection` interface to define a logical connection API to the underlying data source.
+A structure of a connection depends on the actual requirements of a data source and how the driver implements these.
+
+In a typical scenario, an application using R2DBC connects to a target data source using one of two mechanisms:
+
+* `ConnectionFactories`: R2DBC SPI provides this fully implemented class. It provides `ConnectionFactory` discovery functionality for applications that want to obtain a connection without using vendor-specific API.
+When an application first attempts to connect to a data source, `ConnectionFactories` automatically loads any R2DBC driver found within the CLASSPATH using Java's `ServiceLoader` mechanism.
+See <<connections.factory.discovery, ConnectionFactory Discovery>> for details on how to implement the discovery mechanism for a particular driver.
+* `ConnectionFactory`: A `ConnectionFactory` is implemented by a driver and provides access to <<connections,`Connection`>> creation. An application that wants to configure vendor-specific aspects of a driver can use the vendor-specific `ConnectionFactory` creation mechanism to configure a `ConnectionFactory`.
+
+[[overview.connection.discovery]]
+=== Using `ConnectionFactory` Discovery
+
+As mentioned earlier, R2DBC supports the concept of discovery to find an appropriate driver for a connection request.
+Providing a `ConnectionFactory` to an application is typically a configuration-infrastructure task.
+Applications that wish to bootstrap an R2DBC client, typically handle this aspect directly in application code and so, discovery can become a task for application developers.
+
+`ConnectionFactories` provides two standard mechanisms to bootstrap a `ConnectionFactory`:
+
+* URL-based: R2DBC supports a uniform URL-based configuration scheme with a well-defined structure and well-known configuration properties. URLs are represented as Java `String` and can be passed to `ConnectionFactories` for `ConnectionFactory` lookup.
+* Programmatic: In addition to a URL-based configuration, R2DBC provides a programmatic approach so applications can supply structured configuration options to obtain a `ConnectionFactory`.
+
+R2DBC embraces in addition to the two methods mentioned above a mixed mechanism as typical configuration infrastructure mixes URL- and programmatic-based configuration of data sources for enhanced flexibility.
+A typical use case is the separation of concerns in which data source coordinates are supplied using an URL while login credentials originate from a different configuration source.
+
+[[overview.connection.url]]
+=== R2DBC Connection URL
+
+R2DBC defines a standard URL format that is an enhanced form of https://www.ietf.org/rfc/rfc3986.txt[RFC 3986 Uniform Resource Identifier (URI): Generic Syntax] and its amendments supported by Java's `java.net.URI` type.
+
+Syntax Components from https://www.ietf.org/rfc/rfc3986.txt[RFC3986]:
+
+[source,subs="none"]
+----
+&nbsp;
+      URI         = scheme ":" driver [ ":" protocol ] ":" hier-part [ "?" query ] [ "#" fragment ]
+
+      scheme      = "r2dbc" / "r2dbcs"
+
+      driver      = ALPHA *( ALPHA )
+
+      protocol    = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." / ":")
+
+      hier-part   = "//" authority path-abempty
+                  / path-absolute
+                  / path-rootless
+                  / path-empty
+
+      authority   = [ userinfo "@" ] host [ ":" port ] [ "," host [ ":" port ] ]
+
+      userinfo    = *( unreserved / pct-encoded / sub-delims / ":" )
+
+      host        = IP-literal / IPv4address / reg-name
+
+      port        = *DIGIT
+
+      query       = *( pchar / "/" / "?" )
+
+      fragment    = *( pchar / "/" / "?" )
+
+      pct-encoded = "%" HEXDIG HEXDIG
+
+      pchar       = unreserved / pct-encoded / sub-delims / ":" / "@"
+
+      sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
+                 / "*" / "+" / "," / ";" / "="
+
+      unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
+----
+
+.R2DBC Connection URL
+====
+[source,subs="none"]
+----
+&nbsp;
+r2dbc:a-driver:pipes://localhost:3306/my_database?locale=en_US
+\___/ \______/ \___/   \____________/\__________/\___________/
+  |       |      |           |           |           |
+scheme  driver  protocol  authority    path        query
+----
+====
+
+* scheme: Identify that the URL is a valid R2DBC URL. Valid schemes are `r2dbc` and `r2dbcs` (configure SSL usage).
+* driver: Identifier for a driver. R2DBC has no authority over driver identifiers.
+* protocol: Used as optional protocol information to configure a driver-specific protocol. Protocols can be organized hierarchically and are separated by a colon (":").
+* authority: Contains endpoint and authorization. The authority may contain a single host or a collection of hostnames/hostname and port tuples by separating these with a comma (",").
+* path (Optional): Used as an initial schema/database name.
+* query (Optional): Used to pass additional configuration options in the form of `String` key-value pairs using the key name as option name.
+* fragment: Unused ("Reserved for future use")
+
+`ConnectionFactoryOptions.parse(String)` parses a R2DBC URL into `ConnectionFactoryOptions` using Standard- and optional Extended options.
+A R2DBC Connection URL is parsed into the following options (using `ConnectionFactoryOptions` constants):
+
+Example URL
+.R2DBC Connection URL
+====
+[source]
+----
+r2dbc:a-driver:pipes://hello:world@localhost:3306/my_database?locale=en_US
+----
+====
+
+.Parsed Standard Options
+|===
+|Option |URL Part |Value as per Example
+
+|`ConnectionFactoryOptions.DRIVER`
+|`driver`
+|`a-driver`
+
+|`ConnectionFactoryOptions.PROTOCOL`
+|`protocol`
+|`pipes`
+
+|`ConnectionFactoryOptions.USER`
+|User-part of `authority`
+|`hello`
+
+|`ConnectionFactoryOptions.PASSWORD`
+|Password-part of `authority`
+|`world`
+
+|`ConnectionFactoryOptions.HOST`
+|Host-part of `authority`
+|`localhost`
+
+|`ConnectionFactoryOptions.PORT`
+|Port-part of `authority`
+|`3306`
+
+|`ConnectionFactoryOptions.DATABASE`
+|`path` without leading `/`
+|`my_database`
+|===
+
+.Parsed Extended Options
+|===
+|Option |URL Part |Value as per Example
+
+|`locale`
+|key-value tuple from `query`
+|`en_US`
+|===
+
+NOTE: R2DBC defines well-known standard options that are available as runtime constants through `ConnectionFactories`. Additional options identifiers are created through `Option.valueOf(…)`.
+
+[[overview.connection.usage]]
+=== Executing SQL and Retrieving Results
+
+TBD.
