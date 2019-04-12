@@ -26,36 +26,38 @@ public abstract class R2dbcException extends RuntimeException {
     private final String sqlState;
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcException}.
      */
     public R2dbcException() {
         this((String) null);
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcException}.
      *
-     * @param reason the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      */
     public R2dbcException(@Nullable String reason) {
         this(reason, (String) null);
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcException}.
      *
-     * @param reason   the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                 conventions
      */
     public R2dbcException(@Nullable String reason, @Nullable String sqlState) {
         this(reason, sqlState, 0);
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcException}.
      *
-     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
      */
     public R2dbcException(@Nullable String reason, @Nullable String sqlState, int errorCode) {
@@ -63,10 +65,11 @@ public abstract class R2dbcException extends RuntimeException {
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcException}.
      *
-     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState  the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
      * @param cause     the cause
      */
@@ -77,10 +80,11 @@ public abstract class R2dbcException extends RuntimeException {
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcException}.
      *
-     * @param reason   the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState the "SQLstate" string, which follows either the XOPEN SQLstate conventions or the SQL:2003 conventions
+     * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                 conventions
      * @param cause    the cause
      */
     public R2dbcException(@Nullable String reason, @Nullable String sqlState, @Nullable Throwable cause) {
@@ -88,9 +92,9 @@ public abstract class R2dbcException extends RuntimeException {
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcException}.
      *
-     * @param reason the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param cause  the cause
      */
     public R2dbcException(@Nullable String reason, @Nullable Throwable cause) {
@@ -98,7 +102,7 @@ public abstract class R2dbcException extends RuntimeException {
     }
 
     /**
-     * Creates a new exception.
+     * Creates a new {@link R2dbcException}.
      *
      * @param cause the cause
      */
@@ -127,9 +131,27 @@ public abstract class R2dbcException extends RuntimeException {
 
     @Override
     public String toString() {
-        return "R2dbcException{" +
-            "errorCode=" + errorCode +
-            ", sqlState='" + sqlState + '\'' +
-            "} " + super.toString();
+
+        StringBuilder builder = new StringBuilder(32);
+        builder.append(getClass().getName());
+
+        if (getErrorCode() != 0 || (getSqlState() != null && !getSqlState()
+            .isEmpty()) || getMessage() != null) {
+            builder.append(":");
+        }
+
+        if (getErrorCode() != 0) {
+            builder.append(" [").append(getErrorCode()).append("]");
+        }
+
+        if (getSqlState() != null && !getSqlState().isEmpty()) {
+            builder.append(" [").append(getSqlState()).append("]");
+        }
+
+        if (getMessage() != null) {
+            builder.append(" ").append(getMessage());
+        }
+
+        return builder.toString();
     }
 }
