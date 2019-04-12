@@ -32,7 +32,7 @@ Drivers throw an instance of `R2dbcException` when an error occurs during an int
 The exception contains the following information:
 
 * A textual description of the error. The `String` containing the description can be retrieved by invoking `R2dbcException.getMessage()`. Drivers may provide a localized message variant.
-* A SQLState. The `String` containing the `String` can be retrieved by calling the method `R2dbcException.getSqlState`.
+* A SQLState. The `String` containing the `String` can be retrieved by calling the method `R2dbcException.getSqlState()`.
 The value of the SQLState string will depend on the underlying data source.
 * An error code. The code is an integer value identifying the error that caused the `R2dbcException` to be thrown. Its value and meaning are implementation specific and may be the actual error code returned by the underlying data source. The error code can be retrieved using the `R2dbcException.getErrorCode()` method.
 * A cause. This is another `Throwable` which caused this `R2dbcException` to occur.
