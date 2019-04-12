@@ -16,6 +16,8 @@
 
 package io.r2dbc.spi.test;
 
+import io.r2dbc.spi.Blob;
+import io.r2dbc.spi.Clob;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.Result;
@@ -28,10 +30,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public interface Example<T> {
 
@@ -85,6 +91,99 @@ public interface Example<T> {
     }
 
     @Test
+    default void blobInsert() {
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.from(connection
+
+                .createStatement(String.format("INSERT INTO blob_test VALUES (%s)", getPlaceholder(0)))
+                .bind(getPlaceholder(0), Blob.from(Mono.just(ByteBuffer.wrap("abc".getBytes()))))
+                .execute())
+
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNextCount(1)
+            .verifyComplete();
+    }
+
+    @Test
+    default void blobSelect() {
+        blobInsert();
+
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.from(connection
+
+                .createStatement("SELECT * from blob_test")
+                .execute())
+                .flatMap(result -> result
+                    .map((row, rowMetadata) -> row.get("image", Blob.class)))
+                .flatMap(Blob::stream)
+                .map(byteBuffer -> {
+                    if (byteBuffer.hasArray()) {
+                        return byteBuffer.array();
+                    } else {
+                        byte[] bytes = new byte[byteBuffer.limit()];
+                        try {
+                            byteBuffer.get(bytes);
+                        } catch (BufferUnderflowException ignored) {
+                            ;
+                        }
+                        return bytes;
+                    }
+                })
+
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNextMatches(bytes -> {
+                assertEquals(54, bytes[0]);
+                assertEquals(49, bytes[1]);
+                assertEquals(54, bytes[2]);
+                assertEquals(50, bytes[3]);
+                assertEquals(54, bytes[4]);
+                assertEquals(51, bytes[5]);
+
+                return true;
+            })
+            .verifyComplete();
+    }
+
+    @Test
+    default void clobInsert() {
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.from(connection
+
+                .createStatement(String.format("INSERT INTO clob_test VALUES (%s)", getPlaceholder(0)))
+                .bind(getPlaceholder(0), Clob.from(Mono.just("abcd")))
+                .execute())
+
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNextCount(1)
+            .verifyComplete();
+    }
+
+    @Test
+    default void clobSelect() {
+        clobInsert();
+
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.from(connection
+
+                .createStatement("SELECT * from clob_test")
+                .execute())
+                .flatMap(result -> result
+                    .map((row, rowMetadata) -> row.get("content", Clob.class)))
+                .flatMap(Clob::stream)
+
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNextMatches(charSequence -> {
+                assertEquals("abcd", charSequence.toString());
+                return true;
+            })
+            .verifyComplete();
+    }
+    
+    @Test
     default void compoundStatement() {
         getJdbcOperations().execute("INSERT INTO test VALUES (100)");
 
@@ -105,11 +204,15 @@ public interface Example<T> {
     @BeforeEach
     default void createTable() {
         getJdbcOperations().execute("CREATE TABLE test ( value INTEGER )");
+        getJdbcOperations().execute("CREATE TABLE blob_test ( image BLOB )");
+        getJdbcOperations().execute("CREATE TABLE clob_test ( content CLOB )");
     }
 
     @AfterEach
     default void dropTable() {
         getJdbcOperations().execute("DROP TABLE test");
+        getJdbcOperations().execute("DROP TABLE blob_test");
+        getJdbcOperations().execute("DROP TABLE clob_test");
     }
 
     /**
