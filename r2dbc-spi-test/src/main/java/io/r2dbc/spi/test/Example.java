@@ -121,7 +121,7 @@ public interface Example<T> {
                     if (byteBuffer.hasArray()) {
                         return byteBuffer.array();
                     } else {
-                        byte[] bytes = new byte[byteBuffer.limit()];
+                        byte[] bytes = new byte[byteBuffer.remaining()];
                         try {
                             byteBuffer.get(bytes);
                         } catch (BufferUnderflowException ignored) {
