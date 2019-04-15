@@ -136,4 +136,12 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
     public R2dbcBadGrammarException(@Nullable Throwable cause) {
         super(cause);
     }
+
+    /**
+     * Returns the offendingSQL String
+     * @return offendingSql
+     */
+    public String getOffendingSql() {
+        return this.offendingSql;
+    }
 }
