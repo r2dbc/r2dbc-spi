@@ -26,24 +26,39 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
+import org.springframework.jdbc.support.lob.DefaultLobHandler;
+import org.springframework.jdbc.support.lob.LobCreator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public interface Example<T> {
 
     static <T> Mono<T> close(Connection connection) {
         return Mono.from(connection
             .close())
+            .then(Mono.empty());
+    }
+
+    static <T> Mono<T> discard(Blob blob) {
+        return Mono.from(blob
+            .discard())
+            .then(Mono.empty());
+    }
+
+    static <T> Mono<T> discard(Clob clob) {
+        return Mono.from(clob
+            .discard())
             .then(Mono.empty());
     }
 
@@ -96,18 +111,25 @@ public interface Example<T> {
             .flatMapMany(connection -> Flux.from(connection
 
                 .createStatement(String.format("INSERT INTO blob_test VALUES (%s)", getPlaceholder(0)))
-                .bind(getPlaceholder(0), Blob.from(Mono.just(ByteBuffer.wrap("abc".getBytes()))))
+                .bind(getPlaceholder(0), Blob.from(Mono.just(StandardCharsets.UTF_8.encode("test-value"))))
                 .execute())
 
                 .concatWith(close(connection)))
             .as(StepVerifier::create)
-            .expectNextCount(1)
+            .expectNextCount(1).as("rows inserted")
             .verifyComplete();
     }
 
     @Test
     default void blobSelect() {
-        blobInsert();
+        getJdbcOperations().execute("INSERT INTO blob_test VALUES (?)", new AbstractLobCreatingPreparedStatementCallback(new DefaultLobHandler()) {
+
+            @Override
+            protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
+                lobCreator.setBlobAsBytes(ps, 1, StandardCharsets.UTF_8.encode("test-value").array());
+            }
+
+        });
 
         Mono.from(getConnectionFactory().create())
             .flatMapMany(connection -> Flux.from(connection
@@ -115,35 +137,22 @@ public interface Example<T> {
                 .createStatement("SELECT * from blob_test")
                 .execute())
                 .flatMap(result -> result
-                    .map((row, rowMetadata) -> row.get("image", Blob.class)))
-                .flatMap(Blob::stream)
-                .map(byteBuffer -> {
-                    if (byteBuffer.hasArray()) {
-                        return byteBuffer.array();
-                    } else {
-                        byte[] bytes = new byte[byteBuffer.remaining()];
-                        try {
-                            byteBuffer.get(bytes);
-                        } catch (BufferUnderflowException ignored) {
-                            ;
-                        }
-                        return bytes;
-                    }
-                })
+                    .map((row, rowMetadata) -> row.get("value", Blob.class)))
+                .flatMap(blob -> Flux.from(blob.stream())
+                    .reduce(ByteBuffer::put)
+                    .concatWith(discard(blob)))
 
                 .concatWith(close(connection)))
             .as(StepVerifier::create)
-            .expectNextMatches(bytes -> {
-                assertEquals(54, bytes[0]);
-                assertEquals(49, bytes[1]);
-                assertEquals(54, bytes[2]);
-                assertEquals(50, bytes[3]);
-                assertEquals(54, bytes[4]);
-                assertEquals(51, bytes[5]);
-
-                return true;
+            .expectNextMatches(actual -> {
+                ByteBuffer expected = StandardCharsets.UTF_8.encode("test-value");
+                return Arrays.equals(expected.array(), actual.array());
             })
             .verifyComplete();
+    }
+
+    default String blobType() {
+        return "BLOB";
     }
 
     @Test
@@ -152,18 +161,25 @@ public interface Example<T> {
             .flatMapMany(connection -> Flux.from(connection
 
                 .createStatement(String.format("INSERT INTO clob_test VALUES (%s)", getPlaceholder(0)))
-                .bind(getPlaceholder(0), Clob.from(Mono.just("abcd")))
+                .bind(getPlaceholder(0), Clob.from(Mono.just("test-value")))
                 .execute())
 
                 .concatWith(close(connection)))
             .as(StepVerifier::create)
-            .expectNextCount(1)
+            .expectNextCount(1).as("rows inserted")
             .verifyComplete();
     }
 
     @Test
     default void clobSelect() {
-        clobInsert();
+        getJdbcOperations().execute("INSERT INTO clob_test VALUES (?)", new AbstractLobCreatingPreparedStatementCallback(new DefaultLobHandler()) {
+
+            @Override
+            protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
+                lobCreator.setClobAsString(ps, 1, "test-value");
+            }
+
+        });
 
         Mono.from(getConnectionFactory().create())
             .flatMapMany(connection -> Flux.from(connection
@@ -171,18 +187,22 @@ public interface Example<T> {
                 .createStatement("SELECT * from clob_test")
                 .execute())
                 .flatMap(result -> result
-                    .map((row, rowMetadata) -> row.get("content", Clob.class)))
-                .flatMap(Clob::stream)
+                    .map((row, rowMetadata) -> row.get("value", Clob.class)))
+                .flatMap(clob -> Flux.from(clob.stream())
+                    .reduce(new StringBuilder(), StringBuilder::append)
+                    .map(StringBuilder::toString)
+                    .concatWith(discard(clob)))
 
                 .concatWith(close(connection)))
             .as(StepVerifier::create)
-            .expectNextMatches(charSequence -> {
-                assertEquals("abcd", charSequence.toString());
-                return true;
-            })
+            .expectNext("test-value").as("value from select")
             .verifyComplete();
     }
-    
+
+    default String clobType() {
+        return "CLOB";
+    }
+
     @Test
     default void compoundStatement() {
         getJdbcOperations().execute("INSERT INTO test VALUES (100)");
@@ -204,8 +224,8 @@ public interface Example<T> {
     @BeforeEach
     default void createTable() {
         getJdbcOperations().execute("CREATE TABLE test ( value INTEGER )");
-        getJdbcOperations().execute("CREATE TABLE blob_test ( image BLOB )");
-        getJdbcOperations().execute("CREATE TABLE clob_test ( content CLOB )");
+        getJdbcOperations().execute(String.format("CREATE TABLE blob_test ( value %s )", blobType()));
+        getJdbcOperations().execute(String.format("CREATE TABLE clob_test ( value %s )", clobType()));
     }
 
     @AfterEach

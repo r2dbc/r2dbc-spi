@@ -97,7 +97,7 @@ public final class MockResult implements Result {
             Assert.requireNonNull(rows, "rows must not be null");
 
             Stream.of(rows)
-                .peek(Objects::requireNonNull)
+                .peek(row -> Assert.requireNonNull(row, "row must not be null"))
                 .forEach(this.rows::add);
 
             return this;
