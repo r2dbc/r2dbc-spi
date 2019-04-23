@@ -2,10 +2,10 @@
 platform: linux
 
 image_resource:
-  type: docker-image
+  type: registry-image
   source:
     repository: openjdk
-    tag: 8-jdk-alpine
+    tag: 8-jdk
 
 inputs:
 - name: r2dbc-spi
