@@ -40,6 +40,8 @@ public interface ColumnMetadata {
 
     /**
      * Returns the name of the column.
+     * <p>
+     * The name does not necessarily reflect the underlying column name but rather how the column is represented (e.g. aliased) in the result.
      *
      * @return the name of the column
      */

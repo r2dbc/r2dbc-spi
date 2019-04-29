@@ -43,11 +43,15 @@ public interface RowMetadata {
     Iterable<? extends ColumnMetadata> getColumnMetadatas();
 
     /**
-     * Returns an unmodifiable collection of unique column names, and any attempts to modify the returned
-     * collection, whether direct or via its iterator, result in an {@link UnsupportedOperationException}.
-     * The order of the column names depends on the actual query and also column name lookup depends on the database
-     * sorting rules and some databases support escape characters to enforce a particular mode of comparison. If the
-     * query uses an alias for column names, this method will return an alias otherwise column names.
+     * Returns an unmodifiable collection of column names. Column names do not necessarily reflect the underlying column names but rather how columns are represented (e.g. aliased) in the result.
+     * <p>
+     * Any attempts to modify the returned collection, whether direct or via its iterator, result in an {@link UnsupportedOperationException}.
+     * <p>
+     * The iteration order of the column names depends on the actual query result.
+     * Column names may appear multiple times if the result specifies multiple columns with the same name.
+     * Lookups through {@link Collection#contains(Object)} are case-insensitive.
+     * Drivers may enhance comparison sorting rules with escape characters to enforce a particular mode of comparison
+     * when querying for presence/absence of a column.
      *
      * @return the column names.
      */

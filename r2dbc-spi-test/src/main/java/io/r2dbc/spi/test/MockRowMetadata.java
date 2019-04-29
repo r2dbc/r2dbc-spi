@@ -19,14 +19,24 @@ package io.r2dbc.spi.test;
 import io.r2dbc.spi.ColumnMetadata;
 import io.r2dbc.spi.RowMetadata;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Collection;
-import java.util.Set;
-import java.util.Collections;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 
 public final class MockRowMetadata implements RowMetadata {
+
+    static final Collator LENIENT;
+
+    static {
+        Collator lenient = Collator.getInstance(Locale.US);
+        lenient.setStrength(Collator.SECONDARY);
+        LENIENT = lenient;
+    }
 
     private final List<ColumnMetadata> columnMetadatas;
 
@@ -56,10 +66,25 @@ public final class MockRowMetadata implements RowMetadata {
 
     @Override
     public Collection<String> getColumnNames() {
-        Set<String> columnNames = new LinkedHashSet<>();
-        for(ColumnMetadata columnMetadata : columnMetadatas) {
+        Set<String> contains = new TreeSet<>(LENIENT);
+        List<String> columnNames = new ArrayList<String>() {
+
+            @Override
+            public boolean contains(Object o) {
+                return contains.contains(o);
+            }
+
+            @Override
+            public boolean containsAll(Collection<?> c) {
+                return contains.containsAll(c);
+            }
+        };
+
+        for (ColumnMetadata columnMetadata : columnMetadatas) {
             columnNames.add(columnMetadata.getName());
+            contains.add(columnMetadata.getName());
         }
+
         return Collections.unmodifiableCollection(columnNames);
     }
 
