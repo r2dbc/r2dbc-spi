@@ -30,12 +30,12 @@ import java.util.TreeSet;
 
 public final class MockRowMetadata implements RowMetadata {
 
-    static final Collator LENIENT;
+    static final Collator COLLATOR;
 
     static {
-        Collator lenient = Collator.getInstance(Locale.US);
-        lenient.setStrength(Collator.SECONDARY);
-        LENIENT = lenient;
+        Collator collator = Collator.getInstance(Locale.US);
+        collator.setStrength(Collator.SECONDARY);
+        COLLATOR = collator;
     }
 
     private final List<ColumnMetadata> columnMetadatas;
@@ -66,7 +66,7 @@ public final class MockRowMetadata implements RowMetadata {
 
     @Override
     public Collection<String> getColumnNames() {
-        Set<String> contains = new TreeSet<>(LENIENT);
+        Set<String> contains = new TreeSet<>(COLLATOR);
         List<String> columnNames = new ArrayList<String>() {
 
             @Override
@@ -80,7 +80,7 @@ public final class MockRowMetadata implements RowMetadata {
             }
         };
 
-        for (ColumnMetadata columnMetadata : columnMetadatas) {
+        for (ColumnMetadata columnMetadata : this.columnMetadatas) {
             columnNames.add(columnMetadata.getName());
             contains.add(columnMetadata.getName());
         }
