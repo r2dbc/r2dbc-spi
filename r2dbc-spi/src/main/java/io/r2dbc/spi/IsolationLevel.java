@@ -17,34 +17,57 @@
 package io.r2dbc.spi;
 
 /**
- * SQL transaction isolation levels.
+ * Represents a transaction isolation level constant.
  */
-public enum IsolationLevel {
+public final class IsolationLevel {
+
+    private static final ConstantPool<IsolationLevel> CONSTANTS = new ConstantPool<IsolationLevel>() {
+
+        @Override
+        IsolationLevel createConstant(String name, boolean sensitive) {
+            return new IsolationLevel(name);
+        }
+
+    };
 
     /**
      * The read committed isolation level.
      */
-    READ_COMMITTED("READ COMMITTED"),
+    public static final IsolationLevel READ_COMMITTED = IsolationLevel.valueOf("READ COMMITTED");
 
     /**
      * The read uncommitted isolation level.
      */
-    READ_UNCOMMITTED("READ UNCOMMITTED"),
+    public static final IsolationLevel READ_UNCOMMITTED = IsolationLevel.valueOf("READ UNCOMMITTED");
 
     /**
      * The repeatable read isolation level.
      */
-    REPEATABLE_READ("REPEATABLE READ"),
+    public static final IsolationLevel REPEATABLE_READ = IsolationLevel.valueOf("REPEATABLE READ");
 
     /**
      * The serializable isolation level.
      */
-    SERIALIZABLE("SERIALIZABLE");
+    public static final IsolationLevel SERIALIZABLE = IsolationLevel.valueOf("SERIALIZABLE");
 
     private final String sql;
 
-    IsolationLevel(String sql) {
+    private IsolationLevel(String sql) {
         this.sql = Assert.requireNonNull(sql, "sql must not be null");
+    }
+
+    /**
+     * Returns a constant single of an isolation level.
+     *
+     * @param sql the SQL statement representing the isolation level
+     * @return a constant singleton of the the isolation level
+     * @throws IllegalArgumentException if {@code name} is {@code null} or empty
+     */
+    public static IsolationLevel valueOf(String sql) {
+        Assert.requireNonNull(sql, "sql must not be null");
+        Assert.requireNonEmpty(sql, "sql must not be empty");
+
+        return CONSTANTS.valueOf(sql, false);
     }
 
     /**
@@ -56,5 +79,11 @@ public enum IsolationLevel {
         return this.sql;
     }
 
-}
+    @Override
+    public String toString() {
+        return "IsolationLevel{" +
+            "sql='" + this.sql + '\'' +
+            '}';
+    }
 
+}
