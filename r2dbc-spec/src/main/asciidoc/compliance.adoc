@@ -39,6 +39,7 @@ The following guidelines apply to R2DBC compliance:
 
 * Index references to columns and parameters are zero-based. The first index begins with `0`.
 
+[[compliance.r2dbc]]
 == R2DBC API Compliance
 
 A driver that is compliant with the R2DBC specification must do the following:
@@ -62,3 +63,5 @@ A driver that is compliant with the R2DBC specification must do the following:
   ** `getNullability()`
   ** `getJavaType()`
   ** `getNativeTypeMetadata()`
+
+A driver can implement optional <<extensions>> if it is able to provide extension functionality specified by R2DBC.
