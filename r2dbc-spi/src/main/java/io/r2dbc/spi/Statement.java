@@ -27,6 +27,7 @@ public interface Statement {
      * Save the current binding and create a new one.
      *
      * @return this {@link Statement}
+     * @throws IllegalStateException if the statement is parametrized and not all parameter values are provided
      */
     Statement add();
 
@@ -36,7 +37,8 @@ public interface Statement {
      * @param identifier the identifier to bind to
      * @param value      the value to bind
      * @return this {@link Statement}
-     * @throws IllegalArgumentException if {@code identifier} or {@code value} is {@code null}
+     * @throws IllegalArgumentException  if {@code identifier} or {@code value} is {@code null}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     Statement bind(Object identifier, Object value);
 
@@ -46,7 +48,8 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * @throws IllegalArgumentException if {@code value} is {@code null}
+     * @throws IllegalArgumentException  if {@code value} is {@code null}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     Statement bind(int index, Object value);
 
@@ -56,6 +59,7 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     default Statement bind(int index, boolean value) {
         return bind(index, (Boolean) value);
@@ -67,6 +71,7 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     default Statement bind(int index, byte value) {
         return bind(index, (Byte) value);
@@ -78,6 +83,7 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     default Statement bind(int index, char value) {
         return bind(index, (Character) value);
@@ -89,6 +95,7 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     default Statement bind(int index, double value) {
         return bind(index, (Double) value);
@@ -100,6 +107,7 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     default Statement bind(int index, float value) {
         return bind(index, (Float) value);
@@ -111,6 +119,7 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     default Statement bind(int index, int value) {
         return bind(index, (Integer) value);
@@ -122,6 +131,7 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     default Statement bind(int index, long value) {
         return bind(index, (Long) value);
@@ -133,6 +143,7 @@ public interface Statement {
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     default Statement bind(int index, short value) {
         return bind(index, (Short) value);
@@ -154,7 +165,8 @@ public interface Statement {
      * @param index the index to bind to
      * @param type  the type of null value
      * @return this {@link Statement}
-     * @throws IllegalArgumentException if {@code type} is {@code null}
+     * @throws IllegalArgumentException  if {@code type} is {@code null}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     Statement bindNull(int index, Class<?> type);
 
@@ -162,6 +174,7 @@ public interface Statement {
      * Executes one or more SQL statements and returns the {@link Result}s.
      *
      * @return the {@link Result}s, returned by each statement
+     * @throws IllegalStateException if the statement is parametrized and not all parameter values are provided
      */
     Publisher<? extends Result> execute();
 
