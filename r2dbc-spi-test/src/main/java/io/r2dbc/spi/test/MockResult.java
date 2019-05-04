@@ -56,8 +56,8 @@ public final class MockResult implements Result {
     }
 
     @Override
-    public <T> Flux<T> map(BiFunction<Row, RowMetadata, ? extends T> f) {
-        Assert.requireNonNull(f, "f must not be null");
+    public <T> Flux<T> map(BiFunction<Row, RowMetadata, ? extends T> mappingFunction) {
+        Assert.requireNonNull(mappingFunction, "f must not be null");
 
         return this.rows
             .zipWith(this.rowMetadata.repeat())
@@ -65,7 +65,7 @@ public final class MockResult implements Result {
                 Row row = tuple.getT1();
                 RowMetadata rowMetadata = tuple.getT2();
 
-                return f.apply(row, rowMetadata);
+                return mappingFunction.apply(row, rowMetadata);
             });
     }
 

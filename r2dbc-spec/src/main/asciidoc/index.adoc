@@ -30,6 +30,8 @@ include::statements.adoc[leveloffset=+1]
 
 include::batches.adoc[leveloffset=+1]
 
+include::result.adoc[leveloffset=+1]
+
 include::row-metadata.adoc[leveloffset=+1]
 
 include::exceptions.adoc[leveloffset=+1]

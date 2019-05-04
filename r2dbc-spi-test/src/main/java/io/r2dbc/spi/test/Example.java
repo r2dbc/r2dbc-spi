@@ -39,8 +39,10 @@ import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -238,6 +240,32 @@ public interface Example<T> {
     }
 
     @Test
+    default void columnMetadata() {
+        getJdbcOperations().execute("INSERT INTO test_two_column VALUES (100, 'hello')");
+
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.from(connection
+
+                .createStatement("SELECT col1 AS value, col2 AS value FROM test_two_column")
+                .execute())
+                .flatMap(result -> {
+                    return result.map((row, rowMetadata) -> {
+                        Collection<String> columnNames = rowMetadata.getColumnNames();
+                        return Arrays.asList(rowMetadata.getColumnMetadata("value").getName(), rowMetadata.getColumnMetadata("VALUE").getName(), columnNames.contains("value"), columnNames.contains(
+                            "VALUE"));
+                    });
+                })
+                .flatMapIterable(Function.identity())
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNext("value").as("Column label col1")
+            .expectNext("value").as("Column label col1 (get by uppercase)")
+            .expectNext(true, "getColumnNames.contains(value)")
+            .expectNext(true, "getColumnNames.contains(VALUE)")
+            .verifyComplete();
+    }
+
+    @Test
     default void compoundStatement() {
         getJdbcOperations().execute("INSERT INTO test VALUES (100)");
 
@@ -271,6 +299,7 @@ public interface Example<T> {
     @BeforeEach
     default void createTable() {
         getJdbcOperations().execute("CREATE TABLE test ( value INTEGER )");
+        getJdbcOperations().execute("CREATE TABLE test_two_column ( col1 INTEGER, col2 VARCHAR(100) )");
         getJdbcOperations().execute(String.format("CREATE TABLE blob_test ( value %s )", blobType()));
         getJdbcOperations().execute(String.format("CREATE TABLE clob_test ( value %s )", clobType()));
     }
@@ -278,8 +307,30 @@ public interface Example<T> {
     @AfterEach
     default void dropTable() {
         getJdbcOperations().execute("DROP TABLE test");
+        getJdbcOperations().execute("DROP TABLE test_two_column");
         getJdbcOperations().execute("DROP TABLE blob_test");
         getJdbcOperations().execute("DROP TABLE clob_test");
+    }
+
+    @Test
+    default void duplicateColumnNames() {
+        getJdbcOperations().execute("INSERT INTO test_two_column VALUES (100, 'hello')");
+
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.from(connection
+
+                .createStatement("SELECT col1 AS value, col2 AS value FROM test_two_column")
+                .execute())
+                .flatMap(result -> {
+                    return result.map((row, rowMetadata) -> {
+                        return Arrays.asList(row.get("value"), row.get("VALUE"));
+                    });
+                }).flatMapIterable(Function.identity())
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNext(100).as("value from col1")
+            .expectNext(100).as("value from col1 (upper case)")
+            .verifyComplete();
     }
 
     /**

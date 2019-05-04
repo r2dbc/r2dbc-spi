@@ -21,13 +21,16 @@ import java.util.NoSuchElementException;
 
 /**
  * Represents the metadata for a row of the results returned from a query.
+ * Metadata for columns can be either retrieved by specifying a column name or the column index.
+ * Columns are numbered from 0.  Column names do not necessarily reflect the column names how they are in the underlying tables but rather how columns are represented (e.g. aliased) in the result.
  */
 public interface RowMetadata {
 
     /**
      * Returns the {@link ColumnMetadata} for one column in this row.
      *
-     * @param identifier the identifier of the column
+     * @param identifier the identifier of the column. Can be either the column index starting at 0 or column name. Column names are case insensitive.  When a get method is called with a column
+     *                   name and several columns have the same name, then the value of the first matching column will be returned.
      * @return the {@link ColumnMetadata} for one column in this row
      * @throws IllegalArgumentException       if {@code identifier} is {@code null} or not supported
      * @throws NoSuchElementException         if there is no column with the name {@code identifier}
@@ -43,7 +46,7 @@ public interface RowMetadata {
     Iterable<? extends ColumnMetadata> getColumnMetadatas();
 
     /**
-     * Returns an unmodifiable collection of column names. Column names do not necessarily reflect the underlying column names but rather how columns are represented (e.g. aliased) in the result.
+     * Returns an unmodifiable collection of column names.
      * <p>
      * Any attempts to modify the returned collection, whether direct or via its iterator, result in an {@link UnsupportedOperationException}.
      * <p>
