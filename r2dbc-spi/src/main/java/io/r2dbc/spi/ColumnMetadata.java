@@ -17,7 +17,7 @@
 package io.r2dbc.spi;
 
 /**
- * Represents the metadata for a column of the results returned from a query. The implementation of all methods except {@link #getName()}  is optional for drivers. Column metadata is optionally
+ * Represents the metadata for a column of the results returned from a query.  The implementation of all methods except {@link #getName()}  is optional for drivers.  Column metadata is optionally
  * available as by-product of statement execution on a best-effort basis.
  */
 public interface ColumnMetadata {
@@ -41,7 +41,7 @@ public interface ColumnMetadata {
     /**
      * Returns the name of the column.
      * <p>
-     * The name does not necessarily reflect the underlying column name but rather how the column is represented (e.g. aliased) in the result.
+     * The name does not necessarily reflect the column names how they are in the underlying tables but rather how columns are represented (e.g. aliased) in the result..
      *
      * @return the name of the column
      */

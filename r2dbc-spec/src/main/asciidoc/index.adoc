@@ -26,6 +26,8 @@ include::overview.adoc[leveloffset=+1]
 
 include::connections.adoc[leveloffset=+1]
 
+include::result.adoc[leveloffset=+1]
+
 include::row-metadata.adoc[leveloffset=+1]
 
 include::exceptions.adoc[leveloffset=+1]

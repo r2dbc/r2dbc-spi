@@ -1,0 +1,141 @@
+[[results]]
+= Results
+
+This section explains the `Result` interface and the related `Row` interface. It also describes related topics including result consumption.
+
+[[results.characteristics]]
+== Result Characteristics
+
+`Result` objects are forward-only and read-only objects that allow consumption of two result types:
+
+* Tabular results
+* Update count
+
+Results move forward from the first `Row` to the last one. After emitting the last row, a `Result` object gets invalidated and rows from the same `Result` object cannot be longer consumed.
+Rows contained in the result depend on how the underlying database materializes the results.
+That is, it contains the rows that satisfy the query at either the time the query is executed or as the rows are retrieved.
+An R2DBC driver can obtain a Result either directly or by using cursors.
+
+`Result` reports the number of rows affected for SQL statements such as update for SQL Data Manipulation Language (DML) statements.
+The update count may be empty for statements that do not modify rows.
+After emitting the update count, a `Result` object gets invalidated and rows from the same `Result` object cannot be longer consumed.
+
+.Consuming update count
+====
+[source,java]
+----
+// result is a Result object
+Publisher<Integer> rowsUpdated = result.getRowsUpdated();
+----
+====
+
+The streaming nature of a result allows either consumption of tabular results or update count.
+Depending on how the underlying database materializes results, an R2DBC driver can lift this limitation.
+
+A `Result` object is emitted for each statement result in a forward-only direction.
+
+[[results.creating]]
+== Creating `Result` Objects
+
+A `Result` object is most often created as the result of executing a `Statement` object.
+The `Statement` method `execute()` returns a `Publisher` that emits `Result` objects as result of statement execution.
+
+.Creating a `Result` object
+====
+[source,java]
+----
+// connection is a Connection object
+Statement statement = connection.createStatement("SELECT title, author FROM books");
+Publisher<? extends Result> results = statement.execute();
+----
+====
+
+The `Result` object will emit a `Row` for each row in the table `books`, containing the two columns `title` and `author`.
+The following sections detail how these rows and columns can be consumed.
+
+[[results.cursor]]
+=== Cursor Movement
+
+`Result` objects can be backed by direct results (i. e. a query that returns results directly) or by cursors.
+By consuming `Row` objects, an R2DBC driver advances the cursor position.
+Thus external cursor navigation is not possible.
+
+Canceling subscription of tabular results stops cursor reads and releases resources associated with the `Result` object.
+
+[[rows]]
+== Rows
+
+A `Row` object represents a single row of tabular results.
+
+[[row.values]]
+=== Retrieving Values
+
+The `Result` interface provides a `map(…)` method for retrieving values from `Row` objects.
+The `map` method accepts `BiFunction` (also referred to as mapping function) object that accepts `Row` and `RowMetadata`.
+The mapping function is called upon row emission with `Row` and `RowMetadata` objects.
+A `Row` is only valid during the mapping function callback and are invalid outside of the mapping function callback.
+Thus `Row` objects must be entirely consumed in the mapping function.
+
+The section <<rowmetadata>> contains additional details on metadata.
+
+[[row.methods]]
+== Interface Methods
+
+The following methods are available on the `Row` interface:
+
+* `Object get(Object)`
+* `<T> T get(Object, Class<T>)`
+
+Both `get` methods accept a column identifier that can be either the column name or the column index.
+Column names used as input to the `get` methods are case insensitive.
+Column names do not necessarily reflect the column names how they are in the underlying tables but rather how columns are represented (e.g. aliased) in the result.
+
+.Creating and Consuming a `Row` using its index
+====
+[source,java]
+----
+// result is a Result object
+Publisher<Object> values = result.map((row, rowMetadata) -> row.get(0));
+----
+====
+
+.Creating and Consuming a `Row` through its column name
+====
+[source,java]
+----
+// result is a Result object
+Publisher<Object> titles = result.map((row, rowMetadata) -> row.get("title"));
+----
+====
+
+Calling `get` without specifying a target type returns a suitable value representation according to <<datatypes.mapping>>.
+Specifying a target type, the R2DBC driver attempts to convert the value to the target type.
+
+.Creating and Consuming a `Row` with type conversion
+====
+[source,java]
+----
+// result is a Result object
+Publisher<String> values = result.map((row, rowMetadata) -> row.get(0, String.class));
+----
+====
+
+.Consuming multiple columns from a `Row`
+====
+[source,java]
+----
+// result is a Result object
+Publisher<Book> values = result.map((row, rowMetadata) -> {
+    String title = row.get("title", String.class);
+    String author = row.get("author", String.class);
+
+    return new Book(title, author);
+});
+----
+====
+
+When the column value in the database is SQL `NULL`, it may be returned to the Java application as `null`.
+
+NOTE: `null` values cannot be returned as Reactive Streams values and must be wrapped for subsequent usage.
+
+NOTE: Invalidating a `Row` does *not* release `Blob` and `Clob` objects that were obtained from the `Row`. These objects remain valid for at least the duration of the transaction in which they were created unless their `discard()` method is called.
