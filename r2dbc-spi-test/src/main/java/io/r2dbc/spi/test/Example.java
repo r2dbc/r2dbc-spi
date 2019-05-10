@@ -260,8 +260,8 @@ public interface Example<T> {
             .as(StepVerifier::create)
             .expectNext("value").as("Column label col1")
             .expectNext("value").as("Column label col1 (get by uppercase)")
-            .expectNext(true, "getColumnNames.contains(value)")
-            .expectNext(true, "getColumnNames.contains(VALUE)")
+            .expectNext(true).as("getColumnNames.contains(value)")
+            .expectNext(true).as("getColumnNames.contains(VALUE)")
             .verifyComplete();
     }
 
