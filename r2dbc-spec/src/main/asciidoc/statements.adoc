@@ -1,0 +1,160 @@
+[[statements]]
+= Statements
+
+This section describes the `Statement` interface. It also describes related topics, including parameterized statement and auto-generated keys.
+
+[[statements.interface]]
+== The Statement Interface
+
+The `Statement` interface defines methods for executing SQL statements. SQL statements may contain parameter bind markers for input parameters.
+
+[[statements.creating]]
+=== Creating Statements
+
+`Statement` objects are created by `Connection` objects, as is done in the following example:
+
+.Creating a non-parameterized `Statement`
+====
+[source,java]
+----
+// connection is a Connection object
+Statement statement = connection.createStatement("SELECT title FROM books");
+----
+====
+
+Each `Connection` object can create multiple `Statement` objects that may be used concurrently by the program and executed at any time.
+Resources that are associated with a statement are released as soon as the connection is closed.
+
+[[statements.executing]]
+=== Executing Statement Objects
+
+`Statement` objects are executed by calling the `execute()` method. Depending on the SQL, the resulting `Publisher` may return one to many `Result` objects. A `Statement` is always associated with its `Connection`, therefore, the connection state affects `Statement` execution at execution time.
+
+. Executing a `Statement`
+====
+[source,java]
+----
+// statement is a Statement object
+Publisher<? extends Result> publisher = statement.execute();
+----
+====
+
+[[statements.parameterized]]
+== Parameterized Statements
+
+SQL used to create a statement can be parameterized using vendor-specific bind markers.
+Portability of SQL statements across R2DBC implementation is a non-goal.
+
+Parameterized `Statement` objects are created by `Connection` objects in the same manner as non-parameterized `Statements`. See the the following example:
+
+.Creating three parameterized `Statement` objects using vendor-specific parameter bind markers
+====
+[source,java]
+----
+// connection is a Connection object
+Statement statement1 = connection.createStatement("SELECT title FROM books WHERE author = :author");
+
+Statement statement2 = connection.createStatement("SELECT title FROM books WHERE author = @P0");
+
+Statement statement3 = connection.createStatement("SELECT title FROM books WHERE author = $1");
+----
+====
+
+Parameter bind markers are identified by the `Statement` object.
+Parameterized statements may be cached by R2DBC implementations for resuse (e.g. for prepared statement execution).
+
+[[statements.bind]]
+=== Binding Parameters
+
+The `Statement` interface defines `bind(…)` and `bindNull(…)` methods to provide parameter values for bind marker substitution.
+The parameter type is defined by the actual value that is bound to a parameter.
+Each bind method accepts two arguments. The first is either ordinal parameter position starting at `0` (zero) or the parameter placeholder representation.
+The second and any remaining parameters specify the value to be assigned to the parameter.
+
+.Binding parameters to a `Statement` object by placeholder
+====
+[source,java]
+----
+// connection is a Connection object
+Statement statement = connection.createStatement("SELECT title FROM books WHERE author = $1 and publisher = $2");
+statement.bind("$1", "John Doe");
+statement.bind("$2", "Happy Books LLC");
+----
+====
+
+Alternatively, parameters can be bound by index:
+
+.Binding parameters to a `Statement` object by index
+====
+[source,java]
+----
+// connection is a Connection object
+Statement statement = connection.createStatement("SELECT title FROM books WHERE author = $1 and publisher = $2");
+statement.bind(0, "John Doe");
+statement.bind(1, "Happy Books LLC");
+----
+====
+
+A value must be provided for each bind marker in the `Statement` object before it can be executed.
+The method used to execute a parameterized `Statement` an `IllegalStateException` if a value is not supplied for a bind marker.
+
+[[statements.batching]]
+=== Batching
+
+Parameterized `Statement` objects accept multiple parameter binding sets submit a batch of commands to the database for execution.
+Batch execution is initiated by invoking the `add()` method on the `Statement` object after providing all parameters.
+After calling `add()`, the next set of parameter bindings is provided by calling bing methods accordingly.
+
+.Executing a `Statement` batch
+====
+[source,java]
+----
+// connection is a Connection object
+Statement statement = connection.createStatement("INSERT INTO books (author, publisher) VALUES ($1, $2)");
+statement.bind(0, "John Doe").bind(1, "Happy Books LLC").add();
+statement.bind(0, "Jane Doe").bind(1, "Scary Books Inc");
+Publisher<? extends Result> publisher = statement.execute();
+----
+====
+
+Batch execution emits one to many `Result` objects depending on how the implementation executes the batch.
+
+[[statements.null]]
+=== Setting `NULL` Parameters
+
+The method `bindNull` can be used to set any parameter to `NULL`.
+It takes two parameters, either the ordinal position of the bind marker or the name, and the value type of the parameter.
+
+.Setting a `NULL` value.
+====
+[source,java]
+----
+// statement is a Statement object
+statement.bindNull(0, String.class);
+----
+====
+
+[[statements.generated-values]]
+== Retrieving Auto Generated Values
+
+Many database systems provide a mechanism that automatically generates a value when inserting a row.
+The value that is generated may or may not be unique or represent a key value depending on the executed SQL, and table definition.
+The method `returnGeneratedValues`, which can be called to retrieve the generated value, indicates to the `Statement` object to retrieve generated values. The method accepts a var-arg parameter to specify the column name(s) for which to return generated keys.
+The emitted `Result` exposes a column for each automatically generated value taking the column name hint into account.
+
+.Retrieving auto-generated values
+====
+[source,java]
+----
+// connection is a Connection object
+Statement statement = connection.createStatement("INSERT INTO books (author, publisher) VALUES ('John Doe', 'Happy Books LLC')").returnGeneratedValues("id");
+Publisher<? extends Result> publisher = statement.execute();
+
+// later
+result.map((row, metadata) -> row.get("id"));
+----
+====
+
+When not specifying column name(s), the R2DBC driver implementation will determine the columns or value to return.
+
+See the R2DBC SPI Specification for more details.
