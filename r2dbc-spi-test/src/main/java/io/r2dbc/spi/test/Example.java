@@ -23,7 +23,6 @@ import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -45,7 +44,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public interface Example<T> {
 
@@ -96,6 +95,23 @@ public interface Example<T> {
     }
 
     @Test
+    default void bindFails() {
+        Mono.from(getConnectionFactory().create())
+            .flatMap(connection -> {
+
+                Statement statement = connection.createStatement(String.format("INSERT INTO test VALUES(%s)", getPlaceholder(0)));
+                assertThrows(IllegalArgumentException.class, () -> statement.bind(0, null), "bind(0, null) should fail");
+                assertThrows(IndexOutOfBoundsException.class, () -> statement.bind(99, ""), "bind(nonexistent-index, null) should fail");
+                assertThrows(IllegalArgumentException.class, () -> statement.bind(getIdentifier(0), null), "bind(identifier, null) should fail");
+                assertThrows(IllegalArgumentException.class, () -> statement.bind(getIdentifier(0), Class.class), "bind(identifier, Class.class) should fail");
+                assertThrows(IllegalArgumentException.class, () -> statement.bind("unknown", ""), "bind(unknown-placeholder, \"\") should fail");
+                return close(connection);
+            })
+            .as(StepVerifier::create)
+            .verifyComplete();
+    }
+
+    @Test
     default void bindNull() {
         Mono.from(getConnectionFactory().create())
             .flatMapMany(connection -> Flux.from(connection
@@ -118,23 +134,6 @@ public interface Example<T> {
                 Statement statement = connection.createStatement(String.format("INSERT INTO test VALUES(%s)", getPlaceholder(0)));
                 assertThrows(IllegalArgumentException.class, () -> statement.bindNull(null, String.class), "bindNull(null, …) should fail");
                 assertThrows(IllegalArgumentException.class, () -> statement.bindNull(getIdentifier(0), null), "bindNull(identifier, null) should fail");
-                return close(connection);
-            })
-            .as(StepVerifier::create)
-            .verifyComplete();
-    }
-
-    @Test
-    default void bindFails() {
-        Mono.from(getConnectionFactory().create())
-            .flatMap(connection -> {
-
-                Statement statement = connection.createStatement(String.format("INSERT INTO test VALUES(%s)", getPlaceholder(0)));
-                assertThrows(IllegalArgumentException.class, () -> statement.bind(0, null), "bind(0, null) should fail");
-                assertThrows(IndexOutOfBoundsException.class, () -> statement.bind(99, ""), "bind(nonexistent-index, null) should fail");
-                assertThrows(IllegalArgumentException.class, () -> statement.bind(getIdentifier(0), null), "bind(identifier, null) should fail");
-                assertThrows(IllegalArgumentException.class, () -> statement.bind(getIdentifier(0), Class.class), "bind(identifier, Class.class) should fail");
-                assertThrows(IllegalArgumentException.class, () -> statement.bind("unknown", ""), "bind(unknown-placeholder, \"\") should fail");
                 return close(connection);
             })
             .as(StepVerifier::create)
@@ -321,11 +320,11 @@ public interface Example<T> {
 
                 .createStatement("SELECT col1 AS value, col2 AS value FROM test_two_column")
                 .execute())
-                .flatMap(result -> {
-                    return result.map((row, rowMetadata) -> {
-                        return Arrays.asList(row.get("value"), row.get("VALUE"));
-                    });
-                }).flatMapIterable(Function.identity())
+
+                .flatMap(result -> result
+                    .map((row, rowMetadata) -> Arrays.asList(row.get("value"), row.get("VALUE"))))
+                .flatMapIterable(Function.identity())
+
                 .concatWith(close(connection)))
             .as(StepVerifier::create)
             .expectNext(100).as("value from col1")
@@ -341,21 +340,6 @@ public interface Example<T> {
     ConnectionFactory getConnectionFactory();
 
     /**
-     * Returns the bind identifier for a given substitution.
-     *
-     * @param index the zero-index number of the substitution
-     * @return the bind identifier for a given substitution
-     */
-    T getIdentifier(int index);
-
-    /**
-     * Returns a {@link JdbcOperations} for the connected database.
-     *
-     * @return a {@link JdbcOperations} for the connected database
-     */
-    JdbcOperations getJdbcOperations();
-
-    /**
      * Returns the {@code CREATE TABLE} statement for a table named {@code test}
      * with two columns: First one uses auto-generated keys, second one is named {@code value} of type {@code INT}.
      * <p>
@@ -369,6 +353,21 @@ public interface Example<T> {
      * @return the {@code CREATE TABLE} statement
      */
     String getCreateTableWithAutogeneratedKey();
+
+    /**
+     * Returns the bind identifier for a given substitution.
+     *
+     * @param index the zero-index number of the substitution
+     * @return the bind identifier for a given substitution
+     */
+    T getIdentifier(int index);
+
+    /**
+     * Returns a {@link JdbcOperations} for the connected database.
+     *
+     * @return a {@link JdbcOperations} for the connected database
+     */
+    JdbcOperations getJdbcOperations();
 
     /**
      * Returns the database-specific placeholder for a given substitution.
