@@ -1,9 +1,26 @@
 R2DBC SPI Changelog
 =============================
 
+1.0.0.M8
+------------------
+* Migrate IsolationLevel to interface #82
+* Spec documentation: Add detailed specification for Result and Row #81
+* Spec documentation: Add detailed specification for Wrapped #80
+* Spec documentation: Add detailed specification for Statement #79
+* R2dbcBadGrammarException should expose getter for offendingSql #74
+* Improve RowMetadata for presence/absence check of columns #56
+* Add R2DBC Exception Hierarchy #53
+* Add diagnostic information to ConnectionFactories #52
+* Add contribution guidelines #50
+* Add diagnostic information to ConnectionFactoryProvider and ConnectionFactories #49
+* Add R2DBC Connection URL support #48
+* Introduce R2DBC Exception Hierarchy #47
+* BLOB/CLOB API #41
+* Switch to 0.8.0 versioning scheme
+
 1.0.0.M7
 ------------------
-* Update changelong for M7 #45
+* Update changelog for M7 #45
 * Improved documentation (spec, license, guide) #32, #36
 * Nullability enforcement returns accurate exception #31
 * Reinstated generated value retrieval #25
