@@ -77,7 +77,12 @@ final class ConnectionUrlParserUnitTests {
 
     @Test
     void hasAuthentication() {
-        assertThat(parseQuery("r2dbc:foo://user:password@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasUser("user").hasNoDatabase();
+        assertThat(parseQuery("r2dbc:foo://user:password@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasUser("user").hasPassword("password").hasNoDatabase();
+        assertThat(parseQuery("r2dbc:foo://user@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasUser("user").hasNoPassword().hasNoDatabase();
+        assertThat(parseQuery("r2dbc:foo://user:@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasUser("user").hasNoPassword().hasNoDatabase();
+        assertThat(parseQuery("r2dbc:foo://:password@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasNoUser().hasPassword("password").hasNoDatabase();
+        assertThat(parseQuery("r2dbc:foo://@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasNoUser().hasNoPassword().hasNoDatabase();
+        assertThat(parseQuery("r2dbc:foo://:@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasNoUser().hasNoPassword().hasNoDatabase();
 
         assertThat(parseQuery("r2dbc:foo://a%26b%26f%3Ac%3Dd:password%204%21@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPassword("password 4!").hasPort(4711).hasUser("a&b" +
             "&f:c=d").hasNoDatabase();
