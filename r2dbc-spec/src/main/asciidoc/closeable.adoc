@@ -1,0 +1,33 @@
+[[closeable]]
+= Closeable Interface
+
+The `io.r2dbc.spi.Closeable` interface provides a mechanism for objects associated with resources to release these once the object is no longer in use. Associated resources are released without blocking the caller.
+
+[[closeable.usage]]
+== Usage
+
+A closeable object is expected to implement the `Closeable` interface so that callers can obtain a `Publisher` to initiate the close operation and get notified upon completion.
+
+.Closing a `Connection`.
+====
+[source,java]
+----
+// connection is a Connection object
+Publisher<Void> close = connection.close();
+----
+====
+
+`Connection` implements `Closeable` as mandatory part of R2DBC. Any stateful object (such as `ConnectionFactory`) can implement `Closeable` to provide a mechanism for releasing its resources.
+
+[[closeable.methods]]
+== Interface Methods
+
+The following methods are available on the `Closeable` interface:
+
+* `close`
+
+[[closeable.close]]
+== `close` Method
+
+The `close` method is used to return a `Publisher` to initiate the close operation and get notified upon completion.
+If the object is already closed, then subscriptions complete successfully and the close operation has no effect.

@@ -5,3 +5,5 @@ This section covers optional extensions to <<compliance.r2dbc,R2DBC Core>>.
 Extensions provide features that are not mandatory to implement by R2DBC implementations.
 
 include::wrapped.adoc[leveloffset=+1]
+
+include::closeable.adoc[leveloffset=+1]
