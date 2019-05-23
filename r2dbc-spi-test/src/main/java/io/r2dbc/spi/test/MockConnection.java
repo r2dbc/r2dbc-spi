@@ -18,6 +18,8 @@ package io.r2dbc.spi.test;
 
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.IsolationLevel;
+import io.r2dbc.spi.ValidationDepth;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 public final class MockConnection implements Connection {
@@ -44,9 +46,16 @@ public final class MockConnection implements Connection {
 
     private IsolationLevel setTransactionIsolationLevelIsolationLevel;
 
-    private MockConnection(@Nullable MockBatch batch, @Nullable MockStatement statement) {
+    private boolean valid;
+
+    private boolean validateCalled;
+
+    private ValidationDepth validationDepth;
+
+    private MockConnection(@Nullable MockBatch batch, @Nullable MockStatement statement, boolean valid) {
         this.batch = batch;
         this.statement = statement;
+        this.valid = valid;
     }
 
     public static Builder builder() {
@@ -127,6 +136,11 @@ public final class MockConnection implements Connection {
         return this.setTransactionIsolationLevelIsolationLevel;
     }
 
+    @Nullable
+    public ValidationDepth getValidationDepth() {
+        return this.validationDepth;
+    }
+
     public boolean isBeginTransactionCalled() {
         return this.beginTransactionCalled;
     }
@@ -141,6 +155,10 @@ public final class MockConnection implements Connection {
 
     public boolean isRollbackTransactionCalled() {
         return this.rollbackTransactionCalled;
+    }
+
+    public boolean isValidateCalled() {
+        return this.validateCalled;
     }
 
     @Override
@@ -168,6 +186,13 @@ public final class MockConnection implements Connection {
     }
 
     @Override
+    public Publisher<Boolean> validate(ValidationDepth depth) {
+        this.validationDepth = Assert.requireNonNull(depth, "depth must not be null");
+        this.validateCalled = true;
+        return Mono.just(this.valid);
+    }
+
+    @Override
     public String toString() {
         return "MockConnection{" +
             "batch=" + this.batch +
@@ -181,6 +206,9 @@ public final class MockConnection implements Connection {
             ", rollbackTransactionCalled=" + this.rollbackTransactionCalled +
             ", rollbackTransactionToSavepointName='" + this.rollbackTransactionToSavepointName + '\'' +
             ", setTransactionIsolationLevelIsolationLevel=" + this.setTransactionIsolationLevelIsolationLevel +
+            ", valid=" + this.valid +
+            ", validateCalled=" + this.validateCalled +
+            ", validationDepth=" + this.validationDepth +
             '}';
     }
 
@@ -189,6 +217,8 @@ public final class MockConnection implements Connection {
         private MockBatch batch;
 
         private MockStatement statement;
+
+        private boolean valid;
 
         private Builder() {
         }
@@ -199,11 +229,16 @@ public final class MockConnection implements Connection {
         }
 
         public MockConnection build() {
-            return new MockConnection(this.batch, this.statement);
+            return new MockConnection(this.batch, this.statement, this.valid);
         }
 
         public Builder statement(MockStatement statement) {
             this.statement = Assert.requireNonNull(statement, "statement must not be null");
+            return this;
+        }
+
+        public Builder valid(boolean valid) {
+            this.valid = valid;
             return this;
         }
 
@@ -212,6 +247,7 @@ public final class MockConnection implements Connection {
             return "Builder{" +
                 "batch=" + this.batch +
                 ", statement=" + this.statement +
+                ", valid=" + this.valid +
                 '}';
         }
 

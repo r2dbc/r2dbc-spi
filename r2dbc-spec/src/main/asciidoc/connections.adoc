@@ -208,10 +208,23 @@ Publisher<? extends Connection> publisher = factory.create();
 
 The connection is active once it was emitted by the `Publisher` and must be released ("closed") once it is no longer in use.
 
+== Validating `Connection` Objects
+
+The `Connection.validate(…)` method indicates whether the `Connection` is still valid.
+The `ValidationDepth` argument passed to this method indicates until which depth a connection should be validated: Local or Remote.
+
+* `ValidationDepth.LOCAL` requests client-side-only validation without engaging a remote conversation to validate a connection.
+* `ValidationDepth.REMOTE` initiates a remote validation by issuing a query or other means to validate a connection and the remote session.
+
+If `Connection.validate(…)` emits `true`, the `Connection` is still valid.
+If `false` is emitted, the `Connection` is not valid and any attempt to perform database interaction will fail.
+Callers of this method do not expect error signals.
+
 == Closing `Connection` Objects
 
 Calling `Connection.close()` prepares a close handle to release the connection and its associated resources.
 Connections must be closed to ensure proper resource management.
+`Connection.validate(…)` may be used to determine whether a `Connection` has been closed or is still valid.
 
 .Closing a `Connection`
 ====
