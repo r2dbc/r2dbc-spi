@@ -22,6 +22,7 @@ import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Statement;
+import io.r2dbc.spi.ValidationDepth;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -588,6 +589,23 @@ public interface Example<T> {
             .expectNext(1).as("rows inserted")
             .expectNext(Arrays.asList(100, 200)).as("values from select")
             .expectNext(Collections.singletonList(100)).as("value from select")
+            .verifyComplete();
+    }
+
+    @Test
+    default void validate() {
+
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.concat(connection.validate(ValidationDepth.LOCAL),
+                connection.validate(ValidationDepth.REMOTE),
+                connection.close(),
+                connection.validate(ValidationDepth.LOCAL),
+                connection.validate(ValidationDepth.REMOTE)))
+            .as(StepVerifier::create)
+            .expectNext(true).as("successful local validation")
+            .expectNext(true).as("successful remote validation")
+            .expectNext(false).as("failed local validation after close")
+            .expectNext(false).as("failed remote validation after close")
             .verifyComplete();
     }
 
