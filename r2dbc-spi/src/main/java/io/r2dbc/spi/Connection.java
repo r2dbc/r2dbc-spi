@@ -21,7 +21,7 @@ import org.reactivestreams.Publisher;
 /**
  * A single connection to a database.
  */
-public interface Connection {
+public interface Connection extends Closeable {
 
     /**
      * Begins a new transaction.
@@ -35,6 +35,7 @@ public interface Connection {
      *
      * @return a {@link Publisher} that termination is complete
      */
+    @Override
     Publisher<Void> close();
 
     /**
