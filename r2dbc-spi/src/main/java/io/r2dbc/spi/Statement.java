@@ -193,4 +193,17 @@ public interface Statement {
         return this;
     }
 
+    /**
+     * Configures {@link Statement} to retrieve a fixed number of rows when fetching results from a query instead deriving fetch size from back pressure.  If called multiple times, only the fetch
+     * size configured in the final invocation will be applied.  If the value specified is zero, then the hint is ignored.
+     * <p>
+     * The default implementation of this method is a no op and the default value is zero.
+     *
+     * @param rows the number of rows to fetch
+     * @return this {@code Statement}
+     */
+    default Statement fetchSize(int rows) {
+        return this;
+    }
+
 }
