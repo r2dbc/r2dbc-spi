@@ -103,4 +103,13 @@ public interface Connection {
      */
     Publisher<Void> setTransactionIsolationLevel(IsolationLevel isolationLevel);
 
+    /**
+     * Validates the connection according to the given {@link ValidationDepth}.
+     *
+     * @param depth the validation depth
+     * @return a {@link Publisher} that indicates whether the validation was successful
+     * @throws IllegalArgumentException if {@code depth} is {@code null}
+     */
+    Publisher<Boolean> validate(ValidationDepth depth);
+
 }
