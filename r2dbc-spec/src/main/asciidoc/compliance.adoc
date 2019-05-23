@@ -57,6 +57,7 @@ A driver that is compliant with the R2DBC specification must do the following:
   ** `io.r2dbc.spi.Batch`
 * Must implement `io.r2dbc.spi.Statement` interface with the exception of the following optional methods:
   ** `returnGeneratedValues(…)`: Calling this method should be a no-op for drivers not supporting key generation.
+  ** `fetchSize(…)`: Calling this method should be a no-op for drivers not support fetch size hints.
 * Must implement `io.r2dbc.spi.ColumnMetadata` interface with the exception of the following optional methods:
   ** `getPrecision()`
   ** `getScale()`

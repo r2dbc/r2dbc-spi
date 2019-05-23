@@ -158,3 +158,12 @@ result.map((row, metadata) -> row.get("id"));
 When not specifying column name(s), the R2DBC driver implementation will determine the columns or value to return.
 
 See the R2DBC SPI Specification for more details.
+
+[[statements.performance]]
+== Performance Hints
+
+The `Statement` interface provides a method that can be used to provide hints to a R2DBC driver.
+Calling `fetchSize` applies a fetch size hint to each query produced by the statement.
+Hints provided to the driver through this interface may be ignored by the driver if they are not appropriate or supported.
+Typically, fetch size can be derived from back-pressure hints.
+To optimize for performance it can be useful to provide hints to the driver on a per-statement basis.
