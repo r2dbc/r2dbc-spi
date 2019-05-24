@@ -20,6 +20,8 @@ import org.reactivestreams.Publisher;
 
 /**
  * A factory for creating {@link Connection}s.
+ *
+ * @see Connection
  */
 public interface ConnectionFactory {
 

@@ -78,6 +78,52 @@ public interface Example<T> {
     }
 
     @Test
+    default void autoCommitByDefault() {
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.just(connection.isAutoCommit())
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNext(true).as("new connections are in auto-commit mode")
+            .verifyComplete();
+    }
+
+    @Test
+    default void changeAutoCommitCommitsTransaction() {
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection ->
+                Flux.from(connection.setAutoCommit(false))
+                    .thenMany(connection.beginTransaction())
+                    .thenMany(connection.createStatement("INSERT INTO test VALUES(200)").execute())
+                    .flatMap(Result::getRowsUpdated)
+                    .thenMany(connection.setAutoCommit(true))
+                    .thenMany(connection.createStatement("SELECT value FROM test").execute())
+                    .flatMap(it -> it.map((row, metadata) -> row.get("value")))
+                    .concatWith(close(connection))
+            )
+            .as(StepVerifier::create)
+            .expectNext(200).as("autoCommit(true) committed the transaction. Expecting a value to be present")
+            .verifyComplete();
+    }
+
+    @Test
+    default void sameAutoCommitLeavesTransactionUnchanged() {
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection ->
+                Flux.from(connection.setAutoCommit(false))
+                    .thenMany(connection.beginTransaction())
+                    .thenMany(connection.createStatement("INSERT INTO test VALUES(200)").execute())
+                    .flatMap(Result::getRowsUpdated)
+                    .thenMany(connection.setAutoCommit(false))
+                    .thenMany(connection.rollbackTransaction())
+                    .thenMany(connection.createStatement("SELECT value FROM test").execute())
+                    .flatMap(it -> it.map((row, metadata) -> row.get("value")))
+                    .concatWith(close(connection))
+            )
+            .as(StepVerifier::create)
+            .verifyComplete();
+    }
+
+    @Test
     default void batch() {
         getJdbcOperations().execute("INSERT INTO test VALUES (100)");
 

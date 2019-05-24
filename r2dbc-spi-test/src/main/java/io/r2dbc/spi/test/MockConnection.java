@@ -28,6 +28,8 @@ public final class MockConnection implements Connection {
 
     private final MockStatement statement;
 
+    private boolean autoCommit = true;
+
     private boolean beginTransactionCalled = false;
 
     private boolean closeCalled = false;
@@ -132,13 +134,19 @@ public final class MockConnection implements Connection {
     }
 
     @Nullable
-    public IsolationLevel getSetTransactionIsolationLevelIsolationLevel() {
+    @Override
+    public IsolationLevel getTransactionIsolationLevel() {
         return this.setTransactionIsolationLevelIsolationLevel;
     }
 
     @Nullable
     public ValidationDepth getValidationDepth() {
         return this.validationDepth;
+    }
+
+    @Override
+    public boolean isAutoCommit() {
+        return this.autoCommit;
     }
 
     public boolean isBeginTransactionCalled() {
@@ -176,6 +184,12 @@ public final class MockConnection implements Connection {
     @Override
     public Mono<Void> rollbackTransactionToSavepoint(String name) {
         this.rollbackTransactionToSavepointName = Assert.requireNonNull(name, "name must not be null");
+        return Mono.empty();
+    }
+
+    @Override
+    public Publisher<Void> setAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
         return Mono.empty();
     }
 
