@@ -22,6 +22,9 @@ import org.reactivestreams.Subscription;
 
 import java.nio.ByteBuffer;
 
+/**
+ * Represents a handle to a large binary object.
+ */
 public interface Blob {
 
     /**

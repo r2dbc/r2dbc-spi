@@ -96,7 +96,7 @@ statement.bind(1, "Happy Books LLC");
 ====
 
 A value must be provided for each bind marker in the `Statement` object before it can be executed.
-The method used to execute a parameterized `Statement` an `IllegalStateException` if a value is not supplied for a bind marker.
+The `execute` method validates a parameterized `Statement` and throws an `IllegalStateException` if a bind marker is left without a binding.
 
 [[statements.batching]]
 === Batching
