@@ -71,7 +71,8 @@ public interface Connection extends Closeable {
      *
      * @param name the name of the savepoint to create
      * @return a {@link Publisher} that indicates that a savepoint has been created
-     * @throws IllegalArgumentException if {@code name} is {@code null}
+     * @throws IllegalArgumentException      if {@code name} is {@code null}
+     * @throws UnsupportedOperationException if savepoints are not supported
      */
     Publisher<Void> createSavepoint(String name);
 
@@ -113,7 +114,7 @@ public interface Connection extends Closeable {
      *
      * @param name the name of the savepoint to release
      * @return a {@link Publisher} that indicates that a savepoint has been released
-     * @throws IllegalArgumentException if {@code name} is {@code null}
+     * @throws IllegalArgumentException      if {@code name} is {@code null}
      */
     Publisher<Void> releaseSavepoint(String name);
 
@@ -129,7 +130,8 @@ public interface Connection extends Closeable {
      *
      * @param name the name of the savepoint to rollback to
      * @return a {@link Publisher} that indicates that a savepoint has been rolled back to
-     * @throws IllegalArgumentException if {@code name} is {@code null}
+     * @throws IllegalArgumentException      if {@code name} is {@code null}
+     * @throws UnsupportedOperationException if savepoints are not supported
      */
     Publisher<Void> rollbackTransactionToSavepoint(String name);
 
