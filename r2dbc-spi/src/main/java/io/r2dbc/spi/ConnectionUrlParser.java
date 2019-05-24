@@ -185,12 +185,23 @@ abstract class ConnectionUrlParser {
 
     private static void parseUserinfo(String s, ConnectionFactoryOptions.Builder builder) {
 
+        if (!s.contains(":")) {
+            String user = decode(s).toString();
+            builder.option(ConnectionFactoryOptions.USER, user);
+            return;
+        }
+
         String[] userinfo = s.split(":", 2);
 
         String user = decode(userinfo[0]).toString();
-        CharSequence password = decode(userinfo[1]);
+        if (!user.isEmpty()) {
+            builder.option(ConnectionFactoryOptions.USER, user);
+        }
 
-        builder.option(ConnectionFactoryOptions.USER, user).option(ConnectionFactoryOptions.PASSWORD, password);
+        CharSequence password = decode(userinfo[1]);
+        if (password.length() != 0) {
+            builder.option(ConnectionFactoryOptions.PASSWORD, password);
+        }
     }
 
     /**
