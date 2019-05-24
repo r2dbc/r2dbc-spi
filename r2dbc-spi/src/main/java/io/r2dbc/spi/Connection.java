@@ -19,12 +19,26 @@ package io.r2dbc.spi;
 import org.reactivestreams.Publisher;
 
 /**
- * A single connection to a database.
+ * A single connection to a database.  SQL statements are executed and results are returned within the context of a connection.  A {@link Connection} object can consist of any number of transport
+ * connections to the underlying database or represent a session over a multiplexed transport connection.  For maximum portability, connections should be used synchronously.
+ * <p>
+ * {@link Connection} objects initiate database conversations for transaction management and statement execution.  Objects created by a connection are only valid as long as the connection remains
+ * open.
+ * <p>
+ * When configuring a connection, R2DBC applications should use the appropriate methods such as {@link #beginTransaction()}, {@link #setAutoCommit(boolean)} and
+ * {@link #setTransactionIsolationLevel(IsolationLevel)} to change transaction properties instead.  Applications should not execute SQL commands directly to change the connection configuration when
+ * a R2DBC method is available.
+ * <p>
+ * New connections are by default created in {@link #setAutoCommit(boolean) auto-commit mode}.
+ *
+ * @see Statement
+ * @see Result
+ * @see Row
  */
 public interface Connection {
 
     /**
-     * Begins a new transaction.
+     * Begins a new transaction. Calling this method disables {@link #isAutoCommit() auto-commit} mode.
      *
      * @return a {@link Publisher} that indicates that the transaction is open
      */
@@ -70,7 +84,31 @@ public interface Connection {
     Statement createStatement(String sql);
 
     /**
-     * Releases a savepoint in the current transaction.
+     * Returns the auto-commit mode for this connection.
+     *
+     * @return {@literal true} if the connection is in auto-commit mode; {@literal false} otherwise.
+     */
+    boolean isAutoCommit();
+
+    /**
+     * Returns the {@link IsolationLevel} for this connection.
+     * <p>Isolation level is typically one of the following constants:
+     *
+     * <ul>
+     * <li>{@link IsolationLevel#READ_UNCOMMITTED}</li>
+     * <li>{@link IsolationLevel#READ_COMMITTED}</li>
+     * <li>{@link IsolationLevel#REPEATABLE_READ}</li>
+     * <li>{@link IsolationLevel#SERIALIZABLE}</li>
+     * </ul>
+     * <p>
+     * {@link IsolationLevel} is extensible so drivers can return a vendor-specific {@link IsolationLevel}.
+     *
+     * @return the {@link IsolationLevel} for this connection.
+     */
+    IsolationLevel getTransactionIsolationLevel();
+
+    /**
+     * Releases a savepoint in the current transaction.  Calling this for drivers not supporting savepoint release results in a no-op.
      *
      * @param name the name of the savepoint to release
      * @return a {@link Publisher} that indicates that a savepoint has been released
@@ -95,7 +133,31 @@ public interface Connection {
     Publisher<Void> rollbackTransactionToSavepoint(String name);
 
     /**
+     * Configures the auto-commit mode for the current transaction.
+     * If a connection is in auto-commit mode, then all {@link Statement}s will be executed and committed as individual transactions.
+     * Otherwise, in explicit transaction mode, transactions have to be {@link #beginTransaction() started} explicitly.
+     * A transaction needs to be either {@link #commitTransaction() committed} or {@link #rollbackTransaction() rolled back} to clean up the transaction state.
+     * <p>
+     * Calling this method during an active transaction and the
+     * auto-commit mode is changed, the transaction is committed. Calling this method without changing auto-commit mode this invocation results in a no-op.
+     *
+     * @param autoCommit the isolation level for this transaction
+     * @return a {@link Publisher} that indicates that auto-commit mode has been configured
+     */
+    Publisher<Void> setAutoCommit(boolean autoCommit);
+
+    /**
      * Configures the isolation level for the current transaction.
+     * <p>Isolation level is typically one of the following constants:
+     *
+     * <ul>
+     * <li>{@link IsolationLevel#READ_UNCOMMITTED}</li>
+     * <li>{@link IsolationLevel#READ_COMMITTED}</li>
+     * <li>{@link IsolationLevel#REPEATABLE_READ}</li>
+     * <li>{@link IsolationLevel#SERIALIZABLE}</li>
+     * </ul>
+     * <p>
+     * {@link IsolationLevel} is extensible so drivers can accept a vendor-specific {@link IsolationLevel}.
      *
      * @param isolationLevel the isolation level for this transaction
      * @return a {@link Publisher} that indicates that a transaction level has been configured

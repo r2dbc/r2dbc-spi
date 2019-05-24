@@ -26,6 +26,8 @@ include::overview.adoc[leveloffset=+1]
 
 include::connections.adoc[leveloffset=+1]
 
+include::transactions.adoc[leveloffset=+1]
+
 include::statements.adoc[leveloffset=+1]
 
 include::batches.adoc[leveloffset=+1]
