@@ -20,6 +20,11 @@ import org.reactivestreams.Publisher;
 
 /**
  * A statement that can be executed multiple times in a prepared and optimized way.
+ *
+ * @see Result
+ * @see Row
+ * @see Blob
+ * @see Clob
  */
 public interface Statement {
 

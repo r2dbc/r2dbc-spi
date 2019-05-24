@@ -1,0 +1,130 @@
+[[transactions]]
+= Transactions
+
+Transactions are used to provide data integrity, isolation, correct application semantics, and a consistent view of data during concurrent database access.
+All R2DBC compliant drivers are required to provide transaction support.
+Transaction management in the R2DBC API reflects SQL concepts:
+
+* Auto-commit mode
+* Transaction isolation levels
+* Savepoints
+
+This section explains transaction semantics associated with a single `Connection` object.
+
+[[transactions.boundaries]]
+== Transaction Boundaries
+
+Transactions can be started either implicit or explicit.
+Implicit transactions are started by SQL execution when a `Connection` is in enabled auto-commit mode which is the default for newly created connections.
+Explicit transactions are started with disabled auto-commit mode by invoking the `beginTransaction()` method.
+Transactions are either started by an R2DBC driver or by the underlying database.
+
+The `Connection` attribute auto-commit mode specifies when to end transactions.
+Enabling auto-commit mode causes a transaction commit after each SQL statement as soon as that statement is completely executed.
+
+[[transactions.auto-commit]
+== Auto-commit Mode
+
+A `ConnectionFactory` creates new `Connection` objects with auto-commit mode enabled.
+The `Connection` interface provides two methods to interact with auto-commit mode:
+
+* `setAutoCommit`
+* `isAutoCommit`
+
+R2DBC applications should change auto-commit mode by invoking the `setAutoCommit` method instead of executing SQL commands to change the connection configuration.
+If the value of auto-commit is changed during an active transaction, the current transaction is committed.
+If `setAutoCommit` is called and the value for auto-commit is not changed from its current value, this is treated as a no-op.
+
+Changing auto-commit mode typically engages database activity, therefore, the method returns a `Publisher`.
+Querying auto-commit mode is typically a local operation that involves driver state without database communication.
+
+When auto-commit is disabled, each transaction must be explicitly started and cleaned up by calling the `Connection` methods `beginTransaction`, `commitTransaction`, `rollbackTransaction` respectively.
+
+This is appropriate for cases where transaction management is being done in a layer above the driver, such as:
+
+* The application needs to group multiple SQL statements into a single transaction
+* An application container manages the transaction state
+
+[[transactions.isolation]
+== Transaction Isolation
+
+Transaction isolation levels define the level of visibility ("isolation") for statements that are executed within a transaction.
+They impact concurrent access while multiple transactions are active.
+
+The default transaction level for a `Connection` object is vendor-specific and determined by the driver supplying the connection.
+Typically, it defaults to the transaction level supported by the underlying data source.
+
+The `Connection` interface provides two methods to interact with transaction isolation levels:
+
+* `setTransactionIsolationLevel`
+* `getTransactionIsolationLevel`
+
+R2DBC applications should change transaction isolation levels by invoking the `setTransactionIsolationLevel` method instead of executing SQL commands to change the connection configuration.
+
+Changing transaction isolation levels typically engage database activity, therefore, the method returns a `Publisher`.
+Changing an isolation level during an active transaction results in implementation-specific behavior.
+Querying transaction isolation levels is typically a local operation that involves driver state without database communication.
+The return value of the method `getTransactionIsolationLevel` should reflect the current isolation level when it actually occurs.
+`IsolationLevel` is an extensible runtime-constant so drivers may define their own isolation levels.
+A driver may not support transaction levels. Calling `getTransactionIsolationLevel` results in returning vendor-specific `IsolationLevel` object.
+
+=== Performance Considerations
+
+With increasing the transaction isolation level, databases require typically more locking and resource overhead to ensure isolation level semantics.
+This, in turn, lowers the degree of concurrent access that can be supported.
+As a result, applications may see degraded performance when they use higher transaction isolation levels.
+For this reason, a transaction manager, whether it is the application itself or part of the application container, should weigh the need for data consistency against the requirements for performance when determining which transaction isolation level is appropriate.
+
+[[transactions.savepoints]]
+== Savepoints
+
+Savepoints provide a fine-grained control mechanism by marking intermediate points within a transaction.
+Once a savepoint has been created, a transaction can be rolled back to that savepoint without affecting preceding work.
+
+=== Working with Savepoints
+
+The `Connection` interface defines methods to interact with savepoints:
+
+* `createSavepoint`
+* `releaseSavepoint`
+* `rollbackTransactionToSavepoint`
+
+Savepoints are created during an active transaction and are only valid as long as the transaction is active.
+The method `createSavepoint` can be used to set a savepoint within the current transaction.
+A transaction will be started if `createSavepoint` is invoked and there is no active transaction switching the connection to disabled auto-commit mode.
+The method `rollbackTransactionToSavepoint` is used to roll back work to a previous savepoint without rolling back the entire transaction.
+
+.Rolling back transasction to a savepoint
+====
+[source,java]
+----
+// connection is a Connection object
+Publisher<Void> begin = connection.beginTransaction();
+
+Publisher<Void> insert1 = connection.createStatement("INSERT INTO books VALUES ('John Doe')").execute();
+
+Publisher<Void> savepoint = connection.createSavepoint("savepoint");
+
+Publisher<Void> insert2 = connection.createStatement("INSERT INTO books VALUES ('Jane Doe')").execute();
+
+…
+
+Publisher<Void> partialRollback = connection.rollbackTransactionToSavepoint("savepoint");
+
+…
+
+Publisher<Void> commit = connection.commit();
+
+// publishers are materialized in the order: begin, insert1, savepoint, insert2, partialRollback, commit
+----
+====
+
+=== Releasing a Savepoint
+
+Savepoints allocate resources on the databases and some vendors may require releasing a savepoint to dispose resources.
+The `Connection` interface  defines the method `releaseSavepoint` to release no longer needed savepoints.
+
+Savepoints that were created during a transaction are released and are invalidated when the transaction is committed or when the entire transaction is rolled back.
+Rolling a transaction back to a savepoint automatically releases it. A rollback also invalidates any other savepoints that were created after the savepoint in question.
+
+Calling `releaseSavepoint` for drivers not supporting savepoint release results in a no-op.
