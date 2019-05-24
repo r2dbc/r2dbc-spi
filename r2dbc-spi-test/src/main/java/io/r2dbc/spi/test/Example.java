@@ -571,6 +571,18 @@ public interface Example<T> {
     }
 
     @Test
+    default void savePointStartsTransaction() {
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Mono.from(connection
+                .createSavepoint("test_savepoint"))
+                .then(Mono.fromSupplier(connection::isAutoCommit))
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNext(false).as("createSavepoint starts a transaction")
+            .verifyComplete();
+    }
+
+    @Test
     default void transactionCommit() {
         getJdbcOperations().execute("INSERT INTO test VALUES (100)");
 
