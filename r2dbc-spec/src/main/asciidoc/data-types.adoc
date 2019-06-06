@@ -19,6 +19,7 @@ Driver implementations should implement the following type mapping and can suppo
 * <<datatypes.mapping.binary,Binary Types>>
 * <<datatypes.mapping.numeric,Numeric Types>>
 * <<datatypes.mapping.datetime,Datetime Types>>
+* <<datatypes.mapping.intervals,Interval Types>>
 * <<datatypes.mapping.collection,Collection Types>>
 
 [[datatypes.mapping.char]]
@@ -58,7 +59,7 @@ Driver implementations should implement the following type mapping and can suppo
 |SQL Type|Description |Java Type
 
 | `BOOLEAN`
-| Single-bit representing a boolean state.
+| Value representing a boolean state.
 | `java.lang.Boolean`
 
 |===
@@ -91,6 +92,10 @@ Driver implementations should implement the following type mapping and can suppo
 | Represents an integer. The minimum and maximum values depend on the DBMS, typically 4-byte precision.
 | `java.lang.Integer`
 
+| `TINYINT`
+| Same as `INTEGER` type except that it might hold a smaller range of values, depending on the DBMS, typically 1-byte precision.
+| `java.lang.Byte`
+
 | `SMALLINT`
 | Same as `INTEGER` type except that it might hold a smaller range of values, depending on the DBMS, typically 1- or 2-byte precision.
 | `java.lang.Short`
@@ -104,11 +109,15 @@ Driver implementations should implement the following type mapping and can suppo
 | `java.math.BigDecimal`
 
 | `FLOAT(p)`
-| Represents an approximate numerical with mantissa precision `p`.
-| `java.lang.Double`
+| Represents an approximate numerical with mantissa precision `p`. Databases using IEEE representation can map values to either 32-bit or 64-bit floating point types depending on precision parameter `p`.
+| `java.lang.Double` or `java.lang.Float`
 
 | `REAL`
 | Same as `FLOAT` type except that the DBMS defines the precision.
+| `java.lang.Float`
+
+| `DOUBLE PRECISION`
+| Represents an approximate numerical.
 | `java.lang.Double`
 
 |===
@@ -126,21 +135,28 @@ Driver implementations should implement the following type mapping and can suppo
 | Represents a time without a date part and without timezone.
 | `java.time.LocalTime`
 
+| `TIME WITH TIME ZONE`
+| Represents a time with a timezone offset.
+| `java.time.OffsetTime`
+
 | `TIMESTAMP`
 | Represents a date/time without a timezone.
 | `java.time.LocalDateTime`
 
-| `TIMESTAMP` with Timezone Offset
+| `TIMESTAMP WITH TIME ZONE`
 | Represents a date/time with a timezone offset.
 | `java.time.OffsetDateTime`
 
-| `TIMESTAMP` with Timezone
-| Represents a date/time with a timezone.
-| `java.time.ZonedDateTime`
+|===
 
-| `INTERVAL`
-| Interval date types such as `YEAR`, `MONTH`, `DAY`, `HOUR` and similar representing a time quantity.
-| `java.time.Duration`
+[[datatypes.mapping.intervals]]
+.SQL Type Mapping for Interval Types
+|===
+|SQL Type|Description |Java Type
+
+| `INTERVAL(p)`
+| Interval date types such as `YEAR`, `MONTH`, `DAY`, `HOUR` and similar representing a time quantity. Mapping depends on the precision `p`.
+| `java.time.Duration` or `java.time.Period`
 
 |===
 
