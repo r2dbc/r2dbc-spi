@@ -105,7 +105,7 @@ Driver implementations should implement the following type mapping and can suppo
 | `java.lang.Long`
 
 | `DECIMAL(p, s)`, `NUMERIC(p, s)`
-| Fixed precision and scale numbers with precision `p`, scale `s`. A decimal number, that is a number that can have a decimal point in it. The size argument has two parts: precision and scale.
+| Fixed precision and scale numbers with precision `p`, scale `s`. A number that can have a decimal point in it.
 | `java.math.BigDecimal`
 
 | `FLOAT(p)`
@@ -117,7 +117,7 @@ Driver implementations should implement the following type mapping and can suppo
 | `java.lang.Float`
 
 | `DOUBLE PRECISION`
-| Represents an approximate numerical.
+| Same as `FLOAT` type except that the DBMS defines the precision. Typically greater precision as `REAL`.
 | `java.lang.Double`
 
 |===
