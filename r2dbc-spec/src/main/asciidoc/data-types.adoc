@@ -116,7 +116,7 @@ Driver implementations should implement the following type mapping and can suppo
 | `java.lang.Float`
 
 | `DOUBLE PRECISION`
-| Same as `FLOAT` type except that the DBMS defines the precision. Typically greater precision as `REAL`.
+| Same as `FLOAT` type except that the DBMS defines the precision. It has greater precision than `REAL`.
 | `java.lang.Double`
 
 |===
