@@ -19,7 +19,6 @@ Driver implementations should implement the following type mapping and can suppo
 * <<datatypes.mapping.binary,Binary Types>>
 * <<datatypes.mapping.numeric,Numeric Types>>
 * <<datatypes.mapping.datetime,Datetime Types>>
-* <<datatypes.mapping.intervals,Interval Types>>
 * <<datatypes.mapping.collection,Collection Types>>
 
 [[datatypes.mapping.char]]
@@ -146,17 +145,6 @@ Driver implementations should implement the following type mapping and can suppo
 | `TIMESTAMP WITH TIME ZONE`
 | Represents a date/time with a timezone offset.
 | `java.time.OffsetDateTime`
-
-|===
-
-[[datatypes.mapping.intervals]]
-.SQL Type Mapping for Interval Types
-|===
-|SQL Type|Description |Java Type
-
-| `INTERVAL(p)`
-| Interval date types such as `YEAR`, `MONTH`, `DAY`, `HOUR` and similar representing a time quantity. Mapping depends on the precision `p`.
-| `java.time.Duration` or `java.time.Period`
 
 |===
 
