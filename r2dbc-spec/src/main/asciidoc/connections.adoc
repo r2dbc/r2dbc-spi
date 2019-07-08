@@ -218,7 +218,7 @@ Connections must be closed to ensure proper resource management.
 [source,java]
 ----
 // connection is a ConnectionFactory object
-Publisher<Void> close = connection.create();
+Publisher<Void> close = connection.close();
 ----
 ====
 
