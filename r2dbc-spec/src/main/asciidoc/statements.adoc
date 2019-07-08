@@ -103,7 +103,7 @@ The `execute` method validates a parameterized `Statement` and throws an `Illega
 
 Parameterized `Statement` objects accept multiple parameter binding sets submit a batch of commands to the database for execution.
 Batch execution is initiated by invoking the `add()` method on the `Statement` object after providing all parameters.
-After calling `add()`, the next set of parameter bindings is provided by calling bing methods accordingly.
+After calling `add()`, the next set of parameter bindings is provided by calling bind methods accordingly.
 
 .Executing a `Statement` batch
 ====

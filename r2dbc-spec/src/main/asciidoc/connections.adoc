@@ -193,6 +193,7 @@ ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
 
 See the R2DBC SPI Specification for more details.
 
+[[connections.factory.create]]
 == Obtaining `Connection` Objects
 
 Once a `ConnectionFactory` is bootstrapped, connections are obtained from the `create()` method.
@@ -208,6 +209,7 @@ Publisher<? extends Connection> publisher = factory.create();
 
 The connection is active once it was emitted by the `Publisher` and must be released ("closed") once it is no longer in use.
 
+[[connections.close]]
 == Closing `Connection` Objects
 
 Calling `Connection.close()` prepares a close handle to release the connection and its associated resources.
@@ -218,7 +220,7 @@ Connections must be closed to ensure proper resource management.
 [source,java]
 ----
 // connection is a ConnectionFactory object
-Publisher<Void> close = connection.create();
+Publisher<Void> close = connection.close();
 ----
 ====
 
