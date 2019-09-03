@@ -261,7 +261,7 @@ public interface TestKit<T> {
             .flatMapMany(connection -> Flux.from(connection
 
                 .createStatement(String.format("INSERT INTO blob_test VALUES (%s)", getPlaceholder(0)))
-                .bind(getPlaceholder(0), Blob.from(Mono.just(StandardCharsets.UTF_8.encode("test-value"))))
+                .bind(getIdentifier(0), Blob.from(Mono.just(StandardCharsets.UTF_8.encode("test-value"))))
                 .execute())
 
                 .concatWith(close(connection)))
@@ -316,7 +316,7 @@ public interface TestKit<T> {
             .flatMapMany(connection -> Flux.from(connection
 
                 .createStatement(String.format("INSERT INTO clob_test VALUES (%s)", getPlaceholder(0)))
-                .bind(getPlaceholder(0), Clob.from(Mono.just("test-value")))
+                .bind(getIdentifier(0), Clob.from(Mono.just("test-value")))
                 .execute())
 
                 .concatWith(close(connection)))
