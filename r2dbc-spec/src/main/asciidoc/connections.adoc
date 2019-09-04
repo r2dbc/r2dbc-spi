@@ -209,6 +209,28 @@ Publisher<? extends Connection> publisher = factory.create();
 
 The connection is active once it was emitted by the `Publisher` and must be released ("closed") once it is no longer in use.
 
+[[connections.metadata]]
+== Connection Metadata
+
+Connections are required to expose metadata about the database they are connected to.
+Connection Metadata is typically discovered dynamically based from information obtained during `Connection` initialization.
+
+.`ConnectionMetadata` Interface
+====
+[source,java]
+----
+public interface ConnectionMetadata {
+
+    String getDatabaseProductName();
+
+    String getDatabaseVersion();
+
+}
+----
+====
+
+See the R2DBC SPI Specification for more details.
+
 [[connections.validate]]
 == Validating `Connection` Objects
 

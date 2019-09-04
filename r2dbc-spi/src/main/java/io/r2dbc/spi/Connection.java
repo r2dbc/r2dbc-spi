@@ -93,6 +93,13 @@ public interface Connection extends Closeable {
     boolean isAutoCommit();
 
     /**
+     * Returns the {@link ConnectionMetadata} about the product this {@link Connection} is connected to.
+     *
+     * @return the {@link ConnectionMetadata} about the product this {@link Connection} is connected to
+     */
+    ConnectionMetadata getMetadata();
+
+    /**
      * Returns the {@link IsolationLevel} for this connection.
      * <p>Isolation level is typically one of the following constants:
      *

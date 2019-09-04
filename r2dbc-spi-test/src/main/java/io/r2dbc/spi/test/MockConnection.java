@@ -17,6 +17,7 @@
 package io.r2dbc.spi.test;
 
 import io.r2dbc.spi.Connection;
+import io.r2dbc.spi.ConnectionMetadata;
 import io.r2dbc.spi.IsolationLevel;
 import io.r2dbc.spi.ValidationDepth;
 import org.reactivestreams.Publisher;
@@ -131,6 +132,11 @@ public final class MockConnection implements Connection {
     @Nullable
     public String getRollbackTransactionToSavepointName() {
         return this.rollbackTransactionToSavepointName;
+    }
+
+    @Override
+    public ConnectionMetadata getMetadata() {
+        return MockConnectionMetadata.INSTANCE;
     }
 
     @Nullable
