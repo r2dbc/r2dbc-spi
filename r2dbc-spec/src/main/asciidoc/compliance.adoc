@@ -31,11 +31,11 @@ The following guidelines apply to R2DBC compliance:
 
 * The specification consists of this specification document and specifications documented in each interface's Javadoc.
 
-* Drivers must support bind parameter markers.
+* Drivers supporting parametrized statements must support bind parameter markers.
+
+* Drivers supporting parametrized statements must support at least one parameter binding method (indexed or named).
 
 * Drivers must support transactions.
-
-* Drivers must support native and indexed access to column and parameter references.
 
 * Index references to columns and parameters are zero-based. The first index begins with `0`.
 
