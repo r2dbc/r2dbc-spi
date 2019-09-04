@@ -44,7 +44,9 @@ public interface Statement {
      * @return this {@link Statement}
      * @throws IllegalArgumentException  if {@code identifier} or {@code value} is {@code null}
      * @throws IndexOutOfBoundsException if the parameter index is out of range
+     * @deprecated Use {@link #bind(String, Object)} instead
      */
+    @Deprecated
     Statement bind(Object identifier, Object value);
 
     /**
@@ -57,6 +59,19 @@ public interface Statement {
      * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     Statement bind(int index, Object value);
+
+    /**
+     * Bind a value.  The default implementation of this method calls {@link #bind(Object, Object)} to allow SPI change in a less-breaking way.
+     *
+     * @param name  the name of identifier to bind to
+     * @param value the value to bind
+     * @return this {@link Statement}
+     * @throws IllegalArgumentException  if {@code name} or {@code value} is {@code null}
+     * @throws IndexOutOfBoundsException if the parameter index is out of range
+     */
+    default Statement bind(String name, Object value) {
+        return bind((Object) name, value);
+    }
 
     /**
      * Bind a value to an index.  Indexes are zero-based.
@@ -161,7 +176,9 @@ public interface Statement {
      * @param type       the type of null value
      * @return this {@link Statement}
      * @throws IllegalArgumentException if {@code identifier} or {@code type} is {@code null}
+     * @deprecated Use {@link #bindNull(String, Class)} instead
      */
+    @Deprecated
     Statement bindNull(Object identifier, Class<?> type);
 
     /**
@@ -174,6 +191,18 @@ public interface Statement {
      * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     Statement bindNull(int index, Class<?> type);
+
+    /**
+     * Bind a {@code null} value.  The default implementation of this method calls {@link #bindNull(Object, Class)} to allow SPI change in a less-breaking way.
+     *
+     * @param name the name of identifier to bind to
+     * @param type the type of null value
+     * @return this {@link Statement}
+     * @throws IllegalArgumentException if {@code name} or {@code type} is {@code null}
+     */
+    default Statement bindNull(String name, Class<?> type) {
+        return bindNull((Object) name, type);
+    }
 
     /**
      * Executes one or more SQL statements and returns the {@link Result}s.
