@@ -33,9 +33,9 @@ public interface ConnectionFactory {
     Publisher<? extends Connection> create();
 
     /**
-     * Returns the {@link ConnectionFactoryMetadata} about the product this {@link ConnectionFactory} is connected to.
+     * Returns the {@link ConnectionFactoryMetadata} about the product this {@link ConnectionFactory} is applicable to.
      *
-     * @return the {@link ConnectionFactoryMetadata} about the product this {@link ConnectionFactory} is connected to
+     * @return the {@link ConnectionFactoryMetadata} about the product this {@link ConnectionFactory} is applicable to
      */
     ConnectionFactoryMetadata getMetadata();
 

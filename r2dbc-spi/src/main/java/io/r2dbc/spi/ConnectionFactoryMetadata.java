@@ -17,14 +17,14 @@
 package io.r2dbc.spi;
 
 /**
- * Metadata about the product a {@link ConnectionFactory} is connected to.
+ * Metadata about the product a {@link ConnectionFactory} is applicable to.
  */
 public interface ConnectionFactoryMetadata {
 
     /**
-     * Returns the name of the product a {@link ConnectionFactory} is connected to.
+     * Returns the name of the product a {@link ConnectionFactory} can connect to
      *
-     * @return the name of the product a {@link ConnectionFactory} is connected to
+     * @return the name of the product a {@link ConnectionFactory} can connect to
      */
     String getName();
 

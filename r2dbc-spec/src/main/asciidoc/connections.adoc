@@ -209,7 +209,7 @@ Publisher<? extends Connection> publisher = factory.create();
 
 The connection is active once it was emitted by the `Publisher` and must be released ("closed") once it is no longer in use.
 
-[[connections.close]]
+[[connections.validate]]
 == Validating `Connection` Objects
 
 The `Connection.validate(…)` method indicates whether the `Connection` is still valid.
@@ -222,6 +222,7 @@ If `Connection.validate(…)` emits `true`, the `Connection` is still valid.
 If `false` is emitted, the `Connection` is not valid and any attempt to perform database interaction will fail.
 Callers of this method do not expect error signals.
 
+[[connections.close]]
 == Closing `Connection` Objects
 
 Calling `Connection.close()` prepares a close handle to release the connection and its associated resources.
