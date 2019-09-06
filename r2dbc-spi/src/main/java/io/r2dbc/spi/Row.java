@@ -50,7 +50,13 @@ public interface Row {
      */
     @Nullable
     @Deprecated
-    <T> T get(Object identifier, Class<T> type);
+    default <T> T get(Object identifier, Class<T> type) {
+        if (identifier instanceof Integer) {
+            return get(((Integer) identifier).intValue(), type);
+        }
+
+        return get((String) identifier, type);
+    }
 
     /**
      * Returns the value for a column in this row using the default type mapping.  The default implementation of this method calls {@link #get(Object, Class)} passing {@link Object} as the type in

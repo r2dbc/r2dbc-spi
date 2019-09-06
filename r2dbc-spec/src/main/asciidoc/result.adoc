@@ -88,8 +88,7 @@ The following methods are available on the `Row` interface:
 * `<T> T get(int, Class<T>)`
 * `<T> T get(String, Class<T>)`
 
-Both `get(int[, Class])` methods accept column indexes starting at 0.
-And both `get(String[, Class])` methods accept column names.
+`get(int[, Class])` methods accept column indexes starting at 0, `get(String[, Class])` methods accept column name aliases as they are represented in the result.
 Column names used as input to the `get` methods are case insensitive.
 Column names do not necessarily reflect the column names how they are in the underlying tables but rather how columns are represented (e.g. aliased) in the result.
 

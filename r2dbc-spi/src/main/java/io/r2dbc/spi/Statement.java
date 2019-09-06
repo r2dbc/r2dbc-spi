@@ -47,7 +47,13 @@ public interface Statement {
      * @deprecated Use {@link #bind(String, Object)} instead
      */
     @Deprecated
-    Statement bind(Object identifier, Object value);
+    default Statement bind(Object identifier, Object value) {
+        if (identifier instanceof Integer) {
+            return bind(((Integer) identifier).intValue(), value);
+        }
+
+        return bind((String) identifier, value);
+    }
 
     /**
      * Bind a value to an index.  Indexes are zero-based.
@@ -179,7 +185,13 @@ public interface Statement {
      * @deprecated Use {@link #bindNull(String, Class)} instead
      */
     @Deprecated
-    Statement bindNull(Object identifier, Class<?> type);
+    default Statement bindNull(Object identifier, Class<?> type) {
+        if (identifier instanceof Integer) {
+            return bindNull(((Integer) identifier).intValue(), type);
+        }
+
+        return bindNull((String) identifier, type);
+    }
 
     /**
      * Bind a {@code null} value.

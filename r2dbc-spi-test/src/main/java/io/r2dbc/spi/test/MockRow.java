@@ -39,19 +39,45 @@ public final class MockRow implements Row {
     }
 
     @Override
-    @Nullable
     @SuppressWarnings("unchecked")
-    public <T> T get(Object identifier, Class<T> type) {
-        Assert.requireNonNull(identifier, "identifier must not be null");
+    public <T> T get(int index, Class<T> type) {
+
         Assert.requireNonNull(type, "type must not be null");
 
-        Identified identified = new Identified(identifier, type);
+        Identified identified = new Identified(index, type);
 
         if (!this.identified.containsKey(identified)) {
-            throw new AssertionError(String.format("Unexpected call to get(Object, Class) with values '%s', '%s'", identifier, type.getName()));
+            throw new AssertionError(String.format("Unexpected call to get(Object, Class) with values '%s', '%s'", index, type.getName()));
         }
 
         return (T) this.identified.get(identified);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T get(String name, Class<T> type) {
+
+        Assert.requireNonNull(name, "name must not be null");
+        Assert.requireNonNull(type, "type must not be null");
+
+        Identified identified = new Identified(name, type);
+
+        if (!this.identified.containsKey(identified)) {
+            throw new AssertionError(String.format("Unexpected call to get(Object, Class) with values '%s', '%s'", name, type.getName()));
+        }
+
+        return (T) this.identified.get(identified);
+    }
+
+    @Deprecated
+    @Override
+    @Nullable
+    public <T> T get(Object identifier, Class<T> type) {
+        if (identifier instanceof Integer) {
+            return get(((Integer) identifier).intValue(), type);
+        }
+
+        return get((String) identifier, type);
     }
 
     @Override
