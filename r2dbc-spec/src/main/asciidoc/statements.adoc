@@ -69,6 +69,7 @@ Parameterized statements may be cached by R2DBC implementations for resuse (e.g.
 The `Statement` interface defines `bind(…)` and `bindNull(…)` methods to provide parameter values for bind marker substitution.
 The parameter type is defined by the actual value that is bound to a parameter.
 Each bind method accepts two arguments. The first is either ordinal parameter position starting at `0` (zero) or the parameter placeholder representation.
+The method of parameter binding (positional or by identifier) is vendor-specific and a driver should document its preferred binding mechanism.
 The second and any remaining parameters specify the value to be assigned to the parameter.
 
 .Binding parameters to a `Statement` object by placeholder
