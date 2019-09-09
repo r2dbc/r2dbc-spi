@@ -40,8 +40,11 @@ result.map(new BiFunction<Row, RowMetadata, Object>() {
 
 `RowMetadata` methods are used to retrieve metadata for a single or all columns.
 
-* `getColumnMetadata(…)` returns the `ColumnMetadata` by using a column identifier. The identifier is either a zero-based index or the column name, see <<compliance.guidelines>>.
+* `getColumnMetadata(int)` returns the `ColumnMetadata` by using a zero-based index, see <<compliance.guidelines>>.
+* `getColumnMetadata(String)` returns the `ColumnMetadata` by using the column name.
 * `getColumnMetadatas()` returns an unmodifiable collection of `ColumnMetadata` objects.
+
+The `getColumnMetadata(Object)` method have **deprecated** and will be remove before the release of 0.8.0.RELEASE.
 
 == Retrieving General Information for a Column
 
