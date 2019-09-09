@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -52,11 +53,23 @@ public final class MockRowMetadata implements RowMetadata {
         return builder().build();
     }
 
-    @Override
-    public ColumnMetadata getColumnMetadata(Object identifier) {
-        Assert.requireNonNull(identifier, "identifier must not be null");
 
-        return this.columnMetadatas.get((Integer) identifier);
+    @Override
+    public ColumnMetadata getColumnMetadata(int index) {
+        return this.columnMetadatas.get(index);
+    }
+
+    @Override
+    public ColumnMetadata getColumnMetadata(String name) {
+        Assert.requireNonNull(name, "name must not be null");
+
+        for (ColumnMetadata columnMetadata : columnMetadatas) {
+            if (columnMetadata.getName().equalsIgnoreCase(name)) {
+                return columnMetadata;
+            }
+        }
+
+        throw new NoSuchElementException(String.format("Column %s not found", name));
     }
 
     @Override

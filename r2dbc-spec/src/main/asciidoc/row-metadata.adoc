@@ -18,7 +18,7 @@ Issuing queries during result processing conflicts with the streaming nature of 
 A `RowMetadata` object is created during tabular results consumption through `Result.map(…)`.
 It is created for each row. The following example illustrates retrieval and usage using an anonymous inner class:
 
-.Using `RowMetadata` and retieving `ColumnMetadata`
+.Using `RowMetadata` and retrieving `ColumnMetadata`
 ====
 [source,java]
 ----
@@ -40,8 +40,13 @@ result.map(new BiFunction<Row, RowMetadata, Object>() {
 
 `RowMetadata` methods are used to retrieve metadata for a single or all columns.
 
-* `getColumnMetadata(…)` returns the `ColumnMetadata` by using a column identifier. The identifier is either a zero-based index or the column name, see <<compliance.guidelines>>.
+* `getColumnMetadata(int)` returns the `ColumnMetadata` by using a zero-based index, see <<compliance.guidelines>>.
+* `getColumnMetadata(String)` returns the `ColumnMetadata` by using the column name.
 * `getColumnMetadatas()` returns an unmodifiable collection of `ColumnMetadata` objects.
+
+// TODO
+
+The `getColumnMetadata(Object)` method are **deprecated** and will be removed with the of 0.8.0.RC1 release.
 
 == Retrieving General Information for a Column
 
