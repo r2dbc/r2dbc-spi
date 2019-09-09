@@ -38,7 +38,12 @@ public interface RowMetadata {
      * @deprecated Use {@link #getColumnMetadata(int)} or {@link #getColumnMetadata(String)} instead
      */
     @Deprecated
-    ColumnMetadata getColumnMetadata(Object identifier);
+    default ColumnMetadata getColumnMetadata(Object identifier) {
+        if (identifier instanceof Integer) {
+            return getColumnMetadata(((Integer) identifier).intValue());
+        }
+        return getColumnMetadata((String) identifier);
+    }
 
     /**
      * Returns the {@link ColumnMetadata} for one column in this row.  The default implementation of this method calls {@link #getColumnMetadata(Object)} to allow SPI change in a less-breaking way.
