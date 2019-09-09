@@ -58,6 +58,17 @@ public final class MockStatement implements Statement {
     }
 
     @Override
+    public Statement bind(String name, Object value) {
+
+        Assert.requireNonNull(name, "name must not be null");
+        Assert.requireNonNull(value, "value must not be null");
+
+        getCurrent().put(name, value);
+        return this;
+    }
+
+    @Deprecated
+    @Override
     public MockStatement bind(Object identifier, Object value) {
         Assert.requireNonNull(identifier, "identifier must not be null");
         Assert.requireNonNull(value, "value must not be null");
@@ -74,6 +85,7 @@ public final class MockStatement implements Statement {
         return this;
     }
 
+    @Deprecated
     @Override
     public MockStatement bindNull(Object identifier, Class<?> type) {
         Assert.requireNonNull(identifier, "identifier must not be null");

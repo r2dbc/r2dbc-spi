@@ -70,6 +70,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @param <T> type of parameter placeholder identifiers, see {@link #getIdentifier(int)}.
  */
+@SuppressWarnings("deprecation")
 public interface TestKit<T> {
 
     static <T> Mono<T> close(Connection connection) {
