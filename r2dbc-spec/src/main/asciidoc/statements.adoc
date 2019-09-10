@@ -6,12 +6,13 @@ This section describes the `Statement` interface. It also describes related topi
 [[statements.interface]]
 == The Statement Interface
 
-The `Statement` interface defines methods for executing SQL statements. SQL statements may contain parameter bind markers for input parameters.
+The `Statement` interface defines methods for running SQL statements.
+SQL statements may contain parameter bind markers for input parameters.
 
 [[statements.creating]]
 === Creating Statements
 
-`Statement` objects are created by `Connection` objects, as is done in the following example:
+`Statement` objects are created by `Connection` objects, as the following example shows:
 
 .Creating a non-parameterized `Statement`
 ====
@@ -22,15 +23,19 @@ Statement statement = connection.createStatement("SELECT title FROM books");
 ----
 ====
 
-Each `Connection` object can create multiple `Statement` objects that may be used concurrently by the program and executed at any time.
+Each `Connection` object can create multiple `Statement` objects that the program can concurrently run at any time.
 Resources that are associated with a statement are released as soon as the connection is closed.
 
 [[statements.executing]]
-=== Executing Statement Objects
+=== Running Statement Objects
 
-`Statement` objects are executed by calling the `execute()` method. Depending on the SQL, the resulting `Publisher` may return one to many `Result` objects. A `Statement` is always associated with its `Connection`, therefore, the connection state affects `Statement` execution at execution time.
+`Statement` objects are run by calling the `execute()` method.
+Depending on the SQL, the resulting `Publisher` may return one or many `Result` objects.
+A `Statement` is always associated with its `Connection`.
+Therefore, the connection state affects `Statement` execution at execution time.
+The following example shows how to run a statement:
 
-. Executing a `Statement`
+.Running a `Statement`
 ====
 [source,java]
 ----
@@ -42,12 +47,13 @@ Publisher<? extends Result> publisher = statement.execute();
 [[statements.parameterized]]
 == Parameterized Statements
 
-SQL used to create a statement can be parameterized using vendor-specific bind markers.
-Portability of SQL statements across R2DBC implementation is a non-goal.
+The SQL that is used to create a statement can be parameterized by using vendor-specific bind markers.
+The portability of SQL statements across R2DBC implementations is not a goal.
 
-Parameterized `Statement` objects are created by `Connection` objects in the same manner as non-parameterized `Statements`. See the the following example:
+Parameterized `Statement` objects are created by `Connection` objects in the same manner as non-parameterized `Statements`.
+See the the following example:
 
-.Creating three parameterized `Statement` objects using vendor-specific parameter bind markers
+.Creating three parameterized `Statement` objects by using vendor-specific parameter bind markers
 ====
 [source,java]
 ----
@@ -61,7 +67,7 @@ Statement statement3 = connection.createStatement("SELECT title FROM books WHERE
 ====
 
 Parameter bind markers are identified by the `Statement` object.
-Parameterized statements may be cached by R2DBC implementations for resuse (e.g. for prepared statement execution).
+Parameterized statements may be cached by R2DBC implementations for reuse (for example, for prepared statement execution).
 
 [[statements.bind]]
 === Binding Parameters
@@ -71,8 +77,9 @@ The parameter type is defined by the actual value that is bound to a parameter.
 Each bind method accepts two arguments. The first is either ordinal parameter position starting at `0` (zero) or the parameter placeholder representation.
 The method of parameter binding (positional or by identifier) is vendor-specific and a driver should document its preferred binding mechanism.
 The second and any remaining parameters specify the value to be assigned to the parameter.
+The following example shows how to bind parameters to a statement object by using placeholders:
 
-.Binding parameters to a `Statement` object by placeholder
+.Binding parameters to a `Statement` object by using placeholders
 ====
 [source,java]
 ----
@@ -83,7 +90,7 @@ statement.bind("$2", "Happy Books LLC");
 ----
 ====
 
-Alternatively, parameters can be bound by index:
+Alternatively, parameters can be bound by index, as the following example shows:
 
 .Binding parameters to a `Statement` object by index
 ====
@@ -96,17 +103,18 @@ statement.bind(1, "Happy Books LLC");
 ----
 ====
 
-A value must be provided for each bind marker in the `Statement` object before it can be executed.
+A value must be provided for each bind marker in the `Statement` object before the statement can be run.
 The `execute` method validates a parameterized `Statement` and throws an `IllegalStateException` if a bind marker is left without a binding.
 
 [[statements.batching]]
 === Batching
 
-Parameterized `Statement` objects accept multiple parameter binding sets submit a batch of commands to the database for execution.
-Batch execution is initiated by invoking the `add()` method on the `Statement` object after providing all parameters.
+Parameterized `Statement` objects accept multiple parameter binding sets to submit a batch of commands to the database for running.
+A batch run is initiated by invoking the `add()` method on the `Statement` object after providing all parameters.
 After calling `add()`, the next set of parameter bindings is provided by calling bind methods accordingly.
+The following example shows how to run a batch `Statement`:
 
-.Executing a `Statement` batch
+.Running a `Statement` batch
 ====
 [source,java]
 ----
@@ -118,13 +126,18 @@ Publisher<? extends Result> publisher = statement.execute();
 ----
 ====
 
-Batch execution emits one to many `Result` objects depending on how the implementation executes the batch.
+A batch run emits one or many `Result` objects, depending on how the implementation executes the batch.
 
 [[statements.null]]
 === Setting `NULL` Parameters
 
-The method `bindNull` can be used to set any parameter to `NULL`.
-It takes two parameters, either the ordinal position of the bind marker or the name, and the value type of the parameter.
+You can use the `bindNull` method to set any parameter to `NULL`.
+It takes two parameters:
+
+* Either the ordinal position of the bind marker or the name.
+* The value type of the parameter.
+
+The following example shows how to set `NULL` value:
 
 .Setting a `NULL` value.
 ====
@@ -138,10 +151,13 @@ statement.bindNull(0, String.class);
 [[statements.generated-values]]
 == Retrieving Auto Generated Values
 
-Many database systems provide a mechanism that automatically generates a value when inserting a row.
-The value that is generated may or may not be unique or represent a key value depending on the executed SQL, and table definition.
-The method `returnGeneratedValues`, which can be called to retrieve the generated value, indicates to the `Statement` object to retrieve generated values. The method accepts a var-arg parameter to specify the column name(s) for which to return generated keys.
-The emitted `Result` exposes a column for each automatically generated value taking the column name hint into account.
+Many database systems provide a mechanism that automatically generates a value when a row is inserted.
+The value that is generated may or may not be unique or represent a key value, depending on the SQL and the table definition.
+You can call the `returnGeneratedValues` method to retrieve the generated value.
+It tells the `Statement` object to retrieve generated values.
+The method accepts a variable-argument parameter to specify the column names for which to return generated keys.
+The emitted `Result` exposes a column for each automatically generated value (taking the column name hint into account).
+The following example shows how to retrieve auto-generated values:
 
 .Retrieving auto-generated values
 ====
@@ -156,15 +172,15 @@ result.map((row, metadata) -> row.get("id"));
 ----
 ====
 
-When not specifying column name(s), the R2DBC driver implementation will determine the columns or value to return.
+When column names are not specified, the R2DBC driver implementation determines the columns or value to return.
 
 See the R2DBC SPI Specification for more details.
 
 [[statements.performance]]
 == Performance Hints
 
-The `Statement` interface provides a method that can be used to provide hints to a R2DBC driver.
-Calling `fetchSize` applies a fetch size hint to each query produced by the statement.
+The `Statement` interface provides a method that you can use to provide hints to a R2DBC driver.
+Calling `fetchSize` applies a fetch-size hint to each query produced by the statement.
 Hints provided to the driver through this interface may be ignored by the driver if they are not appropriate or supported.
 Typically, fetch size can be derived from back-pressure hints.
-To optimize for performance it can be useful to provide hints to the driver on a per-statement basis.
+To optimize for performance, it can be useful to provide hints to the driver on a per-statement basis.

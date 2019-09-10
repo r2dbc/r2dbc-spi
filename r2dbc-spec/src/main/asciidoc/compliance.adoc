@@ -2,34 +2,35 @@
 = Compliance
 
 This chapter identifies the required features of a D2DBC driver implementation to claim compliance.
-Any not identified features are considered optional.
+Any features not identified here are considered optional.
 
 [[compliance.definitions]]
 == Definitions
 
 To avoid ambiguity, we will use the following terms in the compliance section and across this specification:
 
-* _R2DBC driver implementation_ (short: driver): A driver implementing the R2DBC SPI.
-A driver may provide support for features which are not implemented by the underlying database or expose functionality that is not declared by the R2DBC SPI (_"Extension"_).
+R2DBC driver implementation::  (short form: *driver*)A driver that implements the R2DBC SPI.
+A driver may provide support for features that are not implemented by the underlying database or expose functionality that is not declared by the R2DBC SPI (See *Extension*).
 
-* _Supported feature_: A feature for which the R2DBC API implementation supports standard syntax and semantics.
+Supported feature:: A feature for which the R2DBC API implementation supports standard syntax and semantics.
 
-* _Partially supported feature_: A feature for which some methods are implemented via standard syntax and semantics and some required methods are not implemented, typically covered by `default` interface methods.
+Partially supported feature:: A feature for which some methods are implemented with standard syntax and semantics and some required methods are not implemented (typically covered by `default` interface methods).
 
-* _Extension_: A feature that is not covered by R2DBC or a non-standard implementation of a feature that is covered.
+Extension:: A feature that is not covered by R2DBC or a non-standard implementation of a feature that is covered.
 
-* _Fully implemented_: Term to express that an interface has all its methods implemented to support the semantics defined in this specification.
+Fully implemented:: Term to express that an interface has all its methods implemented to support the semantics defined in this specification.
 
-* _Must implement_: Term to express that an interface must be implemented although some methods on the interface are considered optional. Methods that are not implemented rely on the `default` implementation.
+Must implement:: Term to express that an interface must be implemented, although some methods on the interface are considered optional. Methods that are not implemented rely on the `default` implementation.
 
 [[compliance.guidelines]]
 == Guidelines and Requirements
 
 The following guidelines apply to R2DBC compliance:
 
-* An R2DBC API should implement SQL support as its primary interface. R2DBC does not rely upon, nor does it presume a specific SQL version. SQL and aspects of statements can be entirely handled in the data source or as part of the driver.
+* An R2DBC API should implement SQL support as its primary interface. R2DBC does not rely upon (nor does it presume) a specific SQL version.
+SQL and aspects of statements can be entirely handled in the data source or as part of the driver.
 
-* The specification consists of this specification document and specifications documented in each interface's Javadoc.
+* The specification consists of this specification document and the specifications documented in each interface's Javadoc.
 
 * Drivers supporting parametrized statements must support bind parameter markers.
 
@@ -37,14 +38,15 @@ The following guidelines apply to R2DBC compliance:
 
 * Drivers must support transactions.
 
-* Index references to columns and parameters are zero-based. The first index begins with `0`.
+* Index references to columns and parameters are zero-based.
+That is, the first index begins with `0`.
 
 [[compliance.r2dbc]]
 == R2DBC API Compliance
 
 A driver that is compliant with the R2DBC specification must do the following:
 
-* Adhere to the guidelines and requirements above.
+* Adhere to the guidelines and requirements listed under <<compliance.guidelines>>.
 * Support `ConnectionFactory` discovery through Java Service Loader of `ConnectionFactoryProvider`.
 * Implement a non-blocking I/O layer.
 * Fully implement the following interfaces:
@@ -55,14 +57,14 @@ A driver that is compliant with the R2DBC specification must do the following:
   ** `io.r2dbc.spi.Row`
   ** `io.r2dbc.spi.RowMetadata`
   ** `io.r2dbc.spi.Batch`
-* Must implement `io.r2dbc.spi.Connection` interface with the exception of the following optional methods:
-  ** `createSavepoint(…)`: Calling this method should throw a `UnsupportedOperations` for drivers not supporting savepoints.
-  ** `releaseSavepoint(…)`: Calling this method should be a no-op for drivers not supporting savepoint release.
-  ** `rollbackTransactionToSavepoint(…)`: Calling this method should throw a `UnsupportedOperations` for drivers not supporting savepoints.
-* Must implement `io.r2dbc.spi.Statement` interface with the exception of the following optional methods:
-  ** `returnGeneratedValues(…)`: Calling this method should be a no-op for drivers not supporting key generation.
-  ** `fetchSize(…)`: Calling this method should be a no-op for drivers not support fetch size hints.
-* Must implement `io.r2dbc.spi.ColumnMetadata` interface with the exception of the following optional methods:
+* Implement the `io.r2dbc.spi.Connection` interface, except for the following optional methods:
+  ** `createSavepoint(…)`: Calling this method should throw an `UnsupportedOperations` exception for drivers that do not support savepoints.
+  ** `releaseSavepoint(…)`: Calling this method should be a no-op for drivers that do not support savepoint release.
+  ** `rollbackTransactionToSavepoint(…)`: Calling this method should throw an `UnsupportedOperations` exception for drivers that do not support savepoints.
+* Implement the `io.r2dbc.spi.Statement` interface, except for the following optional methods:
+  ** `returnGeneratedValues(…)`: Calling this method should be a no-op for drivers that do not support key generation.
+  ** `fetchSize(…)`: Calling this method should be a no-op for drivers that do not support fetch size hints.
+* Implement the `io.r2dbc.spi.ColumnMetadata` interface, except for the following optional methods:
   ** `getPrecision()`
   ** `getScale()`
   ** `getNullability()`

@@ -2,22 +2,19 @@
 = Connections
 
 R2DBC uses the `Connection` interface to define a logical connection API to the underlying data source.
-A structure of a connection depends on the actual requirements of a data source and how the driver implements these.
+The structure of a connection depends on the actual requirements of the data source and how the driver implements these.
 
-The data source can be an RDBMS, a stream-oriented data system some other source of data with a corresponding R2DBC driver.
-A single application using R2DBC API may maintain multiple connections to either a single data source or across multiple data sources.
+The data source can be an RDBMS, a stream-oriented data system, or some other source of data with a corresponding R2DBC driver.
+A single application that uses R2DBC API can maintain multiple connections to either a single data source or across multiple data sources.
 From a R2DBC driver perspective, a `Connection` object represents a single client session.
-It has associated state information such as user ID and what transaction semantics are in effect.
-A `Connection` object is not thread-safe in the sense that it can be shared across multiple Threads that concurrently execute statements or change its state.
-A connection object can be shared across multiple Threads that execute operations serially using appropriate synchronization mechanisms.
+It has associated state information, such as user ID and what transaction semantics are in effect.
+A `Connection` object is not thread-safe (it cannot be shared across multiple threads that concurrently execute statements or change its state).
+A connection object can be shared across multiple threads that serially run operations by using appropriate synchronization mechanisms.
 
-To obtain a connection, the application may interact with either:
+To obtain a connection, the application can:
 
-* the `ConnectionFactories` class working with one or more `ConnectionFactoryProvider` implementations
-
-*OR*
-
-* directly a `ConnectionFactory` implementation.
+* Interact with the `ConnectionFactories` class by working with one or more `ConnectionFactoryProvider` implementations.
+* Directly interact with a `ConnectionFactory` implementation.
 
 See <<overview.connection>> for more details.
 
@@ -25,7 +22,8 @@ See <<overview.connection>> for more details.
 == The `ConnectionFactory` Interface
 
 R2DBC drivers must implement the `ConnectionFactory` interface as a mandatory part of the SPI.
-Drivers can provide multiple `ConnectionFactory` implementations depending on the used protocol or aspects that require the use of a different `ConnectionFactory` implementation.
+Drivers can provide multiple `ConnectionFactory` implementations, depending on the protocol in use or aspects that require the use of a different `ConnectionFactory` implementation.
+The following listing shows the `ConnectionFactory` interface:
 
 .`ConnectionFactory` Interface
 ====
@@ -44,17 +42,18 @@ public interface ConnectionFactory {
 The following rules apply:
 
 * A `ConnectionFactory` represents a resource factory for deferred connection creation.
-It may create connections by itself, wrap a `ConnectionFactory` or apply connection pooling on top of a `ConnectionFactory`.
+It may create connections by itself, wrap a `ConnectionFactory`, or apply connection pooling on top of a `ConnectionFactory`.
 * A `ConnectionFactory` provides metadata about the driver itself through `ConnectionFactoryMetadata`.
 * A `ConnectionFactory` uses deferred initialization and should initiate connection resource allocation after requesting the item (`Subscription.request(1)`).
 * Connection creation must emit exactly one `Connection` or an error signal.
-* Connection creation must be cancellable (`Subscription.cancel()`). Canceling connection creation must release ("close") the connection and all associated resources.
+* Connection creation must be cancellable (`Subscription.cancel()`). Canceling connection creation must release ("`close`") the connection and all associated resources.
 * A `ConnectionFactory` should expect that it can be wrapped. Wrappers must implement the `Wrapped<ConnectionFactory>` interface and return the underlying `ConnectionFactory` when `Wrapped.unwrap()` gets called.
 
-**ConnectionFactory Metadata**
+=== ConnectionFactory Metadata
 
-ConnectionFactories are required to expose metadata to identify the driver (`ConnectionFactory`) and its capabilities.
+`ConnectionFactory` instances are required to expose metadata to identify the driver (`ConnectionFactory`) and its capabilities.
 Metadata must not require a connection to a data source.
+The following listing shows the `ConnectionFactoryMetadata` interface:
 
 .`ConnectionFactoryMetadata` Interface
 ====
@@ -73,12 +72,12 @@ See the R2DBC SPI Specification for more details.
 [[connections.factory.discovery]]
 == `ConnectionFactory` Discovery Mechanism
 
-As part of its usage, the `ConnectionFactories` class attempts to load any R2DBC driver classes referenced
-by the `ConnectionFactoryProvider` interface listed in the Java Service Provider manifests available on the CLASSPATH.
+As part of its usage, the `ConnectionFactories` class tries to load any R2DBC driver classes referenced by the `ConnectionFactoryProvider` interface listed in the Java Service Provider manifests that are available on the classpath.
 
-Drivers must include the file `META-INF/services/io.r2dbc.spi.ConnectionFactoryProvider`.
+Drivers must include a file called `META-INF/services/io.r2dbc.spi.ConnectionFactoryProvider`.
 This file contains the name of the R2DBC driver's implementation (or implementations) of `io.r2dbc.spi.ConnectionFactoryProvider`.
-To ensure that drivers can be loaded using this mechanism, `io.r2dbc.spi.ConnectionFactoryProvider` implementations are required to provide a no-argument constructor.
+To ensure that drivers can be loaded by using this mechanism, `io.r2dbc.spi.ConnectionFactoryProvider` implementations are required to provide a no-argument constructor.
+The following listing shows a typical `META-INF/services/io.r2dbc.spi.ConnectionFactoryProvider` file:
 
 .META-INF/services/io.r2dbc.spi.ConnectionFactoryProvider file contents
 ====
@@ -87,6 +86,8 @@ To ensure that drivers can be loaded using this mechanism, `io.r2dbc.spi.Connect
 com.example.ConnectionFactoryProvider
 ----
 ====
+
+The following listing shows the `ConnectionFactoryProvider` interface:
 
 .`ConnectionFactoryProvider` Interface
 ====
@@ -102,13 +103,13 @@ public interface ConnectionFactoryProvider {
 ----
 ====
 
-`ConnectionFactories` uses a `ConnectionFactoryOptions` object to lookup a matching driver using a two-step model:
+`ConnectionFactories` uses a `ConnectionFactoryOptions` object to look up a matching driver by using a two-step model:
 
-1. Lookup of an adequate `ConnectionFactoryProvider`.
-2. Obtain the `ConnectionFactory` from the `ConnectionFactoryProvider`.
+. Look up an adequate `ConnectionFactoryProvider`.
+. Obtain the `ConnectionFactory` from the `ConnectionFactoryProvider`.
 
-`ConnectionFactoryProvider` implementations are required to return a `boolean` indicator whether they support a specific configuration represented by `ConnectionFactoryOptions`.
-Drivers must expect any plurality of ``Option``s to be configured.
+`ConnectionFactoryProvider` implementations are required to return a `boolean` indicator whether or not they support a specific configuration represented by `ConnectionFactoryOptions`.
+Drivers must expect any plurality of `Option` instances to be configured.
 Drivers must report that they support a configuration only if the `ConnectionFactoryProvider` can provide a `ConnectionFactory` based on the given `ConnectionFactoryOptions`.
 Drivers should gracefully fail if a `ConnectionFactory` creation through `ConnectionFactoryProvider.create(…)` is not possible.
 
@@ -117,9 +118,9 @@ See the R2DBC SPI Specification for more details.
 [[connections.factory.options]]
 == The `ConnectionFactoryOptions` Class
 
-The `ConnectionFactoryOptions` class represents a configuration to request a `ConnectionFactory` from a `ConnectionFactoryProvider`.
-It represents the <<overview.connection, programmatic connection creation>> approach without using driver-specific classes.
-`ConnectionFactoryOptions` instances are created using the builder pattern and properties are configured through `Option<T>` identifiers.
+The `ConnectionFactoryOptions` class represents a configuration for a request a `ConnectionFactory` from a `ConnectionFactoryProvider`.
+It enables the <<overview.connection, programmatic connection creation>> approach without using driver-specific classes.
+`ConnectionFactoryOptions` instances are created by using the builder pattern, and properties are configured through `Option<T>` identifiers.
 A `ConnectionFactoryOptions` is immutable once created.
 `Option` objects are reused as part of the built-in constant pool.
 Options are identified by a literal.
@@ -138,7 +139,7 @@ Options are identified by a literal.
 |`PROTOCOL`
 |`protocol`
 |`java.lang.String`
-|Protocol details such as the network protocol used to communicate with a server.
+|Protocol details, such as the network protocol used to communicate with a server.
 
 |`USER`
 |`user`
@@ -175,9 +176,11 @@ Options are identified by a literal.
 The following rules apply:
 
 * The set of options is extensible.
-* Drivers can declare which well-known options that they require and which they support.
+* Drivers can declare which well-known options they require and which they support.
 * Drivers can declare which extended options they require and which they support.
-* Drivers should not fail in creating a connection if more options are declared than the driver consumes as a `ConnectionFactory` should expect to be wrapped.
+* Drivers should not fail in creating a connection if more options are declared than the driver consumes, as a `ConnectionFactory` should expect to be wrapped.
+
+The following example shows how to set options for a `ConnectionFactoryOptions`:
 
 .Configuration of `ConnectionFactoryOptions`
 ====
@@ -197,6 +200,7 @@ See the R2DBC SPI Specification for more details.
 == Obtaining `Connection` Objects
 
 Once a `ConnectionFactory` is bootstrapped, connections are obtained from the `create()` method.
+The following example shows how to obtain a connection:
 
 .Obtaining a `Connection`
 ====
@@ -207,7 +211,7 @@ Publisher<? extends Connection> publisher = factory.create();
 ----
 ====
 
-The connection is active once it was emitted by the `Publisher` and must be released ("closed") once it is no longer in use.
+The connection is active once it has been emitted by the `Publisher` and must be released ("`closed`") once it is no longer in use.
 
 [[connections.metadata]]
 == Connection Metadata
@@ -235,13 +239,13 @@ See the R2DBC SPI Specification for more details.
 == Validating `Connection` Objects
 
 The `Connection.validate(…)` method indicates whether the `Connection` is still valid.
-The `ValidationDepth` argument passed to this method indicates until which depth a connection should be validated: Local or Remote.
+The `ValidationDepth` argument passed to this method indicates the depth to which a connection should be validated: `LOCAL` or `REMOTE`.
 
-* `ValidationDepth.LOCAL` requests client-side-only validation without engaging a remote conversation to validate a connection.
-* `ValidationDepth.REMOTE` initiates a remote validation by issuing a query or other means to validate a connection and the remote session.
+* `ValidationDepth.LOCAL`: Requests client-side-only validation without engaging a remote conversation to validate a connection.
+* `ValidationDepth.REMOTE`: Initiates a remote validation by issuing a query or other means to validate a connection and the remote session.
 
 If `Connection.validate(…)` emits `true`, the `Connection` is still valid.
-If `false` is emitted, the `Connection` is not valid and any attempt to perform database interaction will fail.
+If `Connection.validate(…)` emits `false`, the `Connection` is not valid, and any attempt to perform database interaction fails.
 Callers of this method do not expect error signals.
 
 [[connections.close]]
@@ -249,7 +253,8 @@ Callers of this method do not expect error signals.
 
 Calling `Connection.close()` prepares a close handle to release the connection and its associated resources.
 Connections must be closed to ensure proper resource management.
-`Connection.validate(…)` may be used to determine whether a `Connection` has been closed or is still valid.
+You can use `Connection.validate(…)` to determine whether a `Connection` has been closed or is still valid.
+The following example shows how to close a connection:
 
 .Closing a `Connection`
 ====
