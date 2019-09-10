@@ -6,13 +6,14 @@ This section describes the `Batch` interface.
 [[batches.interface]]
 == The Batch Interface
 
-The `Batch` interface defines methods for executing SQL statements. SQL statements may not contain parameter bind markers for input parameters.
-A batch is created to execute multiple SQL statements for performance reasons.
+The `Batch` interface defines methods for running groups of SQL statements.
+SQL statements may not contain parameter bind markers for input parameters.
+A batch is created to run multiple SQL statements for performance reasons.
 
 [[batches.creating]]
 === Creating Batches
 
-`Batch` objects are created by `Connection` objects, as is done in the following example:
+`Batch` objects are created by `Connection` objects, as the following example shows:
 
 .Creating a `Batch`
 ====
@@ -23,23 +24,27 @@ Batch batch = connection.createBatch();
 ----
 ====
 
-Each `Connection` object can create multiple `Batch` objects that may be used concurrently by the program and executed at any time.
+Each `Connection` object can create multiple `Batch` objects that can be used concurrently by the program and can be run at any time.
 Resources that are associated with a batch are released as soon as the connection is closed.
 
 [[batches.executing]]
 === Executing Batch Objects
 
-`Batch` objects are executed by calling the `execute()` method after adding one or more SQL statements to a `Batch`.
-The resulting `Publisher` returns a  `Result` object for each statement in the batch. A `Batch` is always associated with its `Connection`, therefore, the connection state affects `Batch` execution at execution time.
+`Batch` objects are run by calling the `execute()` method after adding one or more SQL statements to a `Batch`.
+The resulting `Publisher` returns a  `Result` object for each statement in the batch.
+A `Batch` is always associated with its `Connection`.
+Therefore, the connection state affects `Batch` execution at run time.
 
-.Executing a `Batch`
+The following example shows how to run a batch:
+
+.Running a `Batch`
 ====
 [source,java]
 ----
 // connection is a Connection object
 Batch batch = connection.createBatch();
 Publisher<? extends Result> publisher = batch.add("SELECT title, author FROM books")
-    .add("INSERT INTO books VALUES('John Doe', 'HappyBooks LLC')
+    .add("INSERT INTO books VALUES('John Doe', 'HappyBooks LLC')")
     .execute();
 ----
 ====

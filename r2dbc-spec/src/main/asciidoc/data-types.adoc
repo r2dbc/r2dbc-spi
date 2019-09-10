@@ -2,7 +2,8 @@
 = Data Types
 
 This chapter discusses the use of data types from Java and database perspectives.
-The R2DBC SPI gives applications access to data types defined as of SQL. R2DBC is not limited to SQL types, and in fact, the SPI is type-agnostic.
+The R2DBC SPI gives applications access to data types that are defined as SQL.
+R2DBC is not limited to SQL types, and, in fact, the SPI is type-agnostic.
 
 If a data source does not support a data type described in this chapter, a driver for that data source is not required to implement the methods and interfaces associated with that data type.
 
@@ -10,9 +11,9 @@ If a data source does not support a data type described in this chapter, a drive
 == Mapping of Data Types
 
 This section explains how SQL-specific types are mapped to Java types.
-The list is nonexhaustive and should be received as a guideline for drivers.
+The list is not exhaustive and should be received as a guideline for drivers.
 R2DBC drivers should use modern types and type descriptors to exchange data for consumption by applications and consumption by the driver.
-Driver implementations should implement the following type mapping and can support additional type mappings.
+Driver implementations should implement the following type mapping and can support additional type mappings:
 
 * <<datatypes.mapping.char,Character Types>>
 * <<datatypes.mapping.boolean,Boolean Types>>
@@ -20,6 +21,8 @@ Driver implementations should implement the following type mapping and can suppo
 * <<datatypes.mapping.numeric,Numeric Types>>
 * <<datatypes.mapping.datetime,Datetime Types>>
 * <<datatypes.mapping.collection,Collection Types>>
+
+The following table describes the SQL type mapping for character types:
 
 [[datatypes.mapping.char]]
 .SQL Type Mapping for Character Types
@@ -35,11 +38,11 @@ Driver implementations should implement the following type mapping and can suppo
 | `java.lang.String`
 
 | `NATIONAL CHARACTER` (`NCHAR`)
-| `NATIONAL CHARACTER` type is the same as `CHARACTER` except that it holds standardized multibyte characters or Unicode characters.
+| The `NATIONAL CHARACTER` type is the same as `CHARACTER` except that it holds standardized multibyte characters or Unicode characters.
 | `java.lang.String`
 
 | `NATIONAL CHARACTER VARYING` (`NVARCHAR`)
-| `NATIONAL CHARACTER VARYING` type is the same as `CHARACTER VARYING` except that it holds standardized multibyte characters or Unicode characters.
+| The `NATIONAL CHARACTER VARYING` type is the same as `CHARACTER VARYING` except that it holds standardized multibyte characters or Unicode characters.
 | `java.lang.String`
 
 | `CHARACTER LARGE OBJECT` (`CLOB`)
@@ -47,10 +50,12 @@ Driver implementations should implement the following type mapping and can suppo
 | `io.r2dbc.spi.Clob`
 
 | `NATIONAL CHARACTER LARGE OBJECT` (`NCLOB`)
-| `NATIONAL CHARACTER LARGE OBJECT` type is the same as `CHARACTER LARGE OBJECT` except that it holds standardized multibyte characters or Unicode characters.
+| The `NATIONAL CHARACTER LARGE OBJECT` type is the same as `CHARACTER LARGE OBJECT` except that it holds standardized multibyte characters or Unicode characters.
 | `io.r2dbc.spi.Clob`
 
 |===
+
+The following table describes the SQL type mapping for boolean types:
 
 [[datatypes.mapping.boolean]]
 .SQL Type Mapping for Boolean Types
@@ -58,10 +63,12 @@ Driver implementations should implement the following type mapping and can suppo
 |SQL Type|Description |Java Type
 
 | `BOOLEAN`
-| Value representing a boolean state.
+| A value that represents a boolean state.
 | `java.lang.Boolean`
 
 |===
+
+The following table describes the SQL type mapping for binary types:
 
 [[datatypes.mapping.binary]]
 .SQL Type Mapping for Binary Types
@@ -73,7 +80,7 @@ Driver implementations should implement the following type mapping and can suppo
 | `java.nio.ByteBuffer`
 
 | `BINARY VARYING` (`VARBINARY`)
-| Variable-length character string, maximum length fixed.
+| A variable-length character string, the maximum length of which is fixed.
 | `java.nio.ByteBuffer`
 
 | `BINARY LARGE OBJECT` (`BLOB`)
@@ -82,44 +89,48 @@ Driver implementations should implement the following type mapping and can suppo
 
 |===
 
+The following table describes the SQL type mapping for numeric types:
+
 [[datatypes.mapping.numeric]]
 .SQL Type Mapping for Numeric Types
 |===
 |SQL Type|Description |Java Type
 
 | `INTEGER`
-| Represents an integer. The minimum and maximum values depend on the DBMS, typically 4-byte precision.
+| Represents an integer. The minimum and maximum values depend on the DBMS (typically 4-byte precision).
 | `java.lang.Integer`
 
 | `TINYINT`
-| Same as `INTEGER` type except that it might hold a smaller range of values, depending on the DBMS, typically 1-byte precision.
+| Same as the `INTEGER` type except that it might hold a smaller range of values, depending on the DBMS (typically 1-byte precision).
 | `java.lang.Byte`
 
 | `SMALLINT`
-| Same as `INTEGER` type except that it might hold a smaller range of values, depending on the DBMS, typically 1- or 2-byte precision.
+| Same as the `INTEGER` type except that it might hold a smaller range of values, depending on the DBMS (typically 1- or 2-byte precision).
 | `java.lang.Short`
 
 | `BIGINT`
-| Same as `INTEGER` type except that it might hold a larger range of values, depending on the DBMS, typically 8-byte precision.
+| Same as the `INTEGER` type except that it might hold a larger range of values, depending on the DBMS (typically 8-byte precision).
 | `java.lang.Long`
 
 | `DECIMAL(p, s)`, `NUMERIC(p, s)`
-| Fixed precision and scale numbers with precision `p`, scale `s`. A number that can have a decimal point in it.
+| Fixed precision and scale numbers with precision (`p`) and scale (`s`). In other words, a number that can have a decimal point in it.
 | `java.math.BigDecimal`
 
 | `FLOAT(p)`
-| Represents an approximate numerical with mantissa precision `p`. Databases using IEEE representation can map values to either 32-bit or 64-bit floating point types depending on precision parameter `p`.
+| Represents an approximate numerical with mantissa precision (`p`). Databases that use IEEE representation can map values to either 32-bit or 64-bit floating point types depending on the precision parameter (`p`).
 | `java.lang.Double` or `java.lang.Float`
 
 | `REAL`
-| Same as `FLOAT` type except that the DBMS defines the precision.
+| Same as the `FLOAT` type except that the DBMS defines the precision.
 | `java.lang.Float`
 
 | `DOUBLE PRECISION`
-| Same as `FLOAT` type except that the DBMS defines the precision. It has greater precision than `REAL`.
+| Same as the `FLOAT` type except that the DBMS defines the precision. It has greater precision than `REAL`.
 | `java.lang.Double`
 
 |===
+
+The following table describes the SQL type mapping for datetime types:
 
 [[datatypes.mapping.datetime]]
 .SQL Type Mapping for Datetime Types
@@ -127,11 +138,11 @@ Driver implementations should implement the following type mapping and can suppo
 |SQL Type|Description |Java Type
 
 | `DATE`
-| Represents a date without specifying a time part and without timezone.
+| Represents a date without specifying a time part and without a timezone.
 | `java.time.LocalDate`
 
 | `TIME`
-| Represents a time without a date part and without timezone.
+| Represents a time without a date part and without a timezone.
 | `java.time.LocalTime`
 
 | `TIME WITH TIME ZONE`
@@ -139,14 +150,16 @@ Driver implementations should implement the following type mapping and can suppo
 | `java.time.OffsetTime`
 
 | `TIMESTAMP`
-| Represents a date/time without a timezone.
+| Represents a date and time without a timezone.
 | `java.time.LocalDateTime`
 
 | `TIMESTAMP WITH TIME ZONE`
-| Represents a date/time with a timezone offset.
+| Represents a date and time with a timezone offset.
 | `java.time.OffsetDateTime`
 
 |===
+
+The following table describes the SQL type mapping for collection types:
 
 [[datatypes.mapping.collection]]
 .SQL Type Mapping for Collection Types
@@ -156,36 +169,37 @@ Driver implementations should implement the following type mapping and can suppo
 | `COLLECTION`
 ( `ARRAY`, `MULTISET` )
 | Represents a collection of items with a base type.
-| Array-Variant of the corresponding Java type (e.g. `Integer[]` for `INTEGER ARRAY`)
+| Array-Variant of the corresponding Java type (for example, `Integer[]` for `INTEGER ARRAY`)
 
 |===
 
-Vendor-specific types (such as spatial data types, structured JSON/XML data, user-defined types) are subject to vendor-specific mapping.
+Vendor-specific types (such as spatial data types, structured JSON or XML data, and user-defined types) are subject to vendor-specific mapping.
 
 [[datatypes.mapping.advanced]]
 == Mapping of Advanced Data Types
 
 The R2DBC API declares default mappings for advanced data types. The following list describes data types and the interfaces to which they map:
 
-* `BLOB` — the `Blob` interface
-* `CLOB` — the `Clob` interface
+* `BLOB`: The `Blob` interface
+* `CLOB`: The `Clob` interface
 
 [[datatypes.lob]]
 === `Blob` and `Clob` Objects
 
-An implementation of a `Blob` or `Clob` object may either be locator based or fully materialize the object in the driver.
+An implementation of a `Blob` or `Clob` object may either be locator-based or fully materialize the object in the driver.
 Drivers should prefer locator-based `Blob` and `Clob` interface implementations to reduce pressure on the client when materializing results.
 
-For implementations that fully materialize the Large Objects (LOB), the `Blob` and `Clob` objects remain valid until the LOB is consumed or the `discard()` method is called.
+For implementations that fully materialize Large OBjects (LOBs), the `Blob` and `Clob` objects remain valid until the LOB is consumed or the `discard()` method is called.
 
 Portable applications should not depend upon the LOB validity past the end of a transaction.
 
 [[datatypes.lob.create]]
 === Creating `Blob` and `Clob` Objects
 
-Large Objects are backed by a `Publisher` emitting the component type of the large object such as `ByteBuffer` for `BLOB` and `CharSequence` (or a subtype of it) for `CLOB`.
+Large objects are backed by a `Publisher` that emits the component type of the large object, such as `ByteBuffer` for `BLOB` and `CharSequence` (or a subtype of it) for `CLOB`.
 
-Both interfaces provide factory methods to create implementations to be used with `Statement`. The following example explains how to create a `Clob` object:
+Both interfaces provide factory methods to create implementations to be used with `Statement`.
+The following example shows how to create a `Clob` object:
 
 .Creating and using a `Clob` object
 ====
@@ -201,7 +215,9 @@ statement.bind("text", clob);
 [[datatypes.lob.retrieve]]
 === Retrieving `Blob` and `Clob` Objects from a `Row`
 
-The binary large object (`BLOB`) and character large object (`CLOB`) data types are treated similarly to primitive built-in types. Values of these types can be retrieved by calling the `get(…)` methods on the `Row` interface.
+The Binary Large OBject (`BLOB`) and Character Large OBject (`CLOB`) data types are treated similarly to primitive built-in types.
+You can retrieve values of these types by calling the `get(…)` methods on the `Row` interface.
+The following example shows how to do so:
 
 .Retrieving a `Clob` object
 ====
@@ -219,10 +235,11 @@ The API documentation provides more details.
 === Accessing `Blob` and `Clob` Data
 
 The `Blob` and `Clob` interfaces declare methods to consume the content of each type.
-Content streams follow Reactive Streams specifications and reflect the stream nature of large objects hence `Blob` and `Clob` objects can be consumed only once.
-Large object data consumption can be canceled by either calling the `discard()` method if the content stream was not consumed at all. Alternatively, if the content stream was consumed, a `Subscription` cancellation releases resources associated with the large object.
+Content streams follow Reactive Streams specifications and reflect the stream nature of large objects.
+As a result, `Blob` and `Clob` objects can be consumed only once.
+Large object data consumption can be canceled by calling the `discard()` method if the content stream was not consumed at all. Alternatively, if the content stream was consumed, a `Subscription` cancellation releases resources that are associated with the large object.
 
-The following example explains how to consume `Clob` contents:
+The following example shows how to consume `Clob` contents:
 
 .Creating and using a `Clob` object
 ====

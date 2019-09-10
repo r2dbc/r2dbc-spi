@@ -1,12 +1,14 @@
 [[wrapped]]
 = Wrapped Interface
 
-The `Wrapped` interface provides a mechanism for users to access an instance of a resource which has been wrapped and for implementors to expose wrapped resources. This mechanism helps to eliminate the need to use non-standard means to access vendor-specific resources.
+The `Wrapped` interface provides a way to access an instance of a resource which has been wrapped and for implementors to expose wrapped resources.
+This mechanism helps to eliminate the need to use non-standard means to access vendor-specific resources.
 
 [[wrapped.usage]]
 == Usage
 
 A wrapper for a R2DBC SPI type is expected to implement the `Wrapped` interface so that callers can extract the original instance. Any R2DBC SPI interface type can be wrapped.
+The following example shows how to expose a wrapped resource:
 
 .Wrapping a `Connection` and exposing the underlying resource.
 ====
@@ -34,11 +36,12 @@ The following methods are available on the `Wrapped` interface:
 * `unwrap`
 
 [[wrapped.unwrap]]
-== `unwrap` Method
+== The `unwrap` Method
 
-The `unwrap` method is used to return an object that implements the specified interface allowing access to vendor-specific methods.
+The `unwrap` method is used to return an object that implements the specified interface, allowing access to vendor-specific methods.
 The returned object may either be the object found to implement the specified interface or a wrapper for that object.
 Wrappers can be unwrapped recursively.
+The following example shows how to unwrap a wrapped object:
 
 .Unwrapping a wrapped object.
 ====

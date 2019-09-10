@@ -2,23 +2,22 @@
 = Introduction
 
 [[introduction.what-is-r2dbc]]
-== What is R2DBC?
-
 R2DBC stands for Reactive Relational Database Connectivity.
-R2DBC started as experiment and proof of concept to enable integration of relational databases into systems using reactive programming models – Reactive in the sense of an event-driven, non-blocking and functional programming model that does not make assumptions over concurrency or asynchronicity. Instead, it assumes scheduling and parallelization to happen as part of the runtime scheduling.
+R2DBC started as an experiment and proof of concept to enable integration of relational databases into systems that use reactive programming models –- Reactive in the sense of an event-driven, non-blocking, and functional programming model that does not make assumptions over concurrency or asynchronicity.
+Instead, it assumes that scheduling and parallelization happen as part of runtime scheduling.
 
 [[introduction.r2dbc-spi]]
 == The R2DBC SPI
 
-The R2DBC SPI provides reactive programmatic access to relational databases from the Java and other JVM-based programming languages.
+The R2DBC SPI provides reactive programmatic access to relational databases from Java and other JVM-based programming languages.
 
-R2DBC specifies a service-provider interface (SPI) intended to be implemented by driver vendors and used by client libraries.
-Using the R2DBC SPI, applications written in a JVM programming language can execute SQL statements, and retrieve results using an underlying data source.
-The R2DBC SPI can also be used to interact with multiple data sources in a distributed, heterogeneous environment.
+R2DBC specifies a service-provider interface (SPI) that is intended to be implemented by driver vendors and used by client libraries.
+By using the R2DBC SPI, applications written in a JVM programming language can run SQL statements and retrieve results by using an underlying data source.
+You can also use the R2DBC SPI to interact with multiple data sources in a distributed, heterogeneous environment.
 R2DBC targets primarily, but is not limited to, relational databases.
-It aims for a range of data sources whose query and statement interface is based on SQL (or a SQL-like dialect) and represent their data in a tabular form.
+It aims for a range of data sources whose query and statement interface is based on SQL (or an SQL-like dialect) and that represent their data in a tabular form.
 
-A key difference between R2DBC and imperative data access SPIs is the deferred nature of execution. R2DBC is therefore based on https://www.reactive-streams.org/[Reactive Streams] to use the concept of `Publisher` and `Subscriber` to allow non-blocking backpressure-aware data access.
+A key difference between R2DBC and imperative data access SPIs is the deferred nature of execution. R2DBC is, therefore, based on https://www.reactive-streams.org/[Reactive Streams] and uses the concepts of `Publisher` and `Subscriber` to allow non-blocking backpressure-aware data access.
 
 [[introduction.target-audience]]
 == Target Audience
@@ -26,13 +25,13 @@ A key difference between R2DBC and imperative data access SPIs is the deferred n
 This specification is targeted primarily towards:
 
 * Vendors of drivers that implement the R2DBC SPI.
-* Vendors of client implementations that wish to implement a client on top of the R2DBC SPI.
-* Vendors of runtime libraries that wish to embed R2DBC into their eco-system to provide R2DBC runtime services.
+* Vendors of client implementations who wish to implement a client on top of the R2DBC SPI.
+* Vendors of runtime libraries who wish to embed R2DBC into their eco-system to provide R2DBC runtime services.
 
-This specification is also intended to serve the following purposes:
+This specification is also intended to offer:
 
-* Introduction for end-users whose applications use the R2DBC SPI.
-* Starting point for developers of other SPIs layered on top of the R2DBC SPI.
+* An introduction for end-users whose applications use the R2DBC SPI.
+* A starting point for developers of other SPIs layered on top of the R2DBC SPI.
 
 [[introduction.acknowledgements]]
 == Acknowledgements
@@ -40,7 +39,7 @@ This specification is also intended to serve the following purposes:
 The R2DBC specification work is being conducted as an effort of individuals that recognized the demand for a reactive, standardized API for relational database access.
 We want to thank all https://github.com/r2dbc/r2dbc-spi/graphs/contributors[contributing members] for their countless hours of work and discussion.
 
-Thanks also go to Ollie without whom this initiative would not even exist.
+Thanks also go to Ollie Drotbohm, without whom this initiative would not even exist.
 
 [[introduction.following]]
 == Following Development
@@ -49,9 +48,9 @@ For information on R2DBC source code repositories, nightly builds, and snapshot 
 You can help make R2DBC best serve the needs of the community by interacting with developers through the community.
 To follow developer activity, look for the mailing list information on the R2DBC homepage.
 If you encounter a bug or want to suggest an improvement, please create a ticket on the R2DBC issue tracker.
-R2DBC forms an open-source organization on GitHub bundling various projects (SPI, drivers) under R2DBC.
+R2DBC has an open-source organization on GitHub that bundles the various projects (SPI and drivers) under R2DBC.
 
-To stay up to date with the latest news and announcements in the R2DBC eco system, subscribe to the mailing list. You can also follow the project team on Twitter (https://twitter.com/r2dbc[@R2DBC]).
+To stay up to date with the latest news and announcements in the R2DBC eco system, you can subscribe to the mailing list. You can also follow the project team on Twitter (https://twitter.com/r2dbc[@R2DBC]).
 
 [[introduction.project-metadata]]
 == Project Metadata
