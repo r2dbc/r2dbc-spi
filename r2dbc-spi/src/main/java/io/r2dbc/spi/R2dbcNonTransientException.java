@@ -36,7 +36,7 @@ public abstract class R2dbcNonTransientException extends R2dbcException {
     /**
      * Creates a new {@link R2dbcNonTransientException}.
      *
-     * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      */
     public R2dbcNonTransientException(@Nullable String reason) {
         super(reason);
@@ -45,7 +45,7 @@ public abstract class R2dbcNonTransientException extends R2dbcException {
     /**
      * Creates a new {@link R2dbcNonTransientException}.
      *
-     * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason   the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                 conventions
      */
@@ -56,7 +56,7 @@ public abstract class R2dbcNonTransientException extends R2dbcException {
     /**
      * Creates a new {@link R2dbcNonTransientException}.
      *
-     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
@@ -68,7 +68,7 @@ public abstract class R2dbcNonTransientException extends R2dbcException {
     /**
      * Creates a new {@link R2dbcNonTransientException}.
      *
-     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
@@ -82,7 +82,7 @@ public abstract class R2dbcNonTransientException extends R2dbcException {
     /**
      * Creates a new {@link R2dbcNonTransientException}.
      *
-     * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason   the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                 conventions
      * @param cause    the cause
@@ -94,7 +94,7 @@ public abstract class R2dbcNonTransientException extends R2dbcException {
     /**
      * Creates a new {@link R2dbcNonTransientException}.
      *
-     * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param cause  the cause
      */
     public R2dbcNonTransientException(@Nullable String reason, @Nullable Throwable cause) {

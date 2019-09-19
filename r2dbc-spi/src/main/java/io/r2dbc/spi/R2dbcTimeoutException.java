@@ -17,7 +17,7 @@
 package io.r2dbc.spi;
 
 /**
- * Exception thrown when the timeout specified by a database operation (query, login) is exceeded. This could have
+ * Exception thrown when the timeout specified by a database operation (query, login) is exceeded.  This could have
  * different causes depending on the database API in use but most likely thrown after the database interrupts or stops
  * the processing of a query before it has completed.
  */
@@ -33,7 +33,7 @@ public class R2dbcTimeoutException extends R2dbcTransientException {
     /**
      * Creates a new {@link R2dbcTimeoutException}.
      *
-     * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      */
     public R2dbcTimeoutException(@Nullable String reason) {
         super(reason);
@@ -42,7 +42,7 @@ public class R2dbcTimeoutException extends R2dbcTransientException {
     /**
      * Creates a new {@link R2dbcTimeoutException}.
      *
-     * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason   the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                 conventions
      */
@@ -53,7 +53,7 @@ public class R2dbcTimeoutException extends R2dbcTransientException {
     /**
      * Creates a new {@link R2dbcTimeoutException}.
      *
-     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
@@ -65,7 +65,7 @@ public class R2dbcTimeoutException extends R2dbcTransientException {
     /**
      * Creates a new {@link R2dbcTimeoutException}.
      *
-     * @param reason    the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
@@ -79,7 +79,7 @@ public class R2dbcTimeoutException extends R2dbcTransientException {
     /**
      * Creates a new {@link R2dbcTimeoutException}.
      *
-     * @param reason   the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason   the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param sqlState the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                 conventions
      * @param cause    the cause
@@ -91,7 +91,7 @@ public class R2dbcTimeoutException extends R2dbcTransientException {
     /**
      * Creates a new {@link R2dbcTimeoutException}.
      *
-     * @param reason the reason for the error. Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param reason the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
      * @param cause  the cause
      */
     public R2dbcTimeoutException(@Nullable String reason, @Nullable Throwable cause) {

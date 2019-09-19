@@ -55,7 +55,7 @@ public interface Clob {
     /**
      * Returns the content stream as a {@link Publisher} emitting {@link CharSequence} chunks.
      * <p>
-     * The content stream can be consumed ("subscribed to") only once. Subsequent consumptions result in a {@link IllegalStateException}.
+     * The content stream can be consumed ("subscribed to") only once.  Subsequent consumptions result in a {@link IllegalStateException}.
      * <p>
      * Once {@link Publisher#subscribe(Subscriber) subscribed}, {@link Subscription#cancel() canceling} the subscription releases resources associated with this {@link Clob}.
      *

@@ -18,6 +18,9 @@ package io.r2dbc.spi;
 
 /**
  * A Java Service interface for implementations to examine a collection of {@link ConnectionFactoryOptions} and optionally return an implementation of {@link ConnectionFactory}.
+ *
+ * @see ConnectionFactoryOptions
+ * @see ConnectionFactory
  */
 public interface ConnectionFactoryProvider {
 

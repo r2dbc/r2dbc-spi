@@ -24,7 +24,7 @@ import java.util.function.BiFunction;
  * Represents the results of a query against a database.  Results can be consumed only once by either consuming {@link #getRowsUpdated()} or {@link #map(BiFunction)}.
  *
  * <p>A {@link Result} object maintains a consumption state that may be backed by a cursor pointing
- * to its current row of data. A {@link Result} allows read-only and forward-only consumption of statement results.
+ * to its current row of data.  A {@link Result} allows read-only and forward-only consumption of statement results.
  * Thus, you can consume either {@link #getRowsUpdated()} or {@link #map(BiFunction) Rows} through it only once and only from the first row to the last row.
  */
 public interface Result {

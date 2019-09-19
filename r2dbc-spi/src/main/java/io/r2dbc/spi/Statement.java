@@ -37,77 +37,76 @@ public interface Statement {
     Statement add();
 
     /**
-     * Bind a value to an index.  Indexes are zero-based.
+     * Bind a value to an indexed parameter.  Indexes are zero-based.
      *
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
      * @throws IllegalArgumentException  if {@code value} is {@code null}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
+     * @throws IndexOutOfBoundsException if the parameter {@code index} is out of range
      */
     Statement bind(int index, Object value);
 
     /**
-     * Bind a value.
+     * Bind a value to a named parameter.
      *
      * @param name  the name of identifier to bind to
      * @param value the value to bind
      * @return this {@link Statement}
      * @throws IllegalArgumentException  if {@code name} or {@code value} is {@code null}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
     Statement bind(String name, Object value);
 
     /**
-     * Bind a value to an index.  Indexes are zero-based.
+     * Bind a value to an indexed parameter.  Indexes are zero-based.
      *
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
+     * @throws IndexOutOfBoundsException if the parameter {@code index} is out of range
      */
     default Statement bind(int index, boolean value) {
         return bind(index, (Boolean) value);
     }
 
     /**
-     * Bind a value to an index.  Indexes are zero-based.
+     * Bind a value to an indexed parameter.  Indexes are zero-based.
      *
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
+     * @throws IndexOutOfBoundsException if the parameter {@code index} is out of range
      */
     default Statement bind(int index, byte value) {
         return bind(index, (Byte) value);
     }
 
     /**
-     * Bind a value to an index.  Indexes are zero-based.
+     * Bind a value to an indexed parameter.  Indexes are zero-based.
      *
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
+     * @throws IndexOutOfBoundsException if the parameter {@code index} is out of range
      */
     default Statement bind(int index, char value) {
         return bind(index, (Character) value);
     }
 
     /**
-     * Bind a value to an index.  Indexes are zero-based.
+     * Bind a value to an indexed parameter.  Indexes are zero-based.
      *
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
+     * @throws IndexOutOfBoundsException if the parameter {@code index} is out of range
      */
     default Statement bind(int index, double value) {
         return bind(index, (Double) value);
     }
 
     /**
-     * Bind a value to an index.  Indexes are zero-based.
+     * Bind a value to an indexed parameter.  Indexes are zero-based.
      *
      * @param index the index to bind to
      * @param value the value to bind
@@ -119,54 +118,54 @@ public interface Statement {
     }
 
     /**
-     * Bind a value to an index.  Indexes are zero-based.
+     * Bind a value to an indexed parameter.  Indexes are zero-based.
      *
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
+     * @throws IndexOutOfBoundsException if the parameter {@code index} is out of range
      */
     default Statement bind(int index, int value) {
         return bind(index, (Integer) value);
     }
 
     /**
-     * Bind a value to an index.  Indexes are zero-based.
+     * Bind a value to an indexed parameter.  Indexes are zero-based.
      *
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
+     * @throws IndexOutOfBoundsException if the parameter {@code index} is out of range
      */
     default Statement bind(int index, long value) {
         return bind(index, (Long) value);
     }
 
     /**
-     * Bind a value to an index.  Indexes are zero-based.
+     * Bind a value to an indexed parameter.  Indexes are zero-based.
      *
      * @param index the index to bind to
      * @param value the value to bind
      * @return this {@link Statement}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
+     * @throws IndexOutOfBoundsException if the parameter {@code index} is out of range
      */
     default Statement bind(int index, short value) {
         return bind(index, (Short) value);
     }
 
     /**
-     * Bind a {@code null} value.
+     * Bind a {@code null} value to an indexed parametered parameter.  Indexes are zero-based.
      *
      * @param index the index to bind to
      * @param type  the type of null value
      * @return this {@link Statement}
      * @throws IllegalArgumentException  if {@code type} is {@code null}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
+     * @throws IndexOutOfBoundsException if the parameter {@code index} is out of range
      */
     Statement bindNull(int index, Class<?> type);
 
     /**
-     * Bind a {@code null} value.
+     * Bind a {@code null} value to a named parameter.
      *
      * @param name the name of identifier to bind to
      * @param type the type of null value

@@ -38,7 +38,7 @@ import org.reactivestreams.Publisher;
 public interface Connection extends Closeable {
 
     /**
-     * Begins a new transaction. Calling this method disables {@link #isAutoCommit() auto-commit} mode.
+     * Begins a new transaction.  Calling this method disables {@link #isAutoCommit() auto-commit} mode.
      *
      * @return a {@link Publisher} that indicates that the transaction is open
      */
@@ -121,7 +121,7 @@ public interface Connection extends Closeable {
      *
      * @param name the name of the savepoint to release
      * @return a {@link Publisher} that indicates that a savepoint has been released
-     * @throws IllegalArgumentException      if {@code name} is {@code null}
+     * @throws IllegalArgumentException if {@code name} is {@code null}
      */
     Publisher<Void> releaseSavepoint(String name);
 
@@ -149,7 +149,7 @@ public interface Connection extends Closeable {
      * A transaction needs to be either {@link #commitTransaction() committed} or {@link #rollbackTransaction() rolled back} to clean up the transaction state.
      * <p>
      * Calling this method during an active transaction and the
-     * auto-commit mode is changed, the transaction is committed. Calling this method without changing auto-commit mode this invocation results in a no-op.
+     * auto-commit mode is changed, the transaction is committed.  Calling this method without changing auto-commit mode this invocation results in a no-op.
      *
      * @param autoCommit the isolation level for this transaction
      * @return a {@link Publisher} that indicates that auto-commit mode has been configured

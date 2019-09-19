@@ -59,7 +59,7 @@ public final class ConnectionFactoryOptions {
     public static final Option<Integer> PORT = Option.valueOf("port");
 
     /**
-     * Driver protocol name. Typically represented as {@code tcp} or a database vendor-specific protocol string.
+     * Driver protocol name.  Typically represented as {@code tcp} or a database vendor-specific protocol string.
      */
     public static final Option<String> PROTOCOL = Option.valueOf("protocol");
 

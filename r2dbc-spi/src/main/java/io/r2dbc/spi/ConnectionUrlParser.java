@@ -205,7 +205,7 @@ abstract class ConnectionUrlParser {
     }
 
     /**
-     * Simplified fork of {@link URLDecoder}. The supplied encoding is used to determine what characters are represented
+     * Simplified fork of {@link URLDecoder}.  The supplied encoding is used to determine what characters are represented
      * by any consecutive sequences of the form {@code %xy}.
      *
      * @param s the {@link CharSequence} to decode.

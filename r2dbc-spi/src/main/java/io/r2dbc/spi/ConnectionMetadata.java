@@ -22,7 +22,7 @@ package io.r2dbc.spi;
 public interface ConnectionMetadata {
 
     /**
-     * Retrieves the name of this database product. May contain additional information about editions.
+     * Retrieves the name of this database product.  May contain additional information about editions.
      *
      * @return database product name
      */
