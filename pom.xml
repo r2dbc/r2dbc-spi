@@ -42,19 +42,13 @@
         <assertj.version>3.12.0</assertj.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <reactor.version>Dysprosium-M3</reactor.version>
-        <spring-boot.version>2.1.7.RELEASE</spring-boot.version>
+        <reactive-streams.version>1.0.3</reactive-streams.version>
+        <reactor.version>Dysprosium-RC1</reactor.version>
+        <spring-jdbc.version>5.1.9.RELEASE</spring-jdbc.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>io.projectreactor</groupId>
-                <artifactId>reactor-bom</artifactId>
-                <version>${reactor.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
@@ -62,24 +56,17 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
                 <version>${jsr305.version}</version>
                 <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-jdbc</artifactId>
-                <version>${spring-boot.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -112,10 +99,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.1.1</version>
                     <configuration>
                         <links>
-                            <link>https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/</link>
+                            <link>https://www.reactive-streams.org/reactive-streams-${reactive-streams.version}-javadoc/</link>
                         </links>
                     </configuration>
                     <executions>
