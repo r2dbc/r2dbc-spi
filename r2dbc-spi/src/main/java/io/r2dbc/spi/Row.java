@@ -30,76 +30,14 @@ import java.util.function.BiFunction;
  *
  * <p>For maximum portability, result columns within each {@link Row} should be read in left-to-right order, and each column should be read only once.
  *
- * <p>{@link #get(Object)} without specifying a target type returns a suitable value representation.  The R2DBC specification contains a mapping table that shows default mappings between database
+ * <p>{@link #get(String)} and {@link #get(int)} without specifying a target type returns a suitable value representation.  The R2DBC specification contains a mapping table that shows default
+ * mappings between database
  * types and Java types.
  * Specifying a target type, the R2DBC driver attempts to convert the value to the target type.
  * <p>A row is invalidated after consumption in the {@link Result#map(BiFunction) mapping function}.
  * <p>The number, type and characteristics of columns are described through {@link RowMetadata}
  */
 public interface Row {
-
-    /**
-     * Returns the value for a column in this row.
-     *
-     * @param identifier the identifier of the column.  Can be either the column index starting at 0 or column name.
-     * @param type       the type of item to return. This type must be assignable to, and allows for variance.
-     * @param <T>        the type of the item being returned
-     * @return the value for a column in this row.  Value can be {@code null}.
-     * @throws IllegalArgumentException if {@code identifier} or {@code type} is {@code null}
-     * @deprecated Use {@link #get(int, Class)} or {@link #get(String, Class)} instead
-     */
-    @Nullable
-    @Deprecated
-    default <T> T get(Object identifier, Class<T> type) {
-        if (identifier instanceof Integer) {
-            return get(((Integer) identifier).intValue(), type);
-        }
-
-        return get((String) identifier, type);
-    }
-
-    /**
-     * Returns the value for a column in this row using the default type mapping.  The default implementation of this method calls {@link #get(Object, Class)} passing {@link Object} as the type in
-     * order to allow the implementation to make the loosest possible match.
-     *
-     * @param identifier the identifier of the column.  Can be either the column index starting at 0 or column name.
-     * @return the value for a column in this row.  Value can be {@code null}.
-     * @throws IllegalArgumentException if {@code identifier} or {@code type} is {@code null}
-     * @deprecated Use {@link #get(int)} or {@link #get(String)} instead
-     */
-    @Nullable
-    @Deprecated
-    default Object get(Object identifier) {
-        return get(identifier, Object.class);
-    }
-
-    /**
-     * Returns the value for a column in this row.  The default implementation of this method calls {@link #get(Object, Class)} to allow SPI change in a less-breaking way.
-     *
-     * @param index the index of the column starting at 0
-     * @param type  the type of item to return.  This type must be assignable to, and allows for variance.
-     * @param <T>   the type of the item being returned.
-     * @return the value for a column in this row.  Value can be {@code null}.
-     * @throws IllegalArgumentException if {@code index} or {@code type} is {@code null}
-     */
-    @Nullable
-    default <T> T get(int index, Class<T> type) {
-        return get((Object) index, type);
-    }
-
-    /**
-     * Returns the value for a column in this row.  The default implementation of this method calls {@link #get(Object, Class)} to allow SPI change in a less-breaking way.
-     *
-     * @param name the name of the column
-     * @param type the type of item to return.  This type must be assignable to, and allows for variance.
-     * @param <T>  the type of the item being returned.
-     * @return the value for a column in this row.  Value can be {@code null}.
-     * @throws IllegalArgumentException if {@code name} or {@code type} is {@code null}
-     */
-    @Nullable
-    default <T> T get(String name, Class<T> type) {
-        return get((Object) name, type);
-    }
 
     /**
      * Returns the value for a column in this row using the default type mapping.  The default implementation of this method calls {@link #get(int, Class)} passing {@link Object} as the type in
@@ -114,6 +52,19 @@ public interface Row {
         return get(index, Object.class);
     }
 
+
+    /**
+     * Returns the value for a column in this row.
+     *
+     * @param index the index of the column starting at 0
+     * @param type  the type of item to return.  This type must be assignable to, and allows for variance.
+     * @param <T>   the type of the item being returned.
+     * @return the value for a column in this row.  Value can be {@code null}.
+     * @throws IllegalArgumentException if {@code index} or {@code type} is {@code null}
+     */
+    @Nullable
+    <T> T get(int index, Class<T> type);
+
     /**
      * Returns the value for a column in this row using the default type mapping.  The default implementation of this method calls {@link #get(String, Class)} passing {@link Object} as the type in
      * order to allow the implementation to make the loosest possible match.
@@ -126,5 +77,17 @@ public interface Row {
     default Object get(String name) {
         return get(name, Object.class);
     }
+
+    /**
+     * Returns the value for a column in this row.
+     *
+     * @param name the name of the column
+     * @param type the type of item to return.  This type must be assignable to, and allows for variance.
+     * @param <T>  the type of the item being returned.
+     * @return the value for a column in this row.  Value can be {@code null}.
+     * @throws IllegalArgumentException if {@code name} or {@code type} is {@code null}
+     */
+    @Nullable
+    <T> T get(String name, Class<T> type);
 
 }

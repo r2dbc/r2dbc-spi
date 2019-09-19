@@ -95,13 +95,6 @@ Column names used as input to the `get` methods are case insensitive.
 Column names do not necessarily reflect the column names as they are in the underlying tables but, rather, how columns are represented (for example, aliased) in the result.
 The following example shows how to create and consume a `Row` by using its index:
 
-The following methods on the `Row` interface have been *deprecated*:
-
-* `Object get(Object)`
-* `<T> T get(Object, Class<T>)`
-
-Both `get(Object[, Class])` methods will be removed before the release of 0.8.0.RELEASE.
-
 .Creating and Consuming a `Row` using its index
 ====
 [source,java]

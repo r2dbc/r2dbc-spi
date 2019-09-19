@@ -69,17 +69,6 @@ public final class MockRow implements Row {
         return (T) this.identified.get(identified);
     }
 
-    @Deprecated
-    @Override
-    @Nullable
-    public <T> T get(Object identifier, Class<T> type) {
-        if (identifier instanceof Integer) {
-            return get(((Integer) identifier).intValue(), type);
-        }
-
-        return get((String) identifier, type);
-    }
-
     @Override
     public String toString() {
         return "MockRow{" +

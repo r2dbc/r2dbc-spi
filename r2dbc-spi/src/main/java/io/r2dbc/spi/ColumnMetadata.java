@@ -31,7 +31,7 @@ public interface ColumnMetadata {
      * should be expected to run in non-constant time.
      *
      * @return the primary Java {@link Class type} or {@code null} if the type is not available.
-     * @see Row#get(Object, Class)
+     * @see Row#get
      */
     @Nullable
     default Class<?> getJavaType() {

@@ -37,25 +37,6 @@ public interface Statement {
     Statement add();
 
     /**
-     * Bind a value.
-     *
-     * @param identifier the identifier to bind to
-     * @param value      the value to bind
-     * @return this {@link Statement}
-     * @throws IllegalArgumentException  if {@code identifier} or {@code value} is {@code null}
-     * @throws IndexOutOfBoundsException if the parameter index is out of range
-     * @deprecated Use {@link #bind(String, Object)} instead
-     */
-    @Deprecated
-    default Statement bind(Object identifier, Object value) {
-        if (identifier instanceof Integer) {
-            return bind(((Integer) identifier).intValue(), value);
-        }
-
-        return bind((String) identifier, value);
-    }
-
-    /**
      * Bind a value to an index.  Indexes are zero-based.
      *
      * @param index the index to bind to
@@ -67,7 +48,7 @@ public interface Statement {
     Statement bind(int index, Object value);
 
     /**
-     * Bind a value.  The default implementation of this method calls {@link #bind(Object, Object)} to allow SPI change in a less-breaking way.
+     * Bind a value.
      *
      * @param name  the name of identifier to bind to
      * @param value the value to bind
@@ -75,9 +56,7 @@ public interface Statement {
      * @throws IllegalArgumentException  if {@code name} or {@code value} is {@code null}
      * @throws IndexOutOfBoundsException if the parameter index is out of range
      */
-    default Statement bind(String name, Object value) {
-        return bind((Object) name, value);
-    }
+    Statement bind(String name, Object value);
 
     /**
      * Bind a value to an index.  Indexes are zero-based.
@@ -178,24 +157,6 @@ public interface Statement {
     /**
      * Bind a {@code null} value.
      *
-     * @param identifier the identifier to bind to
-     * @param type       the type of null value
-     * @return this {@link Statement}
-     * @throws IllegalArgumentException if {@code identifier} or {@code type} is {@code null}
-     * @deprecated Use {@link #bindNull(String, Class)} instead
-     */
-    @Deprecated
-    default Statement bindNull(Object identifier, Class<?> type) {
-        if (identifier instanceof Integer) {
-            return bindNull(((Integer) identifier).intValue(), type);
-        }
-
-        return bindNull((String) identifier, type);
-    }
-
-    /**
-     * Bind a {@code null} value.
-     *
      * @param index the index to bind to
      * @param type  the type of null value
      * @return this {@link Statement}
@@ -205,16 +166,14 @@ public interface Statement {
     Statement bindNull(int index, Class<?> type);
 
     /**
-     * Bind a {@code null} value.  The default implementation of this method calls {@link #bindNull(Object, Class)} to allow SPI change in a less-breaking way.
+     * Bind a {@code null} value.
      *
      * @param name the name of identifier to bind to
      * @param type the type of null value
      * @return this {@link Statement}
      * @throws IllegalArgumentException if {@code name} or {@code type} is {@code null}
      */
-    default Statement bindNull(String name, Class<?> type) {
-        return bindNull((Object) name, type);
-    }
+    Statement bindNull(String name, Class<?> type);
 
     /**
      * Executes one or more SQL statements and returns the {@link Result}s.

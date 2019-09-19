@@ -59,21 +59,10 @@ public final class MockStatement implements Statement {
 
     @Override
     public Statement bind(String name, Object value) {
-
         Assert.requireNonNull(name, "name must not be null");
         Assert.requireNonNull(value, "value must not be null");
 
         getCurrent().put(name, value);
-        return this;
-    }
-
-    @Deprecated
-    @Override
-    public MockStatement bind(Object identifier, Object value) {
-        Assert.requireNonNull(identifier, "identifier must not be null");
-        Assert.requireNonNull(value, "value must not be null");
-
-        getCurrent().put(identifier, value);
         return this;
     }
 
@@ -85,13 +74,12 @@ public final class MockStatement implements Statement {
         return this;
     }
 
-    @Deprecated
     @Override
-    public MockStatement bindNull(Object identifier, Class<?> type) {
-        Assert.requireNonNull(identifier, "identifier must not be null");
-        Assert.requireNonNull(type, "type must not be null");
+    public Statement bindNull(String name, Class<?> type) {
+        Assert.requireNonNull(name, "name must not be null");
+        Assert.requireNonNull(type, "value must not be null");
 
-        getCurrent().put(identifier, type);
+        getCurrent().put(name, type);
         return this;
     }
 
@@ -129,11 +117,11 @@ public final class MockStatement implements Statement {
     @Override
     public String toString() {
         return "MockStatement{" +
-            "bindings=" + bindings +
-            ", results=" + results +
-            ", addCalled=" + addCalled +
-            ", current=" + current +
-            ", generatedValuesColumns=" + Arrays.toString(generatedValuesColumns) +
+            "bindings=" + this.bindings +
+            ", results=" + this.results +
+            ", addCalled=" + this.addCalled +
+            ", current=" + this.current +
+            ", generatedValuesColumns=" + Arrays.toString(this.generatedValuesColumns) +
             '}';
     }
 

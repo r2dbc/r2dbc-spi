@@ -29,44 +29,21 @@ public interface RowMetadata {
     /**
      * Returns the {@link ColumnMetadata} for one column in this row.
      *
-     * @param identifier the identifier of the column. Can be either the column index starting at 0 or column name. Column names are case insensitive.  When a get method is called with a column
-     *                   name and several columns have the same name, then the value of the first matching column will be returned.
-     * @return the {@link ColumnMetadata} for one column in this row
-     * @throws IllegalArgumentException       if {@code identifier} is {@code null} or not supported
-     * @throws NoSuchElementException         if there is no column with the name {@code identifier}
-     * @throws ArrayIndexOutOfBoundsException if the {@code identifier} is a {@link Integer index} and it is less than zero or greater than the number of available columns.
-     * @deprecated Use {@link #getColumnMetadata(int)} or {@link #getColumnMetadata(String)} instead
-     */
-    @Deprecated
-    default ColumnMetadata getColumnMetadata(Object identifier) {
-        if (identifier instanceof Integer) {
-            return getColumnMetadata(((Integer) identifier).intValue());
-        }
-        return getColumnMetadata((String) identifier);
-    }
-
-    /**
-     * Returns the {@link ColumnMetadata} for one column in this row.  The default implementation of this method calls {@link #getColumnMetadata(Object)} to allow SPI change in a less-breaking way.
-     *
      * @param index the column index starting at 0
      * @return the {@link ColumnMetadata} for one column in this row
      * @throws ArrayIndexOutOfBoundsException if the {@code index} is less than zero or greater than the number of available columns.
      */
-    default ColumnMetadata getColumnMetadata(int index) {
-        return getColumnMetadata((Object) index);
-    }
+    ColumnMetadata getColumnMetadata(int index);
 
     /**
-     * Returns the {@link ColumnMetadata} for one column in this row.  The default implementation of this method calls {@link #getColumnMetadata(Object)} to allow SPI change in a less-breaking way.
+     * Returns the {@link ColumnMetadata} for one column in this row.
      *
      * @param name the name of the column.  Column names are case insensitive.  When a get method contains several columns with same name, then the value of the first matching column will be returned
      * @return the {@link ColumnMetadata} for one column in this row
      * @throws IllegalArgumentException if {@code name} is {@code null}
      * @throws NoSuchElementException   if there is no column with the {@code name}
      */
-    default ColumnMetadata getColumnMetadata(String name) {
-        return getColumnMetadata((Object) name);
-    }
+    ColumnMetadata getColumnMetadata(String name);
 
     /**
      * Returns the {@link ColumnMetadata} for all columns in this row.

@@ -46,10 +46,6 @@ See <<compliance.guidelines>>.
 * `getColumnMetadata(String)` returns the `ColumnMetadata` by using the column name.
 * `getColumnMetadatas()` returns an unmodifiable collection of `ColumnMetadata` objects.
 
-// TODO
-
-The `getColumnMetadata(Object)` method is *deprecated* and will be removed with the of 0.8.0.RC1 release.
-
 == Retrieving General Information for a Column
 
 `ColumnMetadata` declares methods to access column metadata on a best-effort basis.
