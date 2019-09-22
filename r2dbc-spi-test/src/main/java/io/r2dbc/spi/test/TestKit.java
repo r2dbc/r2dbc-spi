@@ -205,7 +205,8 @@ public interface TestKit<T> {
 
                 .concatWith(close(connection)))
             .as(StepVerifier::create)
-            .expectNextCount(2).as("one result for each statement")
+            .consumeNextWith(r -> Mono.from(r.getRowsUpdated()).subscribe())
+            .consumeNextWith(r -> Flux.from(r.map((row, meta) -> row.get(0))).subscribe())
             .verifyComplete();
     }
 
