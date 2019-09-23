@@ -12,7 +12,7 @@ To avoid ambiguity, we will use the following terms in the compliance section an
 R2DBC driver implementation::  (short form: *driver*)A driver that implements the R2DBC SPI.
 A driver may provide support for features that are not implemented by the underlying database or expose functionality that is not declared by the R2DBC SPI (See *Extension*).
 
-Supported feature:: A feature for which the R2DBC API implementation supports standard syntax and semantics.
+Supported feature:: A feature for which the R2DBC SPI implementation supports standard syntax and semantics.
 
 Partially supported feature:: A feature for which some methods are implemented with standard syntax and semantics and some required methods are not implemented (typically covered by `default` interface methods).
 
@@ -27,7 +27,7 @@ Must implement:: Term to express that an interface must be implemented, although
 
 The following guidelines apply to R2DBC compliance:
 
-* An R2DBC API should implement SQL support as its primary interface. R2DBC does not rely upon (nor does it presume) a specific SQL version.
+* An R2DBC SPI should implement SQL support as its primary interface. R2DBC does not rely upon (nor does it presume) a specific SQL version.
 SQL and aspects of statements can be entirely handled in the data source or as part of the driver.
 
 * The specification consists of this specification document and the specifications documented in each interface's Javadoc.
@@ -42,7 +42,7 @@ SQL and aspects of statements can be entirely handled in the data source or as p
 That is, the first index begins with `0`.
 
 [[compliance.r2dbc]]
-== R2DBC API Compliance
+== R2DBC SPI Compliance
 
 A driver that is compliant with the R2DBC specification must do the following:
 

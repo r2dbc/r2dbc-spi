@@ -5,7 +5,7 @@ R2DBC uses the `Connection` interface to define a logical connection API to the 
 The structure of a connection depends on the actual requirements of the data source and how the driver implements these.
 
 The data source can be an RDBMS, a stream-oriented data system, or some other source of data with a corresponding R2DBC driver.
-A single application that uses R2DBC API can maintain multiple connections to either a single data source or across multiple data sources.
+A single application that uses R2DBC SPI can maintain multiple connections to either a single data source or across multiple data sources.
 From a R2DBC driver perspective, a `Connection` object represents a single client session.
 It has associated state information, such as user ID and what transaction semantics are in effect.
 A `Connection` object is not thread-safe (it cannot be shared across multiple threads that concurrently execute statements or change its state).
@@ -99,6 +99,8 @@ public interface ConnectionFactoryProvider {
 
     boolean supports(ConnectionFactoryOptions connectionFactoryOptions);
 
+    String getDriver();
+
 }
 ----
 ====
@@ -111,9 +113,11 @@ public interface ConnectionFactoryProvider {
 `ConnectionFactoryProvider` implementations are required to return a `boolean` indicator whether or not they support a specific configuration represented by `ConnectionFactoryOptions`.
 Drivers must expect any plurality of `Option` instances to be configured.
 Drivers must report that they support a configuration only if the `ConnectionFactoryProvider` can provide a `ConnectionFactory` based on the given `ConnectionFactoryOptions`.
-Drivers should gracefully fail if a `ConnectionFactory` creation through `ConnectionFactoryProvider.create(…)` is not possible.
+A typical task handled by `supports` is checking driver and protocol options.
+Drivers should gracefully fail if a `ConnectionFactory` creation through `ConnectionFactoryProvider.create(…)` is not possible (i.e. when required options were left unconfigured).
+The `getDriver()` method reports the driver identifier that is associated with the `ConnectionFactoryProvider` implementation to provide diagnostic information to users in misconfiguration cases.
 
-See the R2DBC SPI Specification for more details.
+See the R2DBC SPI Specification and <<overview.connection.discovery,ConnectionFactory Discovery>> for more details.
 
 [[connections.factory.options]]
 == The `ConnectionFactoryOptions` Class
@@ -130,6 +134,11 @@ Options are identified by a literal.
 .Well-known Options
 |===
 |Constant |Literal |Type |Description
+
+|`SSL`
+|`ssl`
+|`java.lang.Boolean`
+|Whether the connection is configured to require SSL.
 
 |`DRIVER`
 |`driver`
@@ -160,7 +169,6 @@ Options are identified by a literal.
 |`port`
 |`java.lang.Integer`
 |Database server port number.
-
 
 |`DATABASE`
 |`database`

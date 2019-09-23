@@ -1,6 +1,7 @@
 # Reactive Relational Database Connectivity Service Provider Interface (R2DBC SPI)
 
-This project contains the service provider interface for R2DBC implentations. This interface is intended to be terse to simplify implementation by database vendors and should not be used directly.  It is expected that client libraries would be built upon this interface in order to expose a more humane interface for tools and developers to use.
+This project contains the service provider interface for R2DBC implementations. This interface is intended to be terse to simplify implementation by database vendors and should not be used directly.
+It is expected that client libraries would be built upon this interface in order to expose a more humane interface for tools and developers to use.
 
 ## Maven
 Both milestone and snapshot artifacts (library, source, and javadoc) can be found in Maven repositories.
@@ -9,7 +10,7 @@ Both milestone and snapshot artifacts (library, source, and javadoc) can be foun
 <dependency>
   <groupId>io.r2dbc</groupId>
   <artifactId>r2dbc-spi</artifactId>
-  <version>1.0.0.M6</version>
+  <version>0.8.0.BUILD-SNAPSHOT</version>
 </dependency>
 ```
 

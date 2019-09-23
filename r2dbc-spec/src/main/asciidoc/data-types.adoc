@@ -178,7 +178,7 @@ Vendor-specific types (such as spatial data types, structured JSON or XML data, 
 [[datatypes.mapping.advanced]]
 == Mapping of Advanced Data Types
 
-The R2DBC API declares default mappings for advanced data types. The following list describes data types and the interfaces to which they map:
+The R2DBC SPI declares default mappings for advanced data types. The following list describes data types and the interfaces to which they map:
 
 * `BLOB`: The `Blob` interface
 * `CLOB`: The `Clob` interface
