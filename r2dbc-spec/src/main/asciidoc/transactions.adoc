@@ -3,7 +3,7 @@
 
 Transactions are used to provide data integrity, isolation, correct application semantics, and a consistent view of data during concurrent database access.
 All R2DBC-compliant drivers are required to provide transaction support.
-Transaction management in the R2DBC API reflects SQL concepts:
+Transaction management in the R2DBC SPI reflects SQL concepts:
 
 * Auto-commit mode
 * Transaction isolation levels

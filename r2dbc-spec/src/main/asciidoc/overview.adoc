@@ -4,9 +4,9 @@
 R2DBC provides an API for Java programs to access one or more sources of data.
 In the majority of cases, the data source is a relational DBMS and its data is accessed using SQL.
 R2DBC drivers are not limited to RDBMS but can be implemented on top of other data sources, including stream-oriented systems and object-oriented systems.
-A primary motivation for R2DBC API is to provide a standard API for reactive applications to integrate with a wide variety of data sources.
+A primary motivation for R2DBC SPI is to provide a standard API for reactive applications to integrate with a wide variety of data sources.
 
-This chapter gives an overview of the API and the key concepts of the R2DBC API.
+This chapter gives an overview of the API and the key concepts of the R2DBC SPI.
 It includes the following topics:
 
 * <<overview.connection>>
@@ -126,6 +126,10 @@ The following table describes the standard options:
 |===
 |Option |URL Part |Value as per Example
 
+|`ConnectionFactoryOptions.SSL`
+|`r2dbc`
+|Unconfigured.
+
 |`ConnectionFactoryOptions.DRIVER`
 |`driver`
 |`a-driver`
@@ -169,7 +173,40 @@ The following table describes the extended options:
 NOTE: R2DBC defines well-known standard options that are available as runtime constants through `ConnectionFactories`.
 Additional options identifiers are created through `Option.valueOf(…)`.
 
-[[overview.connection.usage]]
-=== Running SQL and Retrieving Results
+.Obtaining a `ConnectionFactory` using R2DBC URL
+====
+[source,java]
+----
+ConnectionFactory factory = ConnectionFactories.get("r2dbc:a-driver:pipes://localhost:3306/my_database?locale=en_US");
+----
+====
 
-TBD.
+.Obtaining a `ConnectionFactory` using `ConnectionFactoryOptions`
+====
+[source,java]
+----
+ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
+    .option(ConnectionFactoryOptions.DRIVER, "a-driver")
+    .option(ConnectionFactoryOptions.PROTOCOL, "pipes")
+    .option(ConnectionFactoryOptions.HOST, "localhost")
+    .option(ConnectionFactoryOptions.PORT, 3306)
+    .option(ConnectionFactoryOptions.DATABASE, "my_database")
+    .option(Option.valueOf("locale"), "en_US")
+    .build();
+
+ConnectionFactory factory = ConnectionFactories.get(options);
+----
+====
+
+[[overview.connection.usage]]
+== Running SQL and Retrieving Results
+
+Once a connection has been established, an application using the R2DBC SPI can execute queries and updates against the connected database.
+The R2DBC SPI provides a text-based command interface to the most commonly used features of SQL databases.
+R2DBC driver implementations may expose additional functionality in a non-standard way.
+
+Applications use methods in the `Connection` interface to specify transaction attributes and create `Statement` or `Batch` objects.
+These statements are used to execute SQL and retrieve results and allow for binding values to parameter bind markers.
+The `Result` interface encapsulates the results of an SQL query.
+Statements may also be batched, allowing an application to submit multiple commands to a database as a single unit of execution.
+

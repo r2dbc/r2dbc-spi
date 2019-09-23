@@ -16,11 +16,16 @@
 
 package io.r2dbc.spi;
 
+import java.util.ServiceLoader;
+
 /**
  * A Java Service interface for implementations to examine a collection of {@link ConnectionFactoryOptions} and optionally return an implementation of {@link ConnectionFactory}.
+ * <p>{@link ConnectionFactoryProvider} implementations are typically discovered by {@link ConnectionFactories} from the class path using {@link ServiceLoader}.
  *
  * @see ConnectionFactoryOptions
  * @see ConnectionFactory
+ * @see ConnectionFactories
+ * @see ServiceLoader
  */
 public interface ConnectionFactoryProvider {
 
@@ -47,7 +52,7 @@ public interface ConnectionFactoryProvider {
      * Returns the driver identifier used by the driver.
      * The identifier for drivers would be the value applicable to {@link ConnectionFactoryOptions#DRIVER}
      *
-     * @return The driver identifier used by the driver
+     * @return the driver identifier used by the driver
      */
     String getDriver();
 
