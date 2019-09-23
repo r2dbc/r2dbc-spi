@@ -204,9 +204,9 @@ public interface TestKit<T> {
                 .execute())
 
                 .concatWith(close(connection)))
+            .flatMap(Result::getRowsUpdated)
+            .then()
             .as(StepVerifier::create)
-            .consumeNextWith(r -> Mono.from(r.getRowsUpdated()).subscribe())
-            .consumeNextWith(r -> Flux.from(r.map((row, meta) -> row.get(0))).subscribe())
             .verifyComplete();
     }
 
