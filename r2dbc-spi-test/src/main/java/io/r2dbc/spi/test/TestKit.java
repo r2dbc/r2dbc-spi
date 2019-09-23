@@ -204,8 +204,9 @@ public interface TestKit<T> {
                 .execute())
 
                 .concatWith(close(connection)))
+            .flatMap(Result::getRowsUpdated)
+            .then()
             .as(StepVerifier::create)
-            .expectNextCount(2).as("one result for each statement")
             .verifyComplete();
     }
 
