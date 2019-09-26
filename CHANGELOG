@@ -1,7 +1,42 @@
 R2DBC SPI Changelog
 =============================
 
-1.0.0.M8
+0.8.0.RC1
+------------------
+* Add automatic module name #128
+* Upgrade to Reactor Dysprosium GA #127
+* Documentation edits #126
+* Prevent Result leaking in batch test #125
+* Replace spring-boot-starter-jdbc with spring-jdbc #123
+* Remove repositories declaration from published pom #121
+* Editing #120
+* Use int and String identifier for RowMetadata #119
+* Expose Connection metadata #118
+* Refine parameter binding requirements #117
+* Clean up Statement.bind*(Object) and Result.get(Object) methods #116
+* Use int and String identifier in bind(Object, …) and get(Object, …) methods  #115
+* Correct binding in TestKit #114
+* Upgrade maven-compiler-plugin to 3.8.1 #110
+* Upgrade Spring Boot to 2.1.7.RELEASE #109
+* Upgrade to Dysprosium-M3 #108
+* Auto-generated key test improvements #106
+* Make "INSERT INTO" overridable for `returnGeneratedValues` in TCK #105
+* Expose Connection metadata #104
+* Updated documentation #102
+* Feedback on R2DBC Type Mapping #97
+* Spec contains incomplete wording #96
+* Rename Example to TestKit #93
+* Add specification for Statement.fetchSize #92
+* Add specification for Closeable #91
+* Allow url parser to have empty password #89
+* ArrayIndexOutOfBoundsException when connection URL contains an user without a password #88
+* Specify transaction/auto-commit behavior #78
+* Spec documentation: Add overview for Statement #77
+* Object vs. int and String identifier in bind(Object, …) and get(Object) methods #76
+* Introduce Connection.isValid() method #54
+* Positional Argument Binding Index #33
+
+0.8.0.M8
 ------------------
 * Migrate IsolationLevel to interface #82
 * Spec documentation: Add detailed specification for Result and Row #81
