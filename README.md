@@ -10,7 +10,7 @@ Both milestone and snapshot artifacts (library, source, and javadoc) can be foun
 <dependency>
   <groupId>io.r2dbc</groupId>
   <artifactId>r2dbc-spi</artifactId>
-  <version>0.8.0.BUILD-SNAPSHOT</version>
+  <version>0.8.0.RC1</version>
 </dependency>
 ```
 
