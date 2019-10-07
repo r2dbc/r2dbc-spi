@@ -1,6 +1,10 @@
 R2DBC SPI Changelog
 =============================
 
+0.8.0.RC2
+------------------
+No changes.
+
 0.8.0.RC1
 ------------------
 * Add automatic module name #128
