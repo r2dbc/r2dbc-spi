@@ -22,7 +22,7 @@ Transactions are started by either an R2DBC driver or by the underlying database
 The `Connection` attribute auto-commit mode specifies when to end transactions.
 Enabling auto-commit mode causes a transaction commit after each SQL statement as soon as that statement is completely executed.
 
-[[transactions.auto-commit]
+[[transactions.auto-commit]]
 == Auto-commit Mode
 
 A `ConnectionFactory` creates new `Connection` objects with auto-commit mode enabled.
@@ -46,7 +46,7 @@ This is appropriate for cases where transaction management is being done in a la
 * The application needs to group multiple SQL statements into a single transaction.
 * An application container manages the transaction state.
 
-[[transactions.isolation]
+[[transactions.isolation]]
 == Transaction Isolation
 
 Transaction isolation levels define the level of visibility ("`isolation`") for statements that are run within a transaction.
