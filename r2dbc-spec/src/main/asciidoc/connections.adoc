@@ -8,7 +8,7 @@ The data source can be an RDBMS, a stream-oriented data system, or some other so
 A single application that uses R2DBC SPI can maintain multiple connections to either a single data source or across multiple data sources.
 From a R2DBC driver perspective, a `Connection` object represents a single client session.
 It has associated state information, such as user ID and what transaction semantics are in effect.
-A `Connection` object is not thread-safe (it cannot be shared across multiple threads that concurrently execute statements or change its state).
+A `Connection` object is not safe for concurrent state-changing by multiple subscribers.
 A connection object can be shared across multiple threads that serially run operations by using appropriate synchronization mechanisms.
 
 To obtain a connection, the application can:

@@ -3,7 +3,7 @@
 
 [[introduction.what-is-r2dbc]]
 R2DBC stands for Reactive Relational Database Connectivity.
-R2DBC started as an experiment and proof of concept to enable integration of relational databases into systems that use reactive programming models –- Reactive in the sense of an event-driven, non-blocking, and functional programming model that does not make assumptions over concurrency or asynchronicity.
+R2DBC started as an experiment and proof of concept to enable integration of SQL databases into systems that use reactive programming models –- Reactive in the sense of an event-driven, non-blocking, and functional programming model that does not make assumptions over concurrency or asynchronicity.
 Instead, it assumes that scheduling and parallelization happen as part of runtime scheduling.
 
 [[introduction.r2dbc-spi]]
@@ -58,6 +58,6 @@ To stay up to date with the latest news and announcements in the R2DBC eco syste
 * Version control: https://github.com/r2dbc/r2dbc-spi
 * Mailing list: link:++https://groups.google.com/forum/#!forum/r2dbc++[++https://groups.google.com/forum/#!forum/r2dbc++]
 * Issue tracker: https://github.com/r2dbc/r2dbc-spi/issues
-* Release repository: https://repo.spring.io/libs-release
+* Release repository: https://repo1.maven.org/maven2
 * Milestone repository: https://repo.spring.io/libs-milestone
 * Snapshot repository: https://repo.spring.io/libs-snapshot
