@@ -47,11 +47,11 @@ The following table describes the SQL type mapping for character types:
 
 | `CHARACTER LARGE OBJECT` (`CLOB`)
 | A Character Large OBject (or `CLOB`) is a collection of character data in a DBMS, usually stored in a separate location that is referenced in the table itself.
-| `io.r2dbc.spi.Clob`
+| `String`, `io.r2dbc.spi.Clob`
 
 | `NATIONAL CHARACTER LARGE OBJECT` (`NCLOB`)
 | The `NATIONAL CHARACTER LARGE OBJECT` type is the same as `CHARACTER LARGE OBJECT` except that it holds standardized multibyte characters or Unicode characters.
-| `io.r2dbc.spi.Clob`
+| `String`, `io.r2dbc.spi.Clob`
 
 |===
 
@@ -85,7 +85,7 @@ The following table describes the SQL type mapping for binary types:
 
 | `BINARY LARGE OBJECT` (`BLOB`)
 | A Binary Large OBject (or `BLOB`) is a collection of binary data in a database management system, usually stored in a separate location that is referenced in the table itself.
-| `io.r2dbc.spi.Blob`
+| `java.nio.ByteBuffer`, `io.r2dbc.spi.Blob`
 
 |===
 

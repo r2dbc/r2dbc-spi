@@ -281,6 +281,29 @@ public interface TestKit<T> {
 
         });
 
+        // BLOB as ByteBuffer
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.from(connection
+
+                .createStatement("SELECT * from blob_test")
+                .execute())
+                .flatMap(result -> result
+                    .map((row, rowMetadata) -> row.get("value")))
+                .cast(ByteBuffer.class)
+                .map(buffer -> {
+                    byte[] bytes = new byte[buffer.remaining()];
+                    buffer.get(bytes);
+                    return bytes;
+                })
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNextMatches(actual -> {
+                ByteBuffer expected = StandardCharsets.UTF_8.encode("test-value");
+                return Arrays.equals(expected.array(), actual);
+            })
+            .verifyComplete();
+
+        // BLOB as Blob
         Mono.from(getConnectionFactory().create())
             .flatMapMany(connection -> Flux.from(connection
 
@@ -336,6 +359,21 @@ public interface TestKit<T> {
 
         });
 
+        // CLOB defaults to String
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.from(connection
+
+                .createStatement("SELECT * from clob_test")
+                .execute())
+                .flatMap(result -> result
+                    .map((row, rowMetadata) -> row.get("value")))
+
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNext("test-value").as("value from select")
+            .verifyComplete();
+
+        // CLOB consume as Clob
         Mono.from(getConnectionFactory().create())
             .flatMapMany(connection -> Flux.from(connection
 
