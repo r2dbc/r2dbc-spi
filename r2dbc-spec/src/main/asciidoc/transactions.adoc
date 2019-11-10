@@ -92,7 +92,7 @@ The `Connection` interface defines methods to interact with savepoints:
 * `rollbackTransactionToSavepoint`
 
 Savepoints are created during an active transaction and are valid only as long as the transaction is active.
-You can sue the `createSavepoint` method to set a savepoint within the current transaction.
+You can use the `createSavepoint` method to set a savepoint within the current transaction.
 A transaction is started if `createSavepoint` is invoked and there is no active transaction (switching the connection to disabled auto-commit mode).
 The `rollbackTransactionToSavepoint` method is used to roll back work to a previous savepoint without rolling back the entire transaction.
 the following example shows how to roll back a transaction to a savepoint:
