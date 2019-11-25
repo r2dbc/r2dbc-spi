@@ -35,6 +35,8 @@ Depending on how the underlying database materializes results, an R2DBC driver c
 
 A `Result` object is emitted for each statement result in a forward-only direction.
 
+<<<
+
 [[results.creating]]
 == Creating `Result` Objects
 
@@ -63,6 +65,8 @@ By consuming `Row` objects, an R2DBC driver advances the cursor position.
 Thus, external cursor navigation is not possible.
 
 Canceling subscription of tabular results stops cursor reads and releases any resources associated with the `Result` object.
+
+<<<
 
 [[rows]]
 == Rows

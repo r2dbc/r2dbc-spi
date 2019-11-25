@@ -3,9 +3,10 @@
 :email: r2dbc@googlegroups.com
 :revnumber: {version}
 :revdate: {localdate}
-:revremark: Draft
+:revremark: Final
 ifdef::backend-pdf[]
 :pagenums:
+:toc:
 endif::[]
 
 (C) 2017-2019 The original authors.

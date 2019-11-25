@@ -22,6 +22,8 @@ Fully implemented:: Term to express that an interface has all its methods implem
 
 Must implement:: Term to express that an interface must be implemented, although some methods on the interface are considered optional. Methods that are not implemented rely on the `default` implementation.
 
+<<<
+
 [[compliance.guidelines]]
 == Guidelines and Requirements
 
@@ -40,6 +42,8 @@ SQL and aspects of statements can be entirely handled in the data source or as p
 
 * Index references to columns and parameters are zero-based.
 That is, the first index begins with `0`.
+
+<<<
 
 [[compliance.r2dbc]]
 == R2DBC SPI Compliance

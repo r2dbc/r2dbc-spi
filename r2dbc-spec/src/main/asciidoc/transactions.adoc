@@ -124,6 +124,8 @@ Publisher<Void> commit = connection.commit();
 
 Drivers that do not support savepoint creation and rolling back to a savepoint should throw an `UnsupportedOperationException` to indicate these features are not supported.
 
+<<<
+
 === Releasing a Savepoint
 
 Savepoints allocate resources on the databases, and some vendors may require releasing a savepoint to dispose resources.

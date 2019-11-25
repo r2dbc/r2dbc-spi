@@ -14,6 +14,8 @@ The <<introduction>> contains more details about its origins and explains its go
 
 This document describes the first and initial generation of R2DBC.
 
+<<<
+
 [[doc.organisation]]
 === Organization of this document
 
