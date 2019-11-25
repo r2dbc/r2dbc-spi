@@ -183,5 +183,9 @@ See the R2DBC SPI Specification for more details.
 The `Statement` interface provides a method that you can use to provide hints to a R2DBC driver.
 Calling `fetchSize` applies a fetch-size hint to each query produced by the statement.
 Hints provided to the driver through this interface may be ignored by the driver if they are not appropriate or supported.
-Typically, fetch size can be derived from back-pressure hints.
-To optimize for performance, it can be useful to provide hints to the driver on a per-statement basis.
+
+Back-pressure hints can be used by drivers to derive an appropriate fetch size.
+To optimize for performance, it can be useful to provide hints to the driver on a per-statement basis to avoid unwanted interference of back-pressure hint propagation.
+
+Note that back-pressure should be considered a utility for flow control and not to limit the result size.
+Result size limitations should be part of the query statement.
