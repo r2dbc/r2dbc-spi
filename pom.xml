@@ -31,19 +31,6 @@
     <description>Parent module for Reactive Relational Database Connectivity</description>
     <url>https://r2dbc.io</url>
 
-    <licenses>
-        <license>
-            <name>Apache License 2.0</name>
-            <url>https://repository.jboss.org/licenses/apache-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <scm>
-        <connection>scm:git:https://github.com/r2dbc/r2dbc-spi</connection>
-        <url>https://github.com/r2dbc/r2dbc-spi</url>
-    </scm>
-
     <modules>
         <module>r2dbc-spi</module>
         <module>r2dbc-spi-test</module>
@@ -60,6 +47,38 @@
         <reactor.version>Dysprosium-SR1</reactor.version>
         <spring-jdbc.version>5.2.1.RELEASE</spring-jdbc.version>
     </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://repository.jboss.org/licenses/apache-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/r2dbc/r2dbc-spi</connection>
+        <url>https://github.com/r2dbc/r2dbc-spi</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Ben Hale</name>
+            <email>bhale@pivotal.io</email>
+        </developer>
+        <developer>
+            <name>Mark Paluch</name>
+            <email>mpaluch@pivotal.io</email>
+        </developer>
+        <developer>
+            <name>Mirro Mutth</name>
+            <email>mirromutth@gmail.com</email>
+        </developer>
+        <developer>
+            <name>Greg Turnquist</name>
+            <email>gturnquist@pivotal.io</email>
+        </developer>
+    </developers>
 
     <dependencyManagement>
         <dependencies>
