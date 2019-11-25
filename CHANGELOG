@@ -1,7 +1,7 @@
 R2DBC SPI Changelog
 =============================
 
-0.8.0.RC1
+0.8.0.RELEASE
 ------------------
 * Update changelog for 0.8.0.RELEASE #140
 * Extend Javadoc and refine specification #139
