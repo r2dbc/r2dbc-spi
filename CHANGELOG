@@ -3,6 +3,19 @@ R2DBC SPI Changelog
 
 0.8.0.RC1
 ------------------
+* Update changelog for 0.8.0.RELEASE #140
+* Extend Javadoc and refine specification #139
+* Document backpressure behavior related to fetching results #137
+* Fix typo #135
+* Remove Statement.bind(index, <primitive>) methods #134
+* Change default mapping of BLOB and CLOB column types to ByteBuffer respective String #133
+* Malformed header in spec #131
+* Change default mapping of BLOB and CLOB column types to ByteBuffer and String #130
+* Release 0.8.0.RC1 #129
+* Inconsistent Statment.bind(int, …) vs bind(String, Object) #124
+
+0.8.0.RC1
+------------------
 * Add automatic module name #128
 * Upgrade to Reactor Dysprosium GA #127
 * Documentation edits #126
