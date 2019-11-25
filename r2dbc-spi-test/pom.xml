@@ -32,13 +32,6 @@
     <packaging>jar</packaging>
 
     <name>Reactive Relational Database Connectivity - SPI Test</name>
-    <url>https://github.com/r2dbc/r2dbc-spi</url>
-
-    <properties>
-        <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    </properties>
 
     <dependencyManagement>
         <dependencies>

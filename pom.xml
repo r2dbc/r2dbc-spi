@@ -28,7 +28,21 @@
     <packaging>pom</packaging>
 
     <name>Reactive Relational Database Connectivity - SPI Parent</name>
-    <url>https://github.com/r2dbc/r2dbc-spi</url>
+    <description>Parent module for Reactive Relational Database Connectivity</description>
+    <url>https://r2dbc.io</url>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://repository.jboss.org/licenses/apache-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/r2dbc/r2dbc-spi</connection>
+        <url>https://github.com/r2dbc/r2dbc-spi</url>
+    </scm>
 
     <modules>
         <module>r2dbc-spi</module>
@@ -39,12 +53,12 @@
         <java.version>1.8</java.version>
         <jsr305.version>3.0.2</jsr305.version>
         <junit.version>5.5.2</junit.version>
-        <assertj.version>3.12.0</assertj.version>
+        <assertj.version>3.14.0</assertj.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <reactive-streams.version>1.0.3</reactive-streams.version>
-        <reactor.version>Dysprosium-RELEASE</reactor.version>
-        <spring-jdbc.version>5.1.9.RELEASE</spring-jdbc.version>
+        <reactor.version>Dysprosium-SR1</reactor.version>
+        <spring-jdbc.version>5.2.1.RELEASE</spring-jdbc.version>
     </properties>
 
     <dependencyManagement>
@@ -94,7 +108,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.2.0</version>
                     <configuration>
                         <archive>
                             <manifest>
@@ -133,7 +147,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
