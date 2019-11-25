@@ -177,6 +177,7 @@ public interface Connection extends Closeable {
 
     /**
      * Validates the connection according to the given {@link ValidationDepth}.
+     * Emits {@literal true} if the validation was successful or {@literal false} if the validation failed. Does not emit errors and does not complete empty.
      *
      * @param depth the validation depth
      * @return a {@link Publisher} that indicates whether the validation was successful

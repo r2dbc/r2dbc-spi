@@ -47,11 +47,11 @@ The following table describes the SQL type mapping for character types:
 
 | `CHARACTER LARGE OBJECT` (`CLOB`)
 | A Character Large OBject (or `CLOB`) is a collection of character data in a DBMS, usually stored in a separate location that is referenced in the table itself.
-| `String`, `io.r2dbc.spi.Clob`
+| `java.lang.String`, `io.r2dbc.spi.Clob`
 
 | `NATIONAL CHARACTER LARGE OBJECT` (`NCLOB`)
 | The `NATIONAL CHARACTER LARGE OBJECT` type is the same as `CHARACTER LARGE OBJECT` except that it holds standardized multibyte characters or Unicode characters.
-| `String`, `io.r2dbc.spi.Clob`
+| `java.lang.String`, `io.r2dbc.spi.Clob`
 
 |===
 
@@ -207,7 +207,7 @@ The following example shows how to create a `Clob` object:
 ----
 // charstream is a Publisher<String> object
   // statement is a Statement object
-Clob clob = Clob.from(charstream)
+Clob clob = Clob.from(charstream);
 statement.bind("text", clob);
 ----
 ====

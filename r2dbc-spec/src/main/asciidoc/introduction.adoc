@@ -20,6 +20,23 @@ It aims for a range of data sources whose query and statement interface is based
 A key difference between R2DBC and imperative data access SPIs is the deferred nature of execution.
 R2DBC is, therefore, based on https://www.reactive-streams.org/[Reactive Streams] and uses the concepts of `Publisher` and `Subscriber` to allow non-blocking back-pressure-aware data access.
 
+[[introduction.requirements-conventions]]
+== Requirements and Conventions
+
+R2DBC requires Java 8 as baseline and https://www.reactive-streams.org/[Reactive Streams] in terms of a reactive inter-op API.
+
+A note about modules: R2DBC allow for deployment to JDK 9's module path ("Jigsaw").
+For use in Jigsaw-enabled applications, the R2DBC SPI comes with "Automatic-Module-Name" manifest entries which define stable language-level module names ("r2dbc.spi") instead using the artifact name.
+Of course, R2DBC jars keep working fine on the classpath on both JDK 8 and 9+.
+
+R2DBC's SPI uses non-null semantics by default.
+Nullable API members are annotated with `@io.r2dbc.spi.Nullable`.
+This annotation and `@NonNullApi` are meta-annotated with https://jcp.org/en/jsr/detail?id=305[JSR 305] annotations (a dormant but wide-spread JSR).
+JSR-305 meta-annotations let tooling vendors like IDEA or Kotlin provide null-safety support in a generic way, without having to hard-code support for R2DBC annotations.
+It is not necessary nor recommended to add a JSR-305 dependency to the project classpath to take advantage of a null-safe API.
+
+R2DBC generally uses zero-based indexes for parameter binding and columns.
+
 [[introduction.target-audience]]
 == Target Audience
 
@@ -33,6 +50,8 @@ This specification is also intended to offer:
 
 * An introduction for end-users whose applications use the R2DBC SPI.
 * A starting point for developers of other SPIs layered on top of the R2DBC SPI.
+
+Code examples in this specification assume external subscription to `Publisher` objects for brevity.
 
 [[introduction.acknowledgements]]
 == Acknowledgements

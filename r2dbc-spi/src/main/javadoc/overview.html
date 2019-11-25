@@ -13,4 +13,26 @@
     heterogeneous environment. R2DBC targets primarily, but is not limited to, relational databases. It aims for a range of data sources whose query and statement interface is based on SQL (or an
     SQL-like dialect) and that represent their data in a tabular form.
 </p>
+
+<h3>Driver Entry Points</h3>
+
+A driver should implement the following interfaces as entry-points:
+
+<ul>
+    <li><a href="io/r2dbc/spi/ConnectionFactoryProvider.html"><code>ConnectionFactoryProvider</code></a>: Discovery and configuration component.</li>
+    <li><a href="io/r2dbc/spi/ConnectionFactory.html"><code>ConnectionFactory</code></a>: Entry-point to create a <a href="io/r2dbc/spi/Connection.html"><code>Connection</code></a>.</li>
+</ul>
+
+
+<h3>Consumer Entry Points</h3>
+
+A R2DBC consumer interacts primarily with the following interfaces:
+
+<ul>
+    <li><a href="io/r2dbc/spi/ConnectionFactories.html"><code>ConnectionFactories</code></a>: Obtain a <a href="io/r2dbc/spi/ConnectionFactory.html"><code>ConnectionFactory</code></a> using a R2DBC
+        Connection URL or programmatic configuration.
+    </li>
+    <li><a href="io/r2dbc/spi/ConnectionFactory.html"><code>ConnectionFactory</code></a>: Entry-point to create a <a href="io/r2dbc/spi/Connection.html"><code>Connection</code></a>.</li>
+</ul>
+
 </body>

@@ -15,7 +15,7 @@
  */
 
 /**
- * The Service Provider Interface for R2DBC.  All interfaces in this package should be implemented for each database implementation.
+ * The Service Provider Interface for R2DBC.  All interfaces in this package should be implemented for each database implementation. See R2DBC SPI Compliance for details on R2DBC compliance.
  */
 
 @NonNullApi

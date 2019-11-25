@@ -133,7 +133,7 @@ Options are identified by a literal.
 
 .Well-known Options
 |===
-|Constant |Literal |Type |Description
+|Constant |URL Literal |Type |Description
 
 |`SSL`
 |`ssl`
@@ -187,6 +187,8 @@ The following rules apply:
 * Drivers can declare which well-known options they require and which they support.
 * Drivers can declare which extended options they require and which they support.
 * Drivers should not fail in creating a connection if more options are declared than the driver consumes, as a `ConnectionFactory` should expect to be wrapped.
+* Connection URL Parsing cannot access `Option` type information `T` due to Java's type erasure.
+Options obtained by URL parsing beyond well-known keys are represented as `String` values.
 
 The following example shows how to set options for a `ConnectionFactoryOptions`:
 
@@ -254,13 +256,13 @@ The `ValidationDepth` argument passed to this method indicates the depth to whic
 
 If `Connection.validate(…)` emits `true`, the `Connection` is still valid.
 If `Connection.validate(…)` emits `false`, the `Connection` is not valid, and any attempt to perform database interaction fails.
-Callers of this method do not expect error signals.
+Callers of this method do not expect error signals or empty completion.
 
 [[connections.close]]
 == Closing `Connection` Objects
 
 Calling `Connection.close()` prepares a close handle to release the connection and its associated resources.
-Connections must be closed to ensure proper resource management.
+Connections must be closed to ensure proper resource disposal.
 You can use `Connection.validate(…)` to determine whether a `Connection` has been closed or is still valid.
 The following example shows how to close a connection:
 

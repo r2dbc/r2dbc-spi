@@ -19,7 +19,7 @@ package io.r2dbc.spi;
 import org.reactivestreams.Publisher;
 
 /**
- * A factory for creating {@link Connection}s.
+ * A factory for creating {@link Connection}s and entry point for a driver.
  *
  * @see Connection
  */

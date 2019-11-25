@@ -18,8 +18,11 @@ package io.r2dbc.spi;
 
 /**
  * Represents a configuration option constant.
+ * <p>
+ * Note that Connection URL Parsing cannot access {@link Option} type information {@code T} due to Java's type erasure. Options configured by URL parsing are represented as {@link String} values.
  *
- * @param <T> The value type of the option
+ * @param <T> The value type of the option when configuring a value programmatically
+ * @see ConnectionFactoryOptions
  */
 public final class Option<T> {
 

@@ -80,6 +80,7 @@ public interface Statement {
 
     /**
      * Executes one or more SQL statements and returns the {@link Result}s.
+     * {@link Result} objects must be fully consumed to ensure full execution of the {@link Statement}.
      *
      * @return the {@link Result}s, returned by each statement
      * @throws IllegalStateException if the statement is parametrized and not all parameter values are provided

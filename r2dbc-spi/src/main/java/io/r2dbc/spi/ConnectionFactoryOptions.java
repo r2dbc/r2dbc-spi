@@ -25,6 +25,27 @@ import java.util.function.Predicate;
 
 /**
  * A holder for configuration options related to {@link ConnectionFactory}s.
+ * <p>
+ * A {@link ConnectionFactoryOptions} represents a configuration state that consists of one or more {@link Option} objects. Each configuration option can be specified at most once to associate a
+ * value with its key.
+ * <p>
+ * New objects are constructed through {@link #builder()} or by {@link #parse(CharSequence) parsing} a R2DBC Connection URL.
+ * {@link ConnectionFactoryOptions} can be augmented to allow staged construction of the configuration state using a {@link #mutate()
+ * initialized builder} to create a new {@link ConnectionFactoryOptions} objects with mutations applied. Values of this class are immutable once created. Builder initializers are left unchanged.
+ * <p>
+ * Example usage:
+ * <pre class="code">
+ * ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
+ *     .option(ConnectionFactoryOptions.DRIVER, "a-driver")
+ *     .option(ConnectionFactoryOptions.PROTOCOL, "pipes")
+ *     .option(ConnectionFactoryOptions.HOST, "localhost")
+ *     .option(ConnectionFactoryOptions.PORT, 3306)
+ *     .option(ConnectionFactoryOptions.DATABASE, "my_database")
+ *     .option(Option.valueOf("locale"), "en_US")
+ *     .build();
+ * </pre>
+ *
+ * @see ConnectionFactories
  */
 public final class ConnectionFactoryOptions {
 

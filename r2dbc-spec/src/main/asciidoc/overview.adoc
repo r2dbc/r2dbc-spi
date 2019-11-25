@@ -73,6 +73,16 @@ The following listing shows the syntax Components from https://www.ietf.org/rfc/
 
       port        = *DIGIT
 
+      path-abempty  = *( "/" segment )
+      path-absolute = "/" [ segment-nz *( "/" segment ) ]
+      path-rootless = segment-nz *( "/" segment )
+      path-empty    = 0<pchar>
+
+      segment       = *pchar
+      segment-nz    = 1*pchar
+      segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" )
+                 ; non-zero-length segment without any colon ":"
+
       query       = *( pchar / "/" / "?" )
 
       fragment    = *( pchar / "/" / "?" )
@@ -100,9 +110,12 @@ scheme  driver  protocol  authority    path        query
 ====
 
 * `scheme`: Identify that the URL is a valid R2DBC URL. Valid schemes are `r2dbc` and `r2dbcs` (configure SSL usage).
-* `driver`: Identifier for a driver. R2DBC has no authority over driver identifiers.
-* `protocol`: Used as optional protocol information to configure a driver-specific protocol. Protocols can be organized hierarchically and are separated by a colon (`:`).
-* `authority`: Contains an endpoint and authorization. The authority may contain a single host or a collection of hostnames and port tuples by separating these with a comma (`,`).
+* `driver`: Identifier for a driver.
+The specification has no authority over driver identifiers.
+* `protocol`: Used as optional protocol information to configure a driver-specific protocol.
+Protocols can be organized hierarchically and are separated by a colon (`:`).
+* `authority`: Contains an endpoint and authorization.
+The authority may contain a single host or a collection of hostnames and port tuples by separating these with a comma (`,`).
 * `path`: (optional) Used as an initial schema or database name.
 * `query`: (optional) Used to pass additional configuration options in the form of `String` key-value pairs by using the key name as the option name.
 * `fragment`: Unused (reserved for future use).
@@ -172,6 +185,9 @@ The following table describes the extended options:
 
 NOTE: R2DBC defines well-known standard options that are available as runtime constants through `ConnectionFactories`.
 Additional options identifiers are created through `Option.valueOf(…)`.
+
+NOTE: Note that Connection URL Parsing cannot access `Option` type information `T` due to Java's type erasure.
+Options configured by URL parsing are represented as `String` values.
 
 .Obtaining a `ConnectionFactory` using R2DBC URL
 ====
