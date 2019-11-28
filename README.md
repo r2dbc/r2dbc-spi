@@ -1,43 +1,76 @@
-# Reactive Relational Database Connectivity Service Provider Interface (R2DBC SPI)
-
+# Reactive Relational Database Connectivity Service Provider Interface (R2DBC SPI) [![Concourse CI](https://ci.spring.io/api/v1/teams/r2dbc/pipelines/r2dbc/jobs/r2dbc-spi/badge)](https://ci.spring.io/teams/r2dbc/pipelines/r2dbc/jobs/r2dbc-spi/) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.r2dbc/r2dbc-spi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.r2dbc/r2dbc-spi)
+ 
 This project contains the service provider interface for R2DBC implementations. This interface is intended to be terse to simplify implementation by database vendors and should not be used directly.
 It is expected that client libraries would be built upon this interface in order to expose a more humane interface for tools and developers to use.
 
-## Maven
-Both milestone and snapshot artifacts (library, source, and javadoc) can be found in Maven repositories.
+## Code of Conduct
+
+This project is governed by the [Spring Code of Conduct](CODE_OF_CONDUCT.adoc). By participating, you are expected to uphold this code of conduct. Please report unacceptable behavior to [spring-code-of-conduct@pivotal.io](mailto:spring-code-of-conduct@pivotal.io).
+
+
+### Maven configuration
+
+Artifacts can be found on [Maven Central](https://search.maven.org/search?q=r2dbc-spi).
 
 ```xml
 <dependency>
   <groupId>io.r2dbc</groupId>
   <artifactId>r2dbc-spi</artifactId>
-  <version>0.8.0.RC1</version>
+  <version>0.8.0.RELEASE</version>
 </dependency>
 ```
 
-Artifacts can bound found at the following repositories.
+If you'd rather like the latest snapshots of the upcoming major version, use our Maven snapshot repository and declare the appropriate dependency version.
 
-### Repositories
 ```xml
+<dependency>
+  <groupId>io.r2dbc</groupId>
+  <artifactId>r2dbc-spi</artifactId>
+  <version>${version}.BUILD-SNAPSHOT</version>
+</dependency>
+
 <repository>
-    <id>spring-snapshots</id>
-    <name>Spring Snapshots</name>
-    <url>https://repo.spring.io/snapshot</url>
-    <snapshots>
-        <enabled>true</enabled>
-    </snapshots>
+  <id>spring-libs-snapshot</id>
+  <name>Spring Snapshot Repository</name>
+  <url>https://repo.spring.io/libs-snapshot</url>
 </repository>
 ```
 
-```xml
-<repository>
-    <id>spring-milestones</id>
-    <name>Spring Milestones</name>
-    <url>https://repo.spring.io/milestone</url>
-    <snapshots>
-        <enabled>false</enabled>
-    </snapshots>
-</repository>
+## Getting Help
+
+Having trouble with R2DBC? We'd love to help!
+
+* Check the [spec documentation](https://r2dbc.io/spec/0.8.0.RELEASE/spec/html/), and [Javadoc](https://r2dbc.io/spec/0.8.0.RELEASE/api/).
+* If you are upgrading, check out the [changelog](https://r2dbc.io/spec/0.8.0.RELEASE/CHANGELOG.txt) for "new and noteworthy" features.
+* Ask a question - we monitor [stackoverflow.com](https://stackoverflow.com) for questions
+  tagged with [`r2dbc`](https://stackoverflow.com/tags/r2dbc). 
+  You can also chat with the community on [Gitter](https://gitter.im/r2dbc/r2dbc).
+* Report bugs with R2DBC SPI at [github.com/r2dbc/r2dbc-spi/issues](https://github.com/r2dbc/r2dbc-spi/issues).
+
+## Reporting Issues
+
+R2DBC uses GitHub as issue tracking system to record bugs and feature requests. 
+If you want to raise an issue, please follow the recommendations below:
+
+* Before you log a bug, please search the [issue tracker](https://github.com/r2dbc/r2dbc-spi/issues) to see if someone has already reported the problem.
+* If the issue doesn't already exist, [create a new issue](https://github.com/r2dbc/r2dbc-spi/issues/new).
+* Please provide as much information as possible with the issue report, we like to know the version of R2DBC SPI that you are using and JVM version.
+* If you need to paste code, or include a stack trace use Markdown ``` escapes before and after your text.
+* If possible try to create a test-case or project that replicates the issue. 
+Attach a link to your code or a compressed file containing your code.
+
+## Building from Source
+
+You don't need to build from source to use R2DBC SPI (binaries in Maven Central), but if you want to try out the latest and greatest, R2DBC SPI can be easily built with the
+[maven wrapper](https://github.com/takari/maven-wrapper). You also need JDK 1.8 and Docker to run integration tests.
+
+```bash
+ $ ./mvnw clean install
 ```
+
+If you want to build with the regular `mvn` command, you will need [Maven v3.5.0 or above](https://maven.apache.org/run-maven/index.html).
+
+_Also see [CONTRIBUTING.adoc](CONTRIBUTING.adoc) if you wish to submit pull requests, and in particular please sign the [Contributor's Agreement](https://cla.pivotal.io/sign/spring) before your first change, however trivial._
 
 ## License
 This project is released under version 2.0 of the [Apache License][l].
