@@ -1,0 +1,12 @@
+language: java
+
+jdk:
+  - openjdk8
+
+cache:
+  directories:
+  - $HOME/.m2
+
+notifications:
+  slack:
+    secure: UaiJEIaZzhmPkKvXWdMOjH4NY6l5wENTDA/fqODT3/DnwVK1EuyJahVweCEUjHc2RLKocjIXaA7I8CQ3X32/2V5RdZsQyIyC4oUJy5lx++PV7utFw4HAALLVX39DgysAHMbSWDGEqblvuPlP+d9CXaZVrhGsWY0OI4f1u+m+O+Ib2G/s+UBUzpFMSB6ak4EVUn9ddzq/TkJcdHt8dk9n27I4RZAGGsLsFr9Ur5TsJzDT10AqbcZ+a+TNARczamn/Bd+pjFIOax/DyMKJKcH41l+d3D9n1utgqltZ2EG0EPnqw34IV7tAAbXdlvlp0LgW8VUsiEgEabcwXNcNNbD+brRuP898StmmjM/P1rGX/9tWIcM2K+6NjSH7c7ah4xxpuDxcmBcgMZnkLzvkKkivnbAy2BoKlaTRY7hPGtxzqM+8m9Bw/NfJfPhlOVJ/n3L8F4V/o7N8NACcVcunYX2wdQd0Zxww4v4PXhxgmpw4As3mUqMJogY6hIBhDAlhhUbJAJDaMbKYaF3hguPHos2Mg14V+K8xWlmSCASRhcNtPbsxgfVfyimLkCI6yBKfVBejjLs2A5thYhgVuUqK/X9OgVcuuGeYzqevxd5ZsHuivgakLwXE+1ffMS/OvHYmEQ4vnfiXgtpLas1E86wqnAszoCUCr7prDVEpIXiwR9lBzTM=
