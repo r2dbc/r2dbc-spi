@@ -236,6 +236,7 @@ public interface TestKit<T> {
                 bindNull(statement, getIdentifier(0), Integer.class);
                 return Flux.from(statement.add()
                     .execute())
+                    .flatMap(TestKit::extractRowsUpdated)
                     .concatWith(close(connection));
             })
             .as(StepVerifier::create)
@@ -263,7 +264,9 @@ public interface TestKit<T> {
             .flatMapMany(connection -> {
                 Statement statement = connection.createStatement(String.format("INSERT INTO blob_test VALUES (%s)", getPlaceholder(0)));
                 bind(statement, getIdentifier(0), Blob.from(Mono.just(StandardCharsets.UTF_8.encode("test-value"))));
-                return Flux.from(statement.execute()).concatWith(close(connection));
+                return Flux.from(statement.execute())
+                    .flatMap(TestKit::extractRowsUpdated)
+                    .concatWith(close(connection));
             })
             .as(StepVerifier::create)
             .expectNextCount(1).as("rows inserted")
@@ -340,7 +343,7 @@ public interface TestKit<T> {
                 Statement statement = connection.createStatement(String.format("INSERT INTO clob_test VALUES (%s)", getPlaceholder(0)));
                 bind(statement, getIdentifier(0), Clob.from(Mono.just("test-value")));
                 return Flux.from(statement.execute())
-
+                    .flatMap(Result::getRowsUpdated)
                     .concatWith(close(connection));
             })
             .as(StepVerifier::create)
@@ -506,6 +509,7 @@ public interface TestKit<T> {
 
                 return Flux.from(statement
                     .execute())
+                    .flatMap(TestKit::extractRowsUpdated)
                     .concatWith(close(connection));
             })
             .as(StepVerifier::create)
