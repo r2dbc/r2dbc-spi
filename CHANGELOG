@@ -1,6 +1,12 @@
 R2DBC SPI Changelog
 =============================
 
+0.8.1.RELEASE
+------------------
+* Result consuming in TestKit fix #154
+* Backport Travis support for pull requests #149
+* Backport Jenkins support #146
+
 0.8.0.RELEASE
 ------------------
 * Update changelog for 0.8.0.RELEASE #140
