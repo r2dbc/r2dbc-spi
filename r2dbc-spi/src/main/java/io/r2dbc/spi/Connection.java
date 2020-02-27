@@ -45,6 +45,15 @@ public interface Connection extends Closeable {
     Publisher<Void> beginTransaction();
 
     /**
+     * Begins a new transaction.  Calling this method disables {@link #isAutoCommit() auto-commit} mode.
+     *
+     * @param definition attributes for the transaction.
+     * @return a {@link Publisher} that indicates that the transaction is open
+     * @since 0.9
+     */
+    Publisher<Void> beginTransaction(TransactionDefinition definition);
+
+    /**
      * Release any resources held by the {@link Connection}.
      *
      * @return a {@link Publisher} that termination is complete

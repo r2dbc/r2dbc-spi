@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package io.r2dbc.spi;
 /**
  * Represents a transaction isolation level constant.
  */
-public final class IsolationLevel {
+public final class IsolationLevel implements TransactionDefinition {
 
     private static final ConstantPool<IsolationLevel> CONSTANTS = new ConstantPool<IsolationLevel>() {
 
@@ -68,6 +68,18 @@ public final class IsolationLevel {
         Assert.requireNonEmpty(sql, "sql must not be empty");
 
         return CONSTANTS.valueOf(sql, false);
+    }
+
+    @Override
+    public <T> T getAttribute(String name, Class<T> type) {
+        Assert.requireNonNull(name, "sql must not be null");
+        Assert.requireNonNull(type, "type must not be null");
+
+        if (name.equals(ISOLATION_LEVEL)) {
+            return type.cast(this);
+        }
+
+        return null;
     }
 
     /**

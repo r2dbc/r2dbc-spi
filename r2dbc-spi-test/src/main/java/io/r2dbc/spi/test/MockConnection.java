@@ -19,6 +19,7 @@ package io.r2dbc.spi.test;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionMetadata;
 import io.r2dbc.spi.IsolationLevel;
+import io.r2dbc.spi.TransactionDefinition;
 import io.r2dbc.spi.ValidationDepth;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -47,6 +48,8 @@ public final class MockConnection implements Connection {
 
     private String rollbackTransactionToSavepointName;
 
+    private TransactionDefinition beginTransactionDefinition;
+
     private IsolationLevel setTransactionIsolationLevelIsolationLevel;
 
     private boolean valid;
@@ -72,6 +75,13 @@ public final class MockConnection implements Connection {
     @Override
     public Mono<Void> beginTransaction() {
         this.beginTransactionCalled = true;
+        return Mono.empty();
+    }
+
+    @Override
+    public Publisher<Void> beginTransaction(TransactionDefinition definition) {
+        this.beginTransactionCalled = true;
+        this.beginTransactionDefinition = definition;
         return Mono.empty();
     }
 
@@ -137,6 +147,10 @@ public final class MockConnection implements Connection {
     @Override
     public ConnectionMetadata getMetadata() {
         return MockConnectionMetadata.INSTANCE;
+    }
+
+    public TransactionDefinition getBeginTransactionDefinition() {
+        return this.beginTransactionDefinition;
     }
 
     @Nullable
