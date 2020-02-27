@@ -45,6 +45,8 @@ import java.util.function.Predicate;
  *     .option(Option.valueOf("locale"), "en_US")
  *     .build();
  * </pre>
+ * <p>
+ * Note that Connection URL Parsing cannot access {@link Option} type information {@code T} due to Java's type erasure. Options configured by URL parsing are represented as {@link String} values.
  *
  * @see ConnectionFactories
  */

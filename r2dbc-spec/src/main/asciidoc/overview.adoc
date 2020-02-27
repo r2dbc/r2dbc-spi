@@ -100,7 +100,6 @@ The following listing shows the syntax Components from https://www.ietf.org/rfc/
 ====
 [source,subs="none"]
 ----
-&nbsp;
 r2dbc:a-driver:pipes://localhost:3306/my_database?locale=en_US
 \___/ \______/ \___/   \____________/\__________/\___________/
   |       |      |           |           |           |

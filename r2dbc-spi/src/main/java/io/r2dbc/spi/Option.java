@@ -20,11 +20,10 @@ import java.util.Objects;
 
 /**
  * Represents a configuration option constant.
- * <p>
- * Note that Connection URL Parsing cannot access {@link Option} type information {@code T} due to Java's type erasure. Options configured by URL parsing are represented as {@link String} values.
  *
  * @param <T> The value type of the option when configuring a value programmatically
  * @see ConnectionFactoryOptions
+ * @see TransactionDefinition
  */
 public final class Option<T> {
 
@@ -76,6 +75,24 @@ public final class Option<T> {
         Assert.requireNonEmpty(name, "name must not be empty");
 
         return (Option<T>) CONSTANTS.valueOf(name, false);
+    }
+
+    /**
+     * Casts an object to the class or interface represented by this option object.
+     *
+     * @param obj the object to be cast
+     * @return the object after casting, or null if obj is {@code null}.
+     * @since 0.9
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public T cast(@Nullable Object obj) {
+
+        if (obj == null) {
+            return null;
+        }
+
+        return (T) obj;
     }
 
     /**

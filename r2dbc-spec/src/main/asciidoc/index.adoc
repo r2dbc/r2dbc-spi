@@ -21,6 +21,8 @@ include::introduction.adoc[leveloffset=+1]
 
 include::goals.adoc[leveloffset=+1]
 
+include::changes.adoc[leveloffset=+1]
+
 include::compliance.adoc[leveloffset=+1]
 
 include::overview.adoc[leveloffset=+1]

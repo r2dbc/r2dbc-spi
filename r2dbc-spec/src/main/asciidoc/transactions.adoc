@@ -5,6 +5,7 @@ Transactions are used to provide data integrity, isolation, correct application 
 All R2DBC-compliant drivers are required to provide transaction support.
 Transaction management in the R2DBC SPI reflects SQL concepts:
 
+* Transaction Boundaries
 * Auto-commit mode
 * Transaction isolation levels
 * Savepoints
@@ -14,13 +15,47 @@ This section explains transaction semantics associated with a single `Connection
 [[transactions.boundaries]]
 == Transaction Boundaries
 
-You can implicitly or explicitly start transactions.
-You can implicitly start a transaction by starting SQL execution when a `Connection` is in auto-commit mode (which is the default for newly created connections).
-When auto-commit mode is disabled, you can explicitly start a transaction by invoking the `beginTransaction()` method.
-Transactions are started by either an R2DBC driver or by the underlying database.
+Transactions begin implicitly or explicitly.
+Implicit transactions begin by starting SQL execution when a `Connection` is in auto-commit mode (which is the default for newly created connections).
+Alternatively, explicit transactions begin by invoking the `beginTransaction()` method that disables auto-commit mode.
+Transactions are started by either the R2DBC driver or its underlying database.
 
-The `Connection` attribute auto-commit mode specifies when to end transactions.
-Enabling auto-commit mode causes a transaction commit after each SQL statement as soon as that statement is completely executed.
+Newly started transactions inherit attributes from the connection such as <<transactions.isolation,Isolation Level>>. Starting a transaction using `beginTransaction(TransactionDefinition)` allows R2DBC drivers to compute a transaction definition from any plurality of attributes before starting the actual transaction. A driver may apply optimizations such as reduction of database roundtrips. Attributes retrieved from `TransactionDefinition` are only valid during the transaction.
+
+[[transactions.transaction-definition]]
+=== TransactionDefinition Interface
+
+The `io.r2dbc.spi.TransactionDefinition` interface provides a mechanism for drivers to obtain transaction attributes when starting a transaction using a vendor-neutral API. R2DBC drivers query objects implementing the interface for supported attributes. The interface defines attribute constants for commonly supported attributes such as Isolation Level, Transaction Mutability, Transaction Name, and Lock Wait Timeout. Drivers may specify and query additional attributes.
+
+[[transactions.transaction-definition.usage]]
+==== Usage
+
+Starting a transaction using a `TransactionDefinition` object allows R2DBC drivers to use the definition object as callback to query for transactional attributes.
+The following example shows how to start a transaction:
+
+.Starting a transaction using `TransactionDefinition`.
+====
+[source,java]
+----
+// connection is a Connection object
+// definition is a TransactionDefinition object
+Publisher<Void> begin = connection.beginTransaction(definition);
+----                                    
+====
+
+NOTE: Drivers may reject attributes based on the connection configuration. An example would be the use of read-write transactions with connections in read-only mode.
+
+[[transactions.transaction-definition.methods]]
+==== Interface Methods
+
+The following methods are available on the `TransactionDefinition` interface:
+
+* `getAttribute`
+
+[[transactions.transaction-definition.get-attribute]]
+==== The `getAttribute` Method
+
+R2DBC drivers invoke the `getAttribute` method to query for transaction attributes. Attributes that have no configuration value attached are considered unconfigured and therefore represented with a `null` value. The value type follows the actual attribute identified by a `Option` constant.  
 
 [[transactions.auto-commit]]
 == Auto-commit Mode
