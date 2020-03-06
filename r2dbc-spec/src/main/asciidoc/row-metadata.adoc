@@ -50,7 +50,7 @@ See <<compliance.guidelines>>.
 
 `ColumnMetadata` declares methods to access column metadata on a best-effort basis.
 Column metadata that is available as a by-product of running a statement must be made available through `ColumnMetadata`.
-Metadata exposure requiring interaction with the database (for example, issuing queries to information schema entities to resolve type properties) should not be exposed, because methods on `ColumnMetadata` are expected to be non-blocking.
+Metadata exposure requiring interaction with the database (for example, issuing queries to information schema entities to resolve type properties) cannot be exposed, because methods on `ColumnMetadata` are expected to be non-blocking.
 
 NOTE: Implementation note: Drivers can use metadata from a static mapping or obtain metadata indexes on connection creation.
 

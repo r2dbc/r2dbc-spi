@@ -66,9 +66,10 @@ Changing transaction isolation levels typically involves database activity.
 Therefore, the method returns a `Publisher`.
 Changing an isolation level during an active transaction results in implementation-specific behavior.
 Querying transaction isolation levels is typically a local operation that involves driver state without database communication.
-The return value of the `getTransactionIsolationLevel` method should reflect the current isolation level when it actually occurs.
-`IsolationLevel` is an extensible runtime constant, so drivers can define their own isolation levels.
-A driver may not support transaction levels. Calling `getTransactionIsolationLevel` results in returning the vendor-specific `IsolationLevel` object.
+The return value of the method `getTransactionIsolationLevel` reflects the current isolation level when it actually occurs.
+`IsolationLevel` is an extensible runtime-constant so drivers may define their own isolation levels.
+A driver may not support transaction levels.
+Calling `getTransactionIsolationLevel` results in returning vendor-specific `IsolationLevel` object.
 
 === Performance Considerations
 

@@ -44,10 +44,12 @@ The following rules apply:
 * A `ConnectionFactory` represents a resource factory for deferred connection creation.
 It may create connections by itself, wrap a `ConnectionFactory`, or apply connection pooling on top of a `ConnectionFactory`.
 * A `ConnectionFactory` provides metadata about the driver itself through `ConnectionFactoryMetadata`.
-* A `ConnectionFactory` uses deferred initialization and should initiate connection resource allocation after requesting the item (`Subscription.request(1)`).
+* A `ConnectionFactory` uses deferred initialization and must initiate connection resource allocation after requesting the item (`Subscription.request(1)`) and not upon calling `create` itself.
 * Connection creation must emit exactly one `Connection` or an error signal.
-* Connection creation must be cancellable (`Subscription.cancel()`). Canceling connection creation must release ("`close`") the connection and all associated resources.
-* A `ConnectionFactory` should expect that it can be wrapped. Wrappers must implement the `Wrapped<ConnectionFactory>` interface and return the underlying `ConnectionFactory` when `Wrapped.unwrap()` gets called.
+* Connection creation must be cancellable (`Subscription.cancel()`).
+Canceling connection creation must release ("`close`") the connection and all associated resources.
+* A `ConnectionFactory` should expect that it can be wrapped.
+Wrappers must implement the `Wrapped<ConnectionFactory>` interface and return the underlying `ConnectionFactory` when `Wrapped.unwrap()` gets called.
 
 === ConnectionFactory Metadata
 
@@ -249,7 +251,7 @@ See the R2DBC SPI Specification for more details.
 == Validating `Connection` Objects
 
 The `Connection.validate(…)` method indicates whether the `Connection` is still valid.
-The `ValidationDepth` argument passed to this method indicates the depth to which a connection should be validated: `LOCAL` or `REMOTE`.
+The `ValidationDepth` argument passed to this method indicates the depth to which a connection is validated: `LOCAL` or `REMOTE`.
 
 * `ValidationDepth.LOCAL`: Requests client-side-only validation without engaging a remote conversation to validate a connection.
 * `ValidationDepth.REMOTE`: Initiates a remote validation by issuing a query or other means to validate a connection and the remote session.

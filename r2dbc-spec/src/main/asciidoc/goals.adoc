@@ -34,7 +34,7 @@ The most significant goals are honoring and embracing the properties of reactive
 == Fitting into Reactive JVM platforms
 
 R2DBC aims for seamless integration of reactive JVM platforms, targeting Java as its primary platform.
-R2DBC should also be usable from other platforms (such as Kotlin or Scala) without scarifying its SPI for the sake of idiomatic use on a different platform.
+R2DBC is intended to also be usable from other platforms (such as Kotlin or Scala) without scarifying its SPI for the sake of idiomatic use on a different platform.
 
 [[goals.standardization]]
 == Offering Vendor-neutral Access to Standard Features
@@ -78,5 +78,5 @@ Having a uniform reactive relational data access SPI makes R2DBC a valuable targ
 [[goals.requirements]]
 == Specifying Requirements Unambiguously
 
-The requirements for R2DBC compliance should be unambiguous and easy to identify.
+The requirements for R2DBC compliance aim to be unambiguous and easy to identify.
 The R2DBC specification and the API documentation (Javadoc) clarify which features are required and which are optional.
