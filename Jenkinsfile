@@ -11,6 +11,22 @@ pipeline {
 	}
 
 	stages {
+		stage('Publish OpenJDK 8 + GPG image') {
+			when {
+				changeset "ci/Dockerfile"
+			}
+			agent any
+
+			steps {
+				script {
+					def image = docker.build("springci/r2dbc-openjdk8-with-gpg", "ci/")
+					docker.withRegistry('', 'hub.docker.com-springbuildmaster') {
+						image.push()
+					}
+				}
+			}
+		}
+
 		stage("test: baseline (jdk8)") {
 			agent {
 				docker {
