@@ -16,6 +16,8 @@
 
 package io.r2dbc.spi;
 
+import java.util.Objects;
+
 /**
  * Represents a configuration option constant.
  * <p>
@@ -91,6 +93,20 @@ public final class Option<T> {
             "name='" + name + '\'' +
             ", sensitive=" + sensitive +
             '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Option<?> option = (Option<?>) o;
+        return sensitive == option.sensitive &&
+                name.equals(option.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, sensitive);
     }
 
     boolean sensitive() {
