@@ -200,15 +200,19 @@ public final class ConnectionFactoryOptions {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ConnectionFactoryOptions that = (ConnectionFactoryOptions) o;
-        return options.equals(that.options);
+        return this.options.equals(that.options);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(options);
+        return Objects.hash(this.options);
     }
 
     /**
