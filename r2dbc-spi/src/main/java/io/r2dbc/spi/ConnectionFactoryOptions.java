@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -195,6 +196,23 @@ public final class ConnectionFactoryOptions {
         }
 
         return String.format("{%s}", String.join(", ", o));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ConnectionFactoryOptions that = (ConnectionFactoryOptions) o;
+        return this.options.equals(that.options);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.options);
     }
 
     /**
