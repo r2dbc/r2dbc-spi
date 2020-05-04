@@ -19,12 +19,14 @@ package io.r2dbc.spi;
 import org.reactivestreams.Publisher;
 
 /**
- * A statement that can be executed multiple times in a prepared and optimized way.
+ * A statement that can be executed multiple times in a prepared and optimized way.  Bound parameters can be either scalar values (using type inference for the database parameter type) or
+ * {@link Parameter} objects.
  *
  * @see Result
  * @see Row
  * @see Blob
  * @see Clob
+ * @see Parameter
  */
 public interface Statement {
 

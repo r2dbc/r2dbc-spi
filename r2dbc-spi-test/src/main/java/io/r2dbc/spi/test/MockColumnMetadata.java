@@ -18,10 +18,13 @@ package io.r2dbc.spi.test;
 
 import io.r2dbc.spi.ColumnMetadata;
 import io.r2dbc.spi.Nullability;
+import io.r2dbc.spi.Type;
 
 public final class MockColumnMetadata implements ColumnMetadata {
 
     private final Class<?> javaType;
+
+    private final Type type;
 
     private final String name;
 
@@ -33,8 +36,10 @@ public final class MockColumnMetadata implements ColumnMetadata {
 
     private final Integer scale;
 
-    private MockColumnMetadata(@Nullable Class<?> javaType, String name, @Nullable Object nativeTypeMetadata, Nullability nullability, @Nullable Integer precision, @Nullable Integer scale) {
+    private MockColumnMetadata(@Nullable Class<?> javaType, Type type, String name, @Nullable Object nativeTypeMetadata, Nullability nullability, @Nullable Integer precision,
+                               @Nullable Integer scale) {
         this.javaType = javaType;
+        this.type = Assert.requireNonNull(type, "type must not be null");
         this.name = Assert.requireNonNull(name, "name must not be null");
         this.nativeTypeMetadata = nativeTypeMetadata;
         this.nullability = Assert.requireNonNull(nullability, "nullability must not be null");
@@ -56,6 +61,11 @@ public final class MockColumnMetadata implements ColumnMetadata {
     @Override
     public Class<?> getJavaType() {
         return this.javaType;
+    }
+
+    @Override
+    public Type getType() {
+        return this.type;
     }
 
     @Override
@@ -87,6 +97,7 @@ public final class MockColumnMetadata implements ColumnMetadata {
     public String toString() {
         return "MockColumnMetadata{" +
             "javaType=" + this.javaType +
+            ", type=" + this.type +
             ", name='" + this.name + '\'' +
             ", nativeTypeMetadata=" + this.nativeTypeMetadata +
             ", nullability=" + this.nullability +
@@ -98,6 +109,8 @@ public final class MockColumnMetadata implements ColumnMetadata {
     public static final class Builder {
 
         private Class<?> javaType;
+
+        private Type type;
 
         private String name;
 
@@ -113,11 +126,30 @@ public final class MockColumnMetadata implements ColumnMetadata {
         }
 
         public MockColumnMetadata build() {
-            return new MockColumnMetadata(this.javaType, this.name, this.nativeTypeMetadata, this.nullability, this.precision, this.scale);
+            return new MockColumnMetadata(this.javaType, this.type, this.name, this.nativeTypeMetadata, this.nullability, this.precision, this.scale);
         }
 
         public Builder javaType(Class<?> type) {
             this.javaType = Assert.requireNonNull(type, "javaType must not be null");
+            if (this.type == null) {
+                this.type = new Type.InferredType() {
+
+                    @Override
+                    public Class<?> getJavaType() {
+                        return type;
+                    }
+
+                    @Override
+                    public String getName() {
+                        return type.getSimpleName();
+                    }
+                };
+            }
+            return this;
+        }
+
+        public Builder type(Type type) {
+            this.type = Assert.requireNonNull(type, "type must not be null");
             return this;
         }
 
