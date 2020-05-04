@@ -16,57 +16,47 @@
 
 package io.r2dbc.spi;
 
+import java.time.Duration;
+
 /**
- * Specification of properties to be used when starting a transaction
+ * Specification of properties to be used when starting a transaction.  This interface is typically implemented by code that calls {@link Connection#beginTransaction(TransactionDefinition)}.
  *
  * @see Connection#beginTransaction(TransactionDefinition)
+ * @see Option
  * @since 0.9
  */
 public interface TransactionDefinition {
 
-    /**
-     * Name of the isolation level transaction attribute.
+    /*
+     * Isolation level requested for the transaction.
      */
-    String ISOLATION_LEVEL = "IsolationLevel";
+    Option<IsolationLevel> ISOLATION_LEVEL = Option.valueOf("isolationLevel");
 
     /**
-     * Name of the read only transaction attribute.
+     * The transaction mutability (i.e. whether the transaction should be started in read-only mode).
      */
-    String READ_ONLY = "ReadOnly";
+    Option<Boolean> READ_ONLY = Option.valueOf("readOnly");
 
     /**
-     * Configures the isolation level for the transaction to start.
+     * Name of the transaction.
+     */
+    Option<String> NAME = Option.valueOf("name");
+
+    /**
+     * Lock wait timeout.
+     */
+    Option<Duration> LOCK_WAIT_TIMEOUT = Option.valueOf("lockWaitTimeout");
+
+    /**
+     * Retrieve a transaction attribute by its {@link Option} identifier.  This low-level interface allows querying transaction attributes supported by the {@link Connection} that should be applied
+     * when starting a new transaction.
      *
-     * @return the {@link IsolationLevel} to use. Can be {@code null} to indicate that the current isolation level should be used.
-     */
-    @Nullable
-    default IsolationLevel getIsolationLevel() {
-        return getAttribute(ISOLATION_LEVEL, IsolationLevel.class);
-    }
-
-    /**
-     * Returns whether the transaction should be a read-only one or read-write by returning {@code true} respective {@code false}.
-     *
-     * @return {@code true} to specify a read-only transaction; {@code false} for a read-write transaction. Can be {@code null} to indicate that the current transaction mutability should be used.
-     */
-    @Nullable
-    default Boolean isReadOnly() {
-        return getAttribute(READ_ONLY, Boolean.class);
-    }
-
-    /**
-     * Retrieve a transaction attribute by its name.  This low-level interface allows querying transaction attributes supported by the {@link Connection} that should be applied when starting a new
-     * transaction.  The {@link Class type} parameter can be used to request a specific value type for easier consumption.  If a value cannot be represented as the requested type, then a
-     * {@link ClassCastException} is thrown.
-     *
-     * @param name the name of the transaction attribute
-     * @param type requested type of the attribute
-     * @param <T>  requested value type
+     * @param option the option to retrieve the value for
+     * @param <T>    requested value type
      * @return the value of the transaction attribute. Can be {@code null} to indicate absence of the attribute.
      * @throws IllegalArgumentException if {@code name} or {@code type} is {@code null}
-     * @throws ClassCastException       if the value cannot be assigned to {@code type}
      */
     @Nullable
-    <T> T getAttribute(String name, Class<T> type);
+    <T> T getAttribute(Option<T> option);
 
 }

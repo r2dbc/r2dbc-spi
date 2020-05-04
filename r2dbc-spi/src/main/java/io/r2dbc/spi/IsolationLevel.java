@@ -71,12 +71,11 @@ public final class IsolationLevel implements TransactionDefinition {
     }
 
     @Override
-    public <T> T getAttribute(String name, Class<T> type) {
-        Assert.requireNonNull(name, "sql must not be null");
-        Assert.requireNonNull(type, "type must not be null");
+    public <T> T getAttribute(Option<T> option) {
+        Assert.requireNonNull(option, "option must not be null");
 
-        if (name.equals(ISOLATION_LEVEL)) {
-            return type.cast(this);
+        if (option.equals(TransactionDefinition.ISOLATION_LEVEL)) {
+            return option.cast(this);
         }
 
         return null;
