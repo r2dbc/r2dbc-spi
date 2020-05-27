@@ -1,6 +1,13 @@
 R2DBC SPI Changelog
 =============================
 
+0.8.2.RELEASE
+------------------
+* Upgrade dependencies #172
+* Add equals/hashCode implementation to ConnectionFactoryOptions and Option #166
+* Upgrade build and test dependencies #165
+* Stage releases directly on maven central #164
+
 0.8.1.RELEASE
 ------------------
 * Result consuming in TestKit fix #154
