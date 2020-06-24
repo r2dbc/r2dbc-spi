@@ -1,4 +1,4 @@
-# Reactive Relational Database Connectivity Service Provider Interface (R2DBC SPI) [![Build Status](https://travis-ci.org/r2dbc/r2dbc-spi.svg?branch=master)](https://travis-ci.org/r2dbc/r2dbc-spi) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.r2dbc/r2dbc-spi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.r2dbc/r2dbc-spi)
+# Reactive Relational Database Connectivity Service Provider Interface (R2DBC SPI) [![Build Status](https://travis-ci.org/r2dbc/r2dbc-spi.svg?branch=main)](https://travis-ci.org/r2dbc/r2dbc-spi) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.r2dbc/r2dbc-spi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.r2dbc/r2dbc-spi)
 
 The Reactive Relational Database Connectivity (R2DBC) project brings reactive programming APIs to relational databases.
 
@@ -14,7 +14,7 @@ The Reactive Relational Database Connectivity (R2DBC) project brings reactive pr
 
 ## Code of Conduct
 
-This project is governed by the [Spring Code of Conduct](CODE_OF_CONDUCT.adoc). By participating, you are expected to uphold this code of conduct. Please report unacceptable behavior to [spring-code-of-conduct@pivotal.io](mailto:spring-code-of-conduct@pivotal.io).
+This project is governed by the [R2DBC Code of Conduct](https://github.com/r2dbc/.github/blob/main/CODE_OF_CONDUCT.adoc). By participating, you are expected to uphold this code of conduct. Please report unacceptable behavior to [info@r2dbc.io](mailto:info@r2dbc.io).
 
 ### Maven configuration
 
@@ -79,7 +79,7 @@ You don't need to build from source to use R2DBC SPI (binaries in Maven Central)
 
 If you want to build with the regular `mvn` command, you will need [Maven v3.5.0 or above](https://maven.apache.org/run-maven/index.html).
 
-_Also see [CONTRIBUTING.adoc](CONTRIBUTING.adoc) if you wish to submit pull requests, and in particular please sign the [Contributor's Agreement](https://cla.pivotal.io/sign/spring) before your first change, however trivial._
+_Also see [CONTRIBUTING.adoc](https://github.com/r2dbc/.github/blob/main/CONTRIBUTING.adoc) if you wish to submit pull requests, and in particular please sign the [Contributor's Agreement](https://cla.pivotal.io/sign/reactor) before your first change, however trivial._
 
 ## License
 This project is released under version 2.0 of the [Apache License][l].
