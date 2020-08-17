@@ -103,7 +103,19 @@ public final class MockConnection implements Connection {
     }
 
     @Override
-    public MockStatement createStatement(String sql) {
+    public MockStatement createSimpleStatement(String sql) {
+        Assert.requireNonNull(sql, "sql must not be null");
+
+        if (this.statement == null) {
+            throw new AssertionError("Unexpected call to createStatement(String)");
+        }
+
+        this.createStatementSql = sql;
+        return this.statement;
+    }
+
+    @Override
+    public MockStatement createPreparedStatement(String sql) {
         Assert.requireNonNull(sql, "sql must not be null");
 
         if (this.statement == null) {

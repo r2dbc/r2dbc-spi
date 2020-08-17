@@ -77,13 +77,22 @@ public interface Connection extends Closeable {
     Publisher<Void> createSavepoint(String name);
 
     /**
-     * Creates a new statement for building a statement-based request.
+     * Creates a new simple statement for building a statement-based request.
      *
      * @param sql the SQL of the statement
      * @return a new {@link Statement} instance
      * @throws IllegalArgumentException if {@code sql} is {@code null}
      */
-    Statement createStatement(String sql);
+    Statement createSimpleStatement(String sql);
+
+    /**
+     * Creates a new prepared statement for building a statement-based request.
+     *
+     * @param sql the SQL of the statement
+     * @return a new {@link Statement} instance
+     * @throws IllegalArgumentException if {@code sql} is {@code null}
+     */
+    Statement createPreparedStatement(String sql);
 
     /**
      * Returns the auto-commit mode for this connection.
