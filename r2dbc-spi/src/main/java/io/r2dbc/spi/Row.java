@@ -40,27 +40,25 @@ import java.util.function.BiFunction;
 public interface Row {
 
     /**
-     * Returns the value for a column in this row using the default type mapping.  The default implementation of this method calls {@link #get(int, Class)} passing {@link Object} as the type in
-     * order to allow the implementation to make the loosest possible match.
+     * Returns the value for a column in this row using the default type mapping.  The default implementation of this method calls {@link #get(int, Class)} passing {@link Object} as the type
+     * to allow the implementation to make the loosest possible match.
      *
-     * @param index the index of the column starting at 0
+     * @param index the index of the column starting at {@code 0}
      * @return the value for a column in this row.  Value can be {@code null}.
-     * @throws IllegalArgumentException if {@code index} or {@code type} is {@code null}
      */
     @Nullable
     default Object get(int index) {
         return get(index, Object.class);
     }
 
-
     /**
-     * Returns the value for a column in this row.
+     * Returns the value for a column in this row.  Use {@link Object} to allow the implementation to make the loosest possible match.
      *
-     * @param index the index of the column starting at 0
+     * @param index the index of the column starting at {@code 0}
      * @param type  the type of item to return.  This type must be assignable to, and allows for variance.
      * @param <T>   the type of the item being returned.
      * @return the value for a column in this row.  Value can be {@code null}.
-     * @throws IllegalArgumentException if {@code index} or {@code type} is {@code null}
+     * @throws IllegalArgumentException if {@code type} is {@code null}
      */
     @Nullable
     <T> T get(int index, Class<T> type);
@@ -71,7 +69,7 @@ public interface Row {
      *
      * @param name the name of the column
      * @return the value for a column in this row.  Value can be {@code null}.
-     * @throws IllegalArgumentException if {@code name} or {@code type} is {@code null}
+     * @throws IllegalArgumentException if {@code name} is {@code null}
      */
     @Nullable
     default Object get(String name) {
@@ -79,7 +77,7 @@ public interface Row {
     }
 
     /**
-     * Returns the value for a column in this row.
+     * Returns the value for a column in this row.  Use {@link Object} to allow the implementation to make the loosest possible match.
      *
      * @param name the name of the column
      * @param type the type of item to return.  This type must be assignable to, and allows for variance.
