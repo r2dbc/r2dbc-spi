@@ -79,5 +79,4 @@ To stay up to date with the latest news and announcements in the R2DBC eco syste
 * Mailing list: link:++https://groups.google.com/forum/#!forum/r2dbc++[++https://groups.google.com/forum/#!forum/r2dbc++]
 * Issue tracker: https://github.com/r2dbc/r2dbc-spi/issues
 * Release repository: https://repo1.maven.org/maven2
-* Milestone repository: https://repo.spring.io/libs-milestone
-* Snapshot repository: https://repo.spring.io/libs-snapshot
+* Snapshot repository: https://oss.sonatype.org/content/repositories/snapshots
