@@ -20,13 +20,15 @@ package io.r2dbc.spi;
  * Exception thrown when the SQL statement has a problem in its syntax.
  */
 public class R2dbcBadGrammarException extends R2dbcNonTransientException {
-    private String offendingSql;
+
+    private final String offendingSql;
 
     /**
      * Creates a new {@link R2dbcBadGrammarException}.
      */
     public R2dbcBadGrammarException() {
         super();
+        this.offendingSql = null;
     }
 
     /**
@@ -36,6 +38,7 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable String reason) {
         super(reason);
+        this.offendingSql = null;
     }
 
     /**
@@ -47,6 +50,7 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState) {
         super(reason, sqlState);
+        this.offendingSql = null;
     }
 
     /**
@@ -59,6 +63,7 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode) {
         super(reason, sqlState, errorCode);
+        this.offendingSql = null;
     }
 
     /**
@@ -88,6 +93,7 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode,
                                     @Nullable Throwable cause) {
         super(reason, sqlState, errorCode, cause);
+        this.offendingSql = null;
     }
 
     /**
@@ -116,6 +122,7 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, @Nullable Throwable cause) {
         super(reason, sqlState, cause);
+        this.offendingSql = null;
     }
 
     /**
@@ -126,6 +133,7 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable Throwable cause) {
         super(reason, cause);
+        this.offendingSql = null;
     }
 
     /**
@@ -135,12 +143,15 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable Throwable cause) {
         super(cause);
+        this.offendingSql = null;
     }
 
     /**
-     * Returns the offendingSQL String
+     * Returns the offending SQL String.
+     *
      * @return offendingSql
      */
+    @Nullable
     public String getOffendingSql() {
         return this.offendingSql;
     }
