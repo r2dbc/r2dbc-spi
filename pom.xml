@@ -148,6 +148,7 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.2.0</version>
                     <configuration>
+                        <locale>en_US</locale>
                         <links>
                             <link>https://www.reactive-streams.org/reactive-streams-${reactive-streams.version}-javadoc/</link>
                         </links>
