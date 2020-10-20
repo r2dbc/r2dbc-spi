@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the original author or authors.
+ * Copyright 2019-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,6 +78,7 @@ final class ConnectionUrlParserUnitTests {
     @Test
     void hasAuthentication() {
         assertThat(parseQuery("r2dbc:foo://user:password@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasUser("user").hasPassword("password").hasNoDatabase();
+        assertThat(parseQuery("r2dbc:foo://user:p@ssword@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost:4711").hasUser("user").hasPassword("p@ssword").hasNoDatabase();
         assertThat(parseQuery("r2dbc:foo://user@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasUser("user").hasNoPassword().hasNoDatabase();
         assertThat(parseQuery("r2dbc:foo://user:@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasUser("user").hasNoPassword().hasNoDatabase();
         assertThat(parseQuery("r2dbc:foo://:password@myhost:4711")).hasDriver("foo").hasNoProtocol().hasHost("myhost").hasPort(4711).hasNoUser().hasPassword("password").hasNoDatabase();
