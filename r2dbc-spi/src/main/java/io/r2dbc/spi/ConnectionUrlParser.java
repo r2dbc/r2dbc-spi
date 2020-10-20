@@ -121,7 +121,8 @@ abstract class ConnectionUrlParser {
 
             if (authorityToUse.contains("@")) {
 
-                int atIndex = authorityToUse.indexOf('@');
+                // to avoid problems when authority strings contains special characters like '@'
+                int atIndex = authorityToUse.lastIndexOf('@');
                 String userinfo = authorityToUse.substring(0, atIndex);
                 authorityToUse = authorityToUse.substring(atIndex + 1);
 
