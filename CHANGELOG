@@ -1,6 +1,15 @@
 R2DBC SPI Changelog
 =============================
 
+0.8.3.RELEASE
+------------------
+* Upgrade dependencies #188
+* Deploy snapshots to oss.sonatype.org #186
+* Database password ends with special characters like '@' causes incorrectly parsing #183
+* Typo in Row.get(…) Javadoc #182
+* Allow query syntax customization in TCK TestKit #138
+* Polishing of R2dbcBadGrammarException getter for offendingSql #74
+
 0.8.2.RELEASE
 ------------------
 * Upgrade dependencies #172
