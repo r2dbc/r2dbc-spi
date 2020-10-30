@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    if: github.repository == 'r2dbc/r2dbc-spi'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
