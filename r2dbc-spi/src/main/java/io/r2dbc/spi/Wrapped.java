@@ -30,4 +30,31 @@ public interface Wrapped<T> {
      */
     T unwrap();
 
+    /**
+     * Recursively {@link #unwrap()} the object and returns the first instance that
+     * matches to the given {@link Class} or {@code null} if none matches.
+     * <p>
+     * If this object is an instance of the given {@link Class}, this object is returned.
+     *
+     * @param targetClass target type to unwrap
+     * @param <E>         returning type
+     * @return unwrapped instance of given type or {@code null}
+     * @throws IllegalArgumentException if {@code targetClass} is {@code null}
+     * @since 0.9.0
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    default <E> E unwrap(Class<E> targetClass) {
+        Assert.requireNonNull(targetClass, "targetClass must not be null");
+
+        if (targetClass.isInstance(this)) {
+            return (E) this;
+        }
+        T unwrapped = this.unwrap();
+        if (!(unwrapped instanceof Wrapped)) {
+            return null;
+        }
+        return ((Wrapped<?>) unwrapped).unwrap(targetClass);
+    }
+
 }
