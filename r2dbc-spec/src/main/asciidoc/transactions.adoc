@@ -25,7 +25,7 @@ Enabling auto-commit mode causes a transaction commit after each SQL statement a
 [[transactions.auto-commit]]
 == Auto-commit Mode
 
-A `ConnectionFactory` creates new `Connection` objects with auto-commit mode enabled.
+A `ConnectionFactory` creates new `Connection` objects with auto-commit mode enabled, unless specified otherwise through connection configuration options.
 The `Connection` interface provides two methods to interact with auto-commit mode:
 
 * `setAutoCommit`
