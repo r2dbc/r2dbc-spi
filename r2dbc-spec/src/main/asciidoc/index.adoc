@@ -1,5 +1,5 @@
 = R2DBC - Reactive Relational Database Connectivity
-:author: Ben Hale<bhale@pivotal.io>, Mark Paluch <mpaluch@pivotal.io>, Greg Turnquist <gturnquist@pivotal.io>, Jay Bryant <jbryant@pivotal.io>
+:author: Ben Hale<bhale@pivotal.io>, Mark Paluch <mpaluch@pivotal.io>, Greg Turnquist <gturnquist@pivotal.io>, Jay Bryant <jbryant@pivotal.io>, Elena Felder
 :email: r2dbc@googlegroups.com
 :revnumber: {version}
 :revdate: {localdate}
@@ -9,7 +9,7 @@ ifdef::backend-pdf[]
 :toc:
 endif::[]
 
-(C) 2017-2019 The original authors.
+(C) 2017-2020 The original authors.
 
 NOTE: Copies of this document may be made for your own use and for distribution to others, provided that you do not charge any fee for such copies and further provided that each copy contains this Copyright Notice, whether distributed in print or electronically.
 
