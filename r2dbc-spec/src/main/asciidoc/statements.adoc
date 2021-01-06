@@ -73,7 +73,7 @@ Parameterized statements may be cached by R2DBC implementations for reuse (for e
 === Binding Parameters
 
 The `Statement` interface defines `bind(…)` and `bindNull(…)` methods to provide parameter values for bind marker substitution.
-The parameter type is defined by the actual value that is bound to a parameter.
+A parameter value consists of the actual value that is bound to a parameter and its type. Using scalar values according to <<datatypes.mapping>> lets the R2DBC infer the actual database type. Using a `Parameter` object allows for more control over the database type definition.
 Each bind method accepts two arguments.
 The first is either an ordinal position parameter starting at `0` (zero) or the parameter placeholder representation.
 The method of parameter binding (positional or by identifier) is vendor-specific, and a driver should document its preferred binding mechanism.
@@ -101,6 +101,20 @@ Alternatively, parameters can be bound by index, as the following example shows:
 Statement statement = connection.createStatement("SELECT title FROM books WHERE author = $1 and publisher = $2");
 statement.bind(0, "John Doe");
 statement.bind(1, "Happy Books LLC");
+----
+====
+
+Binding parameters using a `Parameter` with a `Type` allows for more control over the actual database type.
+`io.r2dbc.spi.R2dbcType` defines commonly used types.
+
+.Binding parameters to a `Statement` object using a `Parameter` object
+====
+[source,java]
+----
+// connection is a Connection object
+Statement statement = connection.createStatement("SELECT title FROM books WHERE author = $1 and publisher = $2");
+statement.bind(0, Parameters.in(R2dbcType.NVARCHAR, "John Doe"));
+statement.bind(1, Parameters.in(R2dbcType.VARCHAR, "Happy Books LLC"));
 ----
 ====
 
@@ -140,7 +154,7 @@ It takes two parameters:
 
 The following example shows how to set `NULL` value:
 
-.Setting a `NULL` value.
+.Setting a `NULL` value using type inference.
 ====
 [source,java]
 ----
@@ -148,6 +162,19 @@ The following example shows how to set `NULL` value:
 statement.bindNull(0, String.class);
 ----
 ====
+
+Typed `Parameter` objects representing a null value can be bound either by calling `bindNull(…)` or `bind(…)`:
+
+.Setting a typed `NULL` value.
+====
+[source,java]
+----
+// statement is a Statement object
+statement.bind(0, Parameters.in(R2dbcType.VARCHAR));
+----
+====
+
+NOTE: Not all databases allow for a non-typed `NULL` to be sent to the underlying database.
 
 [[statements.generated-values]]
 == Retrieving Auto Generated Values

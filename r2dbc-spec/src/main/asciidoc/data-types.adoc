@@ -10,7 +10,7 @@ If a data source does not support a data type described in this chapter, a drive
 [[datatypes.mapping]]
 == Mapping of Data Types
 
-This section explains how SQL-specific types are mapped to Java types.
+This section explains how SQL-specific types map to Java types.
 The list is not exhaustive and should be received as a guideline for drivers.
 R2DBC drivers should use modern types and type descriptors to exchange data for consumption by applications and consumption by the driver.
 Driver implementations should implement the following type mapping and can support additional type mappings:
@@ -174,6 +174,13 @@ The following table describes the SQL type mapping for collection types:
 |===
 
 Vendor-specific types (such as spatial data types, structured JSON or XML data, and user-defined types) are subject to vendor-specific mapping.
+
+[[datatypes.descriptor]]
+== Type Descriptors
+
+R2DBC drivers may infer the database type for inbound parameters or use a specific type.
+R2DBC's type system `io.r2dbc.spi.Type` and `io.r2dbc.spi.Parameter` are interfaces to describe a database type and a typed parameter.
+The R2DBC specification defines its type mapping in the `io.r2dbc.spi.R2dbcType` utility for commonly used data types. R2DBC drivers may provide their own `Type` objects to provide vendor-specific type support.
 
 [[datatypes.mapping.advanced]]
 == Mapping of Advanced Data Types

@@ -39,6 +39,14 @@ public interface ColumnMetadata {
     }
 
     /**
+     * Returns the database {@link Type}.
+     *
+     * @return the database {@link Type} descriptor.
+     * @since 0.9
+     */
+    Type getType();
+
+    /**
      * Returns the name of the column.
      * <p>
      * The name does not necessarily reflect the column names how they are in the underlying tables but rather how columns are represented (e.g. aliased) in the result..
