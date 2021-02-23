@@ -140,7 +140,7 @@ public final class ConnectionFactoryOptions {
      * @param <T>    the type of the value
      * @return the value for an option
      * @throws IllegalArgumentException if {@code option} is {@code null}
-     * @throws IllegalStateException    if there is no value for {@code option}
+     * @throws NoSuchOptionException    if {@code option} is not configured or there is no value for {@code option}
      */
     public <T> T getRequiredValue(Option<T> option) {
         T value = getValue(option);
@@ -149,7 +149,7 @@ public final class ConnectionFactoryOptions {
             return value;
         }
 
-        throw new IllegalStateException(String.format("No value found for %s", option.name()));
+        throw new NoSuchOptionException(String.format("No value found for %s", option.name()), option);
     }
 
     /**

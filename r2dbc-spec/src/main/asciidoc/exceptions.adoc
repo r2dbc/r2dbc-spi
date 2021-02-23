@@ -14,6 +14,7 @@ R2DBC defines the following general exceptions:
 * <<exceptions.iae>>
 * <<exceptions.ise>>
 * <<exceptions.uoe>>
+* <<exceptions.nsoe>>
 * <<exceptions.r2e>>
 
 [[exceptions.iae]]
@@ -27,6 +28,11 @@ This exception is a generic exception that is not associated with an error code 
 
 Drivers throw `IllegalStateException` if a method has received an argument that is invalid in the current state or when an argument-less method is invoked in a state that does not allow execution in the current state (such as interacting with a closed connection object).
 This exception is a generic exception that is not associated with an error code or an `SQLState`.
+
+[[exceptions.nsoe]]
+=== `NoSuchOptionException`
+
+R2DBC SPI throws `NoSuchOptionException` if a required `Option` is retrieved from `ConnectionFactoryOptions` that is either not configured or not associated with a value. `NoSuchOptionException` is a subclass of <<exceptions.ise>>.
 
 [[exceptions.uoe]]
 === `UnsupportedOperationException`
