@@ -1,6 +1,51 @@
 R2DBC SPI Changelog
 =============================
 
+0.9.0.M1
+------------------
+* Allow configuring auto-commit mode through properties #194
+* Enable Developer Certificate of Origin #193
+* Restrict CI and release task to r2dbc/r2dbc-spi repo #191
+* Upgrade dependencies #188
+* Extend TCK for RowMetadata.getColumnNames() iteration order #187
+* Deploy snapshots to oss.sonatype.org #186
+* Database password ends with special characters like '@' causes incorrectly parsing. #183
+* Typo in Row.get(…) Javadoc #182
+* Add a method to unwrap to the specified class from nested wrapped object #176
+* Upgrade dependencies #172
+* Add equals/hashCode implementation to ConnectionFactoryOptions and Option #166
+* Upgrade build and test dependencies #165
+* Stage releases directly on maven central #163
+* Consider removing or replacing the word "should" #161
+* Improved bind-parameter declaration #160
+* Extensible transaction definition #159
+* Result consuming in TestKit fix #154
+* Use Travis CI to build pull requests #148
+* Migrate to Jenkins #145
+* Allow query syntax customization in TCK TestKit #138
+* Document backpressure behavior related to fetching results #137
+* Specific exception for retrieving missing required values from ConnectionFactoryOptions #122
+
+0.8.4.RELEASE
+------------------
+* Allow configuring auto-commit mode through properties #194
+
+0.8.3.RELEASE
+------------------
+* Upgrade dependencies #188
+* Deploy snapshots to oss.sonatype.org #186
+* Database password ends with special characters like '@' causes incorrectly parsing #183
+* Typo in Row.get(…) Javadoc #182
+* Allow query syntax customization in TCK TestKit #138
+* Polishing of R2dbcBadGrammarException getter for offendingSql #74
+
+0.8.2.RELEASE
+------------------
+* Upgrade dependencies #172
+* Add equals/hashCode implementation to ConnectionFactoryOptions and Option #166
+* Upgrade build and test dependencies #165
+* Stage releases directly on maven central #164
+
 0.8.1.RELEASE
 ------------------
 * Result consuming in TestKit fix #154
