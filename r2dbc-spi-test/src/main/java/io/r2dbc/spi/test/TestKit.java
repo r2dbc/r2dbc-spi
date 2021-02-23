@@ -40,6 +40,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -511,6 +512,25 @@ public interface TestKit<T> {
     }
 
     @Test
+    default void rowMetadata() {
+        getJdbcOperations().execute(expand(TestStatement.INSERT_TWO_COLUMNS));
+
+        Mono.from(getConnectionFactory().create())
+            .flatMapMany(connection -> Flux.from(connection
+
+                .createStatement(expand(TestStatement.SELECT_VALUE_ALIASED_COLUMNS))
+                .execute())
+                .flatMap(result -> result.map((row, rowMetadata) -> new ArrayList<>(rowMetadata.getColumnNames())))
+                .flatMapIterable(Function.identity())
+                .concatWith(close(connection)))
+            .as(StepVerifier::create)
+            .expectNext("b").as("First column label: b")
+            .expectNext("c").as("First column label: c")
+            .expectNext("a").as("First column label: a")
+            .verifyComplete();
+    }
+
+    @Test
     default void compoundStatement() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
@@ -881,6 +901,7 @@ public interface TestKit<T> {
 
         INSERT_TWO_COLUMNS("INSERT INTO test_two_column VALUES (100, 'hello')"),
         SELECT_VALUE_TWO_COLUMNS("SELECT col1 AS value, col2 AS value FROM test_two_column"),
+        SELECT_VALUE_ALIASED_COLUMNS("SELECT col1 AS b, col1 AS c, col1 AS a FROM test_two_column"),
         CREATE_TABLE_TWO_COLUMNS("CREATE TABLE test_two_column ( col1 INTEGER, col2 VARCHAR(100) )"),
         DROP_TABLE_TWO_COLUMNS("DROP TABLE test_two_column");
 
