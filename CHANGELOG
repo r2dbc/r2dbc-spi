@@ -1,6 +1,10 @@
 R2DBC SPI Changelog
 =============================
 
+0.8.4.RELEASE
+------------------
+* Allow configuring auto-commit mode through properties #194
+
 0.8.3.RELEASE
 ------------------
 * Upgrade dependencies #188
