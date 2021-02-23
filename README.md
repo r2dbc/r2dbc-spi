@@ -83,7 +83,43 @@ _Also see [CONTRIBUTING.adoc](https://github.com/r2dbc/.github/blob/main/CONTRIB
 
 ## Staging to Maven Central
 
-To stage a release to Maven Central, you need to create a release tag (release version) that contains the desired state and version numbers (`mvn versions:set versions:commit -q -o -DgenerateBackupPoms=false -DnewVersion=x.y.z.(RELEASE|Mnnn|RCnnn`) and force-push it to the `release-0.x` branch. This push will trigger a Maven staging build (see `build-and-deploy-to-maven-central.sh`).
+To stage a release to Maven Central, you need to create a release tag (release version) that contains the desired state and version numbers.
+
+To do that, run:
+
+```bash
+$ ci/create-release.sh <github issue> <new-release-version> <next-snapshot-version>
+```
+
+For example, to release `0.9.0.RELEASE` against github issue #200, and then continue onto `0.9.1.BUILD-SNAPSHOT`, you'd run this:
+
+```bash
+$ ci/create-release.sh 200 0.9.0.RELEASE 0.9.1.BUILD-SNAPSHOT
+```
+
+This script will bump all the POM files to `0.9.0.RELEASE`, apply a tag (`v0.9.0.RELEASE`), and then bump the version _again_ to `0.9.1.BUILD-SNAPHOT`.
+
+From here, you can switch over to the release branch and use that tag.
+
+```bash
+$ git checkout release-0.x
+$ git reset --hard v0.9.0.RELEASE
+$ <do any local testing you want>
+$ git push --force
+```
+
+This will trigger GitHub to start a Maven staging build (see `build-and-deploy-to-maven-central.sh`).
+
+NOTE: Everything is staged. Nothing is released. You still have the ability to verify and rollback if something is wrong.
+
+Once you have verified everything on Maven Central, closed, and released, switch back and push the `main` branch.
+
+```bash
+$ git checkout main
+$ git push
+$ git push --tags
+```
+
 
 ## License
 This project is released under version 2.0 of the [Apache License][l].
