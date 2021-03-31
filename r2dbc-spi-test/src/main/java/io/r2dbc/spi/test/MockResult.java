@@ -19,6 +19,7 @@ package io.r2dbc.spi.test;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -56,17 +57,18 @@ public final class MockResult implements Result {
     }
 
     @Override
-    public <T> Flux<T> map(BiFunction<Row, RowMetadata, ? extends T> mappingFunction) {
-        Assert.requireNonNull(mappingFunction, "f must not be null");
+    public <T> Flux<T> map(Mapping<T> mapping) {
+        Assert.requireNonNull(mapping, "f must not be null");
 
         return this.rows
-            .zipWith(this.rowMetadata.repeat())
-            .map((tuple) -> {
-                Row row = tuple.getT1();
-                RowMetadata rowMetadata = tuple.getT2();
+                   .zipWith(this.rowMetadata.repeat())
+                   .flatMap((tuple) -> {
+                       Row row = tuple.getT1();
+                       RowMetadata rowMetadata = tuple.getT2();
 
-                return mappingFunction.apply(row, rowMetadata);
-            });
+                       return mapping.rowsFetched().apply(row, rowMetadata);
+                   })
+                   .concatWith(rowsUpdated.flatMap(mapping.rowsUpdated()));
     }
 
     @Override
