@@ -23,29 +23,22 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class MockResult implements Result {
 
-    private final Mono<RowMetadata> rowMetadata;
+    private final Flux<Segment> segments;
 
-    private final Flux<Row> rows;
-
-    private final Flux<Integer> rowsUpdated;
-
-    private final Mono<OutParameters> outParameters;
-
-    private MockResult(Mono<RowMetadata> rowMetadata, Flux<Row> rows, Flux<Integer> rowsUpdated, Mono<OutParameters> outParameters) {
-        this.rowMetadata = Assert.requireNonNull(rowMetadata, "rowMetadata must not be null");
-        this.rows = Assert.requireNonNull(rows, "rows must not be null");
-        this.rowsUpdated = Assert.requireNonNull(rowsUpdated, "rowsUpdated must not be null");
-        this.outParameters = Assert.requireNonNull(outParameters, "outParameters must not be null");
+    private MockResult(Flux<Segment> segments) {
+        this.segments = Assert.requireNonNull(segments, "segments must not be null");
     }
 
     public static Builder builder() {
@@ -58,60 +51,86 @@ public final class MockResult implements Result {
 
     @Override
     public Flux<Integer> getRowsUpdated() {
-        return this.rowsUpdated;
+        return this.segments.filter(UpdateCount.class::isInstance).cast(UpdateCount.class).map(UpdateCount::value).collect(Collectors.summingInt(Long::intValue)).flux();
     }
 
     @Override
     public <T> Flux<T> map(BiFunction<Row, RowMetadata, ? extends T> mappingFunction) {
-        Assert.requireNonNull(mappingFunction, "f must not be null");
+        Assert.requireNonNull(mappingFunction, "mappingFunction must not be null");
 
-        return this.rows
-            .zipWith(this.rowMetadata.repeat())
-            .map((tuple) -> {
-                Row row = tuple.getT1();
-                RowMetadata rowMetadata = tuple.getT2();
-
-                return mappingFunction.apply(row, rowMetadata);
-            });
+        return this.segments.filter(RowSegment.class::isInstance).cast(RowSegment.class).map(it -> mappingFunction.apply(it.row(), it.row().getMetadata()));
     }
 
     @Override
     public <T> Publisher<T> map(Function<? super Readable, ? extends T> mappingFunction) {
         Assert.requireNonNull(mappingFunction, "f must not be null");
 
-        return this.rows
-            .zipWith(this.rowMetadata.repeat())
-            .map((tuple) -> {
-                Row row = tuple.getT1();
-                return (T) mappingFunction.apply(row);
-            }).mergeWith(this.outParameters.map(mappingFunction));
+        return this.segments.filter(it -> it instanceof RowSegment || it instanceof OutSegment).map(it -> {
+
+            if (it instanceof OutSegment) {
+                return mappingFunction.apply(((OutSegment) it).outParameters());
+            }
+
+            return mappingFunction.apply(((RowSegment) it).row());
+        });
     }
 
     @Override
     public String toString() {
         return "MockResult{" +
-            "rowMetadata=" + this.rowMetadata +
-            ", rows=" + this.rows +
-            ", rowsUpdated=" + this.rowsUpdated +
-            ", outParameters=" + this.outParameters +
+            "segments=" + this.segments +
             '}';
+    }
+
+    @Override
+    public Result filter(Predicate<Segment> filter) {
+        Assert.requireNonNull(filter, "mappingFunction must not be null");
+        return new MockResult(this.segments.filter(filter));
+    }
+
+    @Override
+    public <T> Publisher<T> flatMap(Function<Segment, ? extends Publisher<? extends T>> mappingFunction) {
+        Assert.requireNonNull(mappingFunction, "mappingFunction must not be null");
+
+        return this.segments.flatMap(mappingFunction);
+    }
+
+    public static UpdateCount updateCount(long value) {
+        return () -> value;
+    }
+
+    public static RowSegment row(Row row) {
+        Assert.requireNonNull(row, "row must not be null");
+
+        return () -> row;
+    }
+
+    public static OutSegment outParameters(OutParameters parameters) {
+        Assert.requireNonNull(parameters, "parameters must not be null");
+
+        return () -> parameters;
     }
 
     public static final class Builder {
 
-        private final List<Row> rows = new ArrayList<>();
-
-        private final List<Integer> rowsUpdated = new ArrayList<>();
-
-        private RowMetadata rowMetadata;
-
-        private Mono<OutParameters> outParameters = Mono.empty();
+        private final List<Supplier<Segment>> segments = new ArrayList<>();
 
         private Builder() {
         }
 
         public MockResult build() {
-            return new MockResult(Mono.justOrEmpty(this.rowMetadata), Flux.fromIterable(this.rows), Flux.fromIterable(this.rowsUpdated), this.outParameters);
+            return new MockResult(Flux.fromIterable(this.segments).map(Supplier::get));
+        }
+
+        public Builder segment(Segment... segments) {
+            Assert.requireNonNull(segments, "segments must not be null");
+
+            Stream.of(segments)
+                .peek(segment -> Assert.requireNonNull(segment, "segment must not be null"))
+                .<Supplier<Segment>>map(segment -> (() -> segment))
+                .forEach(this.segments::add);
+
+            return this;
         }
 
         public Builder row(Row... rows) {
@@ -119,27 +138,32 @@ public final class MockResult implements Result {
 
             Stream.of(rows)
                 .peek(row -> Assert.requireNonNull(row, "row must not be null"))
-                .forEach(this.rows::add);
+                .<Supplier<Segment>>map(row -> () -> MockResult.row(row))
+                .forEach(this.segments::add);
 
             return this;
         }
 
+        /**
+         * @param rowMetadata metadata for a {@link Row}
+         * @return {@code this} {@link Builder}
+         * @deprecated since 0.9, no-op. Provide metadata as part of {@link Row#getMetadata()}.
+         */
+        @Deprecated
         public Builder rowMetadata(RowMetadata rowMetadata) {
-            this.rowMetadata = Assert.requireNonNull(rowMetadata, "rowMetadata must not be null");
             return this;
         }
 
-        public Builder rowsUpdated(Integer rowsUpdated) {
-            Assert.requireNonNull(rowsUpdated, "rowsUpdated must not be null");
+        public Builder rowsUpdated(long rowsUpdated) {
 
-            this.rowsUpdated.add(rowsUpdated);
+            this.segments.add(() -> updateCount(rowsUpdated));
             return this;
         }
 
         public Builder outParameters(OutParameters outParameters) {
             Assert.requireNonNull(outParameters, "outParameters must not be null");
 
-            this.outParameters = Mono.just(outParameters);
+            this.segments.add(() -> MockResult.outParameters(outParameters));
 
             return this;
         }
@@ -147,10 +171,7 @@ public final class MockResult implements Result {
         @Override
         public String toString() {
             return "Builder{" +
-                "rowMetadata=" + this.rowMetadata +
-                ", rows=" + this.rows +
-                ", rowsUpdated=" + this.rowsUpdated +
-                ", outParameters=" + this.outParameters +
+                ", segments=" + this.segments +
                 '}';
         }
 
