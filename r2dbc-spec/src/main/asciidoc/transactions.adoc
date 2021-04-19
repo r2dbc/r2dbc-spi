@@ -104,11 +104,11 @@ the following example shows how to roll back a transaction to a savepoint:
 // connection is a Connection object
 Publisher<Void> begin = connection.beginTransaction();
 
-Publisher<Void> insert1 = connection.createStatement("INSERT INTO books VALUES ('John Doe')").execute();
+Publisher<? extends Result> insert1 = connection.createStatement("INSERT INTO books VALUES ('John Doe')").execute();
 
 Publisher<Void> savepoint = connection.createSavepoint("savepoint");
 
-Publisher<Void> insert2 = connection.createStatement("INSERT INTO books VALUES ('Jane Doe')").execute();
+Publisher<? extends Result> insert2 = connection.createStatement("INSERT INTO books VALUES ('Jane Doe')").execute();
 
 …
 
