@@ -21,6 +21,7 @@ import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 
 /**
@@ -168,7 +169,7 @@ public enum R2dbcType implements Type {
     /**
      * Identifies the generic SQL type {@code TIMESTAMP WITH TIME ZONE}.
      */
-    TIMESTAMP_WITH_TIME_ZONE(LocalDateTime.class),
+    TIMESTAMP_WITH_TIME_ZONE(OffsetDateTime.class),
 
     /**
      * Identifies the generic SQL type {@code ARRAY}.
