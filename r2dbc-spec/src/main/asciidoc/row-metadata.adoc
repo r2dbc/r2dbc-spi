@@ -17,7 +17,7 @@ Consequently, `ColumnMetadata` declares two sets of methods: methods that must b
 == Obtaining a `RowMetadata` Object
 
 A `RowMetadata` object is created during tabular results consumption through `Result.map(…)`.
-It is created for each row. The following example illustrates retrieval and usage by using an anonymous inner class:
+It is created for each row.The following example illustrates retrieval and usage by using an anonymous inner class:
 
 .Using `RowMetadata` and retrieving `ColumnMetadata`
 ====
@@ -29,10 +29,10 @@ result.map(new BiFunction<Row, RowMetadata, Object>() {
     @Override
     public Object apply(Row row, RowMetadata rowMetadata) {
         ColumnMetadata my_column = rowMetadata.getColumnMetadata("my_column");
-        ColumnMetadata.Nullability nullability = my_column.getNullability();
+        Nullability nullability = my_column.getNullability();
         // …
     }
-})
+});
 ----
 ====
 

@@ -22,7 +22,8 @@ import java.util.NoSuchElementException;
 /**
  * Represents the metadata for a row of the results returned from a query.
  * Metadata for columns can be either retrieved by specifying a column name or the column index.
- * Columns are numbered from 0.  Column names do not necessarily reflect the column names how they are in the underlying tables but rather how columns are represented (e.g. aliased) in the result.
+ * Columns indexes are {@code 0}-based.  Column names do not necessarily reflect the column names how they are in the underlying tables but rather how columns are represented (e.g. aliased) in the
+ * result.
  */
 public interface RowMetadata {
 

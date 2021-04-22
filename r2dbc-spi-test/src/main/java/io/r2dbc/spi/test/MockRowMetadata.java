@@ -63,7 +63,7 @@ public final class MockRowMetadata implements RowMetadata {
     public ColumnMetadata getColumnMetadata(String name) {
         Assert.requireNonNull(name, "name must not be null");
 
-        for (ColumnMetadata columnMetadata : columnMetadatas) {
+        for (ColumnMetadata columnMetadata : this.columnMetadatas) {
             if (columnMetadata.getName().equalsIgnoreCase(name)) {
                 return columnMetadata;
             }

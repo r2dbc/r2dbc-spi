@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,11 @@
 package io.r2dbc.spi;
 
 /**
- * Represents the metadata for a column of the results returned from a query.  The implementation of all methods except {@link #getName()}  is optional for drivers.  Column metadata is optionally
+ * Represents the metadata for an {@code OUT} parameter.  The implementation of all methods except {@link #getName()}  is optional for drivers.  Parameter metadata is optionally
  * available as by-product of statement execution on a best-effort basis.
+ *
+ * @since 0.9
  */
-public interface ColumnMetadata extends ReadableMetadata {
+public interface OutParameterMetadata extends ReadableMetadata {
 
 }

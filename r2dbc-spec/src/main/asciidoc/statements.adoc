@@ -1,7 +1,7 @@
 [[statements]]
 = Statements
 
-This section describes the `Statement` interface. It also describes related topics, including parameterized statement and auto-generated keys.
+This section describes the `Statement` interface.It also describes related topics, including parameterized statement and auto-generated keys.
 
 [[statements.interface]]
 == The Statement Interface
@@ -176,6 +176,51 @@ statement.bind(0, Parameters.in(R2dbcType.VARCHAR));
 
 NOTE: Not all databases allow for a non-typed `NULL` to be sent to the underlying database.
 
+[[statements.in-out]]
+=== Setting `IN/OUT` and `OUT` Parameters
+
+Statements can take three kinds of parameters:
+
+* `IN` parameters (default type) as described in <<statements.bind>>.
+* `IN/OUT` parameters.
+* `OUT` parameters.
+
+The parameter can be specified as either an ordinal parameter or a named parameter.
+A value must be set for each parameter marker in the statement that represents an `IN` or `IN/OUT` parameter.
+`OUT` parameters are generally not associated with a value and may require a type hint.
+
+Parameter types can either make use of type inference by specifying the value or a Java `Class` or reference a `Type`.
+
+`IN/OUT` parameters are assigned values whose result can be retrieved after running the statement as described in <<out-parameters>>.
+Parameters are assigned using the `bind(…)` methods as described in <<statements.bind>>.
+
+The following example shows how to set a `IN/OUT` parameter:
+
+.Setting a `IN/OUT` parameter value using type inference.
+====
+[source,java]
+----
+// connection is a Connection object
+Statement statement = connection.createStatement("CALL my_proc ($1)");
+statement.bind(0, Parameters.inOut("John Doe"));
+----
+====
+
+`OUT` parameters are value-less parameters whose result can be retrieved after running the statement as described in <<out-parameters>>.
+Parameters are assigned using the `bind(…)` methods as described in <<statements.bind>>.
+
+The following example shows how to set a `OUT` parameter:
+
+.Setting a `OUT` parameter value using type inference.
+====
+[source,java]
+----
+// connection is a Connection object
+Statement statement = connection.createStatement("CALL my_proc ($1)");
+statement.bind(0, Parameters.out(String.class));
+----
+====
+
 [[statements.generated-values]]
 == Retrieving Auto Generated Values
 
@@ -196,7 +241,7 @@ Statement statement = connection.createStatement("INSERT INTO books (author, pub
 Publisher<? extends Result> publisher = statement.execute();
 
 // later
-result.map((row, metadata) -> row.get("id"));
+result.map((readable) -> readable.get("id"));
 ----
 ====
 

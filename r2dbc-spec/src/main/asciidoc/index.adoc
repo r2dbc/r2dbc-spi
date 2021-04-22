@@ -37,7 +37,13 @@ include::batches.adoc[leveloffset=+1]
 
 include::result.adoc[leveloffset=+1]
 
+include::rows.adoc[leveloffset=+1]
+
+include::out-parameters.adoc[leveloffset=+1]
+
 include::row-metadata.adoc[leveloffset=+1]
+
+include::out-parameter-metadata.adoc[leveloffset=+1]
 
 include::exceptions.adoc[leveloffset=+1]
 
