@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,13 +137,12 @@ public final class ConnectionFactoryOptions {
      * Returns the value for an option if it exists.
      *
      * @param option the option to retrieve the value for
-     * @param <T>    the type of the value
      * @return the value for an option
      * @throws IllegalArgumentException if {@code option} is {@code null}
      * @throws NoSuchOptionException    if {@code option} is not configured or there is no value for {@code option}
      */
-    public <T> T getRequiredValue(Option<T> option) {
-        T value = getValue(option);
+    public Object getRequiredValue(Option<?> option) {
+        Object value = getValue(option);
 
         if (value != null) {
             return value;
@@ -156,16 +155,14 @@ public final class ConnectionFactoryOptions {
      * Returns the value for an option if it exists, otherwise {@code null}.
      *
      * @param option the option to retrieve the value for
-     * @param <T>    the type of the value
      * @return the value for an option if it exists, otherwise {@code null}
      * @throws IllegalArgumentException if {@code option} is {@code null}
      */
     @Nullable
-    @SuppressWarnings("unchecked")
-    public <T> T getValue(Option<T> option) {
+    public Object getValue(Option<?> option) {
         Assert.requireNonNull(option, "option must not be null");
 
-        return (T) this.options.get(option);
+        return this.options.get(option);
     }
 
     /**
