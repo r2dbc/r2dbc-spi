@@ -58,12 +58,12 @@ public enum R2dbcType implements Type {
     /**
      * Identifies the generic SQL type {@code CLOB}.
      */
-    CLOB(ByteBuffer.class),
+    CLOB(String.class),
 
     /**
      * Identifies the generic SQL type {@code NCLOB}.
      */
-    NCLOB(ByteBuffer.class),
+    NCLOB(String.class),
 
     // ----------------------------------------------------
     // Boolean types
