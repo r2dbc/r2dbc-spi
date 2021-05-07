@@ -43,9 +43,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -88,12 +88,12 @@ public interface TestKit<T> {
      * Customization hook to extract the {@code value} column from {@link Result}.
      *
      * @param result the result object
-     * @return mono containing a list of result values
+     * @return mono containing a collection of result values
      */
-    default Mono<List<Integer>> extractColumns(Result result) {
+    default Mono<Collection<Integer>> extractColumns(Result result) {
         return Flux.from(result
             .map((row, rowMetadata) -> extractColumn(row, Integer.class)))
-            .collectList();
+            .collect(Collectors.toSet());
     }
 
     /**
@@ -543,8 +543,8 @@ public interface TestKit<T> {
 
                 .concatWith(close(connection)))
             .as(StepVerifier::create)
-            .expectNext(Collections.singletonList(100)).as("value from first select")
-            .expectNext(Collections.singletonList(100)).as("value from second select")
+            .expectNext(collectionOf(100)).as("value from first select")
+            .expectNext(collectionOf(100)).as("value from second select")
             .verifyComplete();
     }
 
@@ -706,12 +706,12 @@ public interface TestKit<T> {
 
                 .concatWith(close(connection)))
             .as(StepVerifier::create)
-            .expectNext(Collections.singletonList(100)).as("value from select")
+            .expectNext(collectionOf(100)).as("value from select")
             .expectNext(1).as("rows inserted")
-            .expectNext(Arrays.asList(100, 200)).as("values from select")
+            .expectNext(collectionOf(100, 200)).as("values from select")
             .expectNext(1).as("rows inserted")
-            .expectNext(Arrays.asList(100, 200, 300)).as("values from select")
-            .expectNext(Arrays.asList(100, 200)).as("values from select")
+            .expectNext(collectionOf(100, 200, 300)).as("values from select")
+            .expectNext(collectionOf(100, 200)).as("values from select")
             .verifyComplete();
     }
 
@@ -756,10 +756,10 @@ public interface TestKit<T> {
 
                 .concatWith(close(connection)))
             .as(StepVerifier::create)
-            .expectNext(Collections.singletonList(100)).as("value from select")
+            .expectNext(collectionOf(100)).as("value from select")
             .expectNext(1).as("rows inserted")
-            .expectNext(Arrays.asList(100, 200)).as("values from select")
-            .expectNext(Arrays.asList(100, 200)).as("values from select")
+            .expectNext(collectionOf(100, 200)).as("values from select")
+            .expectNext(collectionOf(100, 200)).as("values from select")
             .verifyComplete();
     }
 
@@ -792,10 +792,10 @@ public interface TestKit<T> {
 
                 .concatWith(close(connection)))
             .as(StepVerifier::create)
-            .expectNext(Collections.singletonList(100)).as("value from select")
+            .expectNext(collectionOf(100)).as("value from select")
             .expectNext(1).as("rows inserted")
-            .expectNext(Arrays.asList(100, 200)).as("values from select")
-            .expectNext(Collections.singletonList(100)).as("value from select")
+            .expectNext(collectionOf(100, 200)).as("values from select")
+            .expectNext(collectionOf(100)).as("value from select")
             .verifyComplete();
     }
 
@@ -854,6 +854,18 @@ public interface TestKit<T> {
         return Mono.from(clob
             .discard())
             .then(Mono.empty());
+    }
+
+    /**
+     * Returns an unordered {@code Collection} containing 0 or more {@code values}.
+     * @param <T> Class of objects in {@code values}
+     * @param values 0 or more values
+     * @return {@code Collection} containing {@code values}
+     */
+    @SafeVarargs
+    @SuppressWarnings("varargs")
+    static <T> Collection<T> collectionOf(T... values) {
+        return new HashSet<>(Arrays.asList(values));
     }
 
     /**
