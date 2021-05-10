@@ -47,10 +47,12 @@ The following table describes the SQL type mapping for character types:
 
 | `CHARACTER LARGE OBJECT` (`CLOB`)
 | A Character Large OBject (or `CLOB`) is a collection of character data in a DBMS, usually stored in a separate location that is referenced in the table itself.
+Note that drivers may default to `Clob` when materializing a `CLOB` value requires additional database communication.
 | `java.lang.String`, `io.r2dbc.spi.Clob`
 
 | `NATIONAL CHARACTER LARGE OBJECT` (`NCLOB`)
 | The `NATIONAL CHARACTER LARGE OBJECT` type is the same as `CHARACTER LARGE OBJECT` except that it holds standardized multibyte characters or Unicode characters.
+Note that drivers may default to `Clob` when materializing a `NCLOB` value requires additional database communication.
 | `java.lang.String`, `io.r2dbc.spi.Clob`
 
 |===
@@ -85,6 +87,7 @@ The following table describes the SQL type mapping for binary types:
 
 | `BINARY LARGE OBJECT` (`BLOB`)
 | A Binary Large OBject (or `BLOB`) is a collection of binary data in a database management system, usually stored in a separate location that is referenced in the table itself.
+Note that drivers may default to `Blob` when materializing a `BLOB` value requires additional database communication.
 | `java.nio.ByteBuffer`, `io.r2dbc.spi.Blob`
 
 |===
@@ -178,7 +181,7 @@ Vendor-specific types (such as spatial data types, structured JSON or XML data, 
 [[datatypes.mapping.advanced]]
 == Mapping of Advanced Data Types
 
-The R2DBC SPI declares default mappings for advanced data types. The following list describes data types and the interfaces to which they map:
+The R2DBC SPI declares default mappings for advanced data types.The following list describes data types and the interfaces to which they map:
 
 * `BLOB`: The `Blob` interface
 * `CLOB`: The `Clob` interface
@@ -228,8 +231,11 @@ Publisher<Clob> clob = result.map((row, rowMetadata) -> row.get("clob", Clob.cla
 ----
 ====
 
-The `Clob` interface contains methods for returning the content and for releasing resources associated with the `Clob` object instance.
+The `Blob` and `Clob` interfaces contain methods for returning the content and for releasing resources associated with the object instance.
 The API documentation provides more details.
+
+NOTE: LOB value consumption requires special attention due to large object capacity needs. <<datatypes.mapping>> defines a default LOB mapping using scalar types.
+The actual default data type for LOB data types can be vendor-specific to avoid blocking if the database requires LOB materialization from a locator or requires database communication during retrieval.
 
 [[datatypes.lob.data]]
 === Accessing `Blob` and `Clob` Data
@@ -237,7 +243,8 @@ The API documentation provides more details.
 The `Blob` and `Clob` interfaces declare methods to consume the content of each type.
 Content streams follow Reactive Streams specifications and reflect the stream nature of large objects.
 As a result, `Blob` and `Clob` objects can be consumed only once.
-Large object data consumption can be canceled by calling the `discard()` method if the content stream was not consumed at all. Alternatively, if the content stream was consumed, a `Subscription` cancellation releases resources that are associated with the large object.
+Large object data consumption can be canceled by calling the `discard()` method if the content stream was not consumed at all.
+Alternatively, if the content stream was consumed, a `Subscription` cancellation releases resources that are associated with the large object.
 
 The following example shows how to consume `Clob` contents:
 
