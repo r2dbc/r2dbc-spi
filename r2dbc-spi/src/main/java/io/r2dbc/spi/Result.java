@@ -49,7 +49,7 @@ public interface Result {
      * @throws IllegalArgumentException if {@code mappingFunction} is {@code null}
      * @throws IllegalStateException    if the result was consumed
      */
-    <T> Publisher<T> map(BiFunction<Row, RowMetadata, ? extends T> mappingFunction);
+    <T> Publisher<T> map(BiFunction<? super Gettable, ? super ThingMetadata, ? extends T> mappingFunction);
 
     /**
      * Returns a mapping of the rows/out parameters that are the results of a query against a database.  May be empty if the query did not return any results.  A {@link Gettable} can be only
