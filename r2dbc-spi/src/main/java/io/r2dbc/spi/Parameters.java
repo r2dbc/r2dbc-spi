@@ -76,7 +76,7 @@ public final class Parameters {
     }
 
     /**
-     * Create a {@code NULL OUT} parameter using the given {@link Type}.
+     * Create a {@code OUT} parameter using the given {@link Type}.
      *
      * @param type the type to be sent to the database.
      * @return the out parameter.
@@ -84,11 +84,11 @@ public final class Parameters {
      */
     public static Parameter out(Type type) {
         Assert.requireNonNull(type, "Type must not be null");
-        return out(type, null);
+        return new OutParameter(type);
     }
 
     /**
-     * Create a {@code NULL OUT} parameter using type inference and the given {@link Class type} hint.  The actual {@link Type} is inferred during statement execution.
+     * Create a {@code OUT} parameter using type inference and the given {@link Class type} hint.  The actual {@link Type} is inferred during statement execution.
      *
      * @param type the type to be used for type inference.
      * @return the out parameter.
@@ -96,32 +96,56 @@ public final class Parameters {
      */
     public static Parameter out(Class<?> type) {
         Assert.requireNonNull(type, "Type must not be null");
-        return out(new DefaultInferredType(type), null);
+        return out(new DefaultInferredType(type));
     }
 
     /**
-     * Create a {@code OUT} parameter using the given {@code value}.  The actual {@link Type} is inferred during statement execution.^
+     * Create a {@code NULL IN/OUT} parameter using the given {@link Type}.
+     *
+     * @param type the type to be sent to the database.
+     * @return the in/out parameter.
+     * @throws IllegalArgumentException if {@code type} is {@code null}.
+     */
+    public static Parameter inOut(Type type) {
+        Assert.requireNonNull(type, "Type must not be null");
+        return inOut(type, null);
+    }
+
+    /**
+     * Create a {@code NULL IN/OUT} parameter using type inference and the given {@link Class type} hint.  The actual {@link Type} is inferred during statement execution.
+     *
+     * @param type the type to be used for type inference.
+     * @return the in/out parameter.
+     * @throws IllegalArgumentException if {@code type} is {@code null}.
+     */
+    public static Parameter inOut(Class<?> type) {
+        Assert.requireNonNull(type, "Type must not be null");
+        return inOut(new DefaultInferredType(type), null);
+    }
+
+    /**
+     * Create a {@code IN/OUT} parameter using the given {@code value}.  The actual {@link Type} is inferred during statement execution.^
      *
      * @param value the value to be used for type inference.
-     * @return the out parameter.
+     * @return the in/out parameter.
      * @throws IllegalArgumentException if {@code value} is {@code null}.
      */
-    public static Parameter out(Object value) {
+    public static Parameter inOut(Object value) {
         Assert.requireNonNull(value, "Value must not be null");
-        return out(new DefaultInferredType(value.getClass()), value);
+        return inOut(new DefaultInferredType(value.getClass()), value);
     }
 
     /**
-     * Create a {@code OUT} parameter using the given {@link Type} and {@code value}.
+     * Create a {@code IN/OUT} parameter using the given {@link Type} and {@code value}.
      *
      * @param type  the type to be sent to the database.
      * @param value the value associated with the parameter, can be {@code null}.
-     * @return the out parameter.
+     * @return the in/out parameter.
      * @throws IllegalArgumentException if {@code type} is {@code null}.
      */
-    public static Parameter out(Type type, @Nullable Object value) {
+    public static Parameter inOut(Type type, @Nullable Object value) {
         Assert.requireNonNull(type, "Type must not be null");
-        return new OutParameter(type, value);
+        return new InOutParameter(type, value);
     }
 
     private static class DefaultParameter implements Parameter {
@@ -163,15 +187,29 @@ public final class Parameters {
 
     private static class OutParameter extends DefaultParameter implements Parameter.Out {
 
-        public OutParameter(Type type, @Nullable Object value) {
-            super(type, value);
+        public OutParameter(Type type) {
+            super(type, null);
         }
 
         @Override
         public String toString() {
             return "Out{" +
-                getType() +
-                '}';
+                   getType() +
+                   '}';
+        }
+    }
+
+    private static class InOutParameter extends DefaultParameter implements Parameter.In, Parameter.Out {
+
+        public InOutParameter(Type type, @Nullable Object value) {
+            super(type, value);
+        }
+
+        @Override
+        public String toString() {
+            return "InOut{" +
+                   getType() +
+                   '}';
         }
     }
 
