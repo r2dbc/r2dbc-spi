@@ -1,6 +1,16 @@
 R2DBC SPI Changelog
 =============================
 
+0.8.5.RELEASE
+------------------
+* Reflect that the spec is hosted by the Reactive Foundation #226
+* Correct Java Type for CLOB and NCLOB #222
+* TestKit.Statement.SELECT_VALUE Returns Rows in Inconsistent Order #220
+* Refactor TestKit from using own resource management to reuse `Flux/Mono.usingWhen(…)` #213
+* Example code on spec website doesn't compile #208
+* Backport create-release script to 0.8.x #202
+
+
 0.8.4.RELEASE
 ------------------
 * Allow configuring auto-commit mode through properties #194
