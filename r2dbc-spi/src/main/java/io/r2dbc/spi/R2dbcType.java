@@ -57,11 +57,13 @@ public enum R2dbcType implements Type {
 
     /**
      * Identifies the generic SQL type {@code CLOB}.
+     * Note that drivers may default to {@link Clob} if materializing a {@code CLOB} value requires additional database communication.
      */
     CLOB(String.class),
 
     /**
      * Identifies the generic SQL type {@code NCLOB}.
+     * Note that drivers may default to {@link Clob} if materializing a {@code NCLOB} value requires additional database communication.
      */
     NCLOB(String.class),
 
@@ -90,6 +92,7 @@ public enum R2dbcType implements Type {
 
     /**
      * Identifies the generic SQL type {@code BLOB}.
+     * Note that drivers may default to {@link Blob} if materializing a {@code BLOB} value requires additional database communication.
      */
     BLOB(ByteBuffer.class),
 
