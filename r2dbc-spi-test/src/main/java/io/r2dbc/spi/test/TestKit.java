@@ -246,9 +246,9 @@ public interface TestKit<T> {
 
     @Test
     default void autoCommitByDefault() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Flux.just(connection.isAutoCommit())
-                .concatWith(close(connection)))
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.just(connection.isAutoCommit()),
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext(true).as("new connections are in auto-commit mode")
             .verifyComplete();
@@ -256,17 +256,16 @@ public interface TestKit<T> {
 
     @Test
     default void changeAutoCommitCommitsTransaction() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection ->
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection ->
                 Flux.from(connection.setAutoCommit(false))
                     .thenMany(connection.beginTransaction())
                     .thenMany(connection.createStatement(expand(TestStatement.INSERT_VALUE200)).execute())
                     .flatMap(Result::getRowsUpdated)
                     .thenMany(connection.setAutoCommit(true))
                     .thenMany(connection.createStatement(expand(TestStatement.SELECT_VALUE)).execute())
-                    .flatMap(it -> it.map((row, metadata) -> extractColumn(row)))
-                    .concatWith(close(connection))
-            )
+                    .flatMap(it -> it.map((row, metadata) -> extractColumn(row))),
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext(200).as("autoCommit(true) committed the transaction. Expecting a value to be present")
             .verifyComplete();
@@ -274,8 +273,8 @@ public interface TestKit<T> {
 
     @Test
     default void sameAutoCommitLeavesTransactionUnchanged() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection ->
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection ->
                 Flux.from(connection.setAutoCommit(false))
                     .thenMany(connection.beginTransaction())
                     .thenMany(connection.createStatement(expand(TestStatement.INSERT_VALUE200)).execute())
@@ -283,9 +282,8 @@ public interface TestKit<T> {
                     .thenMany(connection.setAutoCommit(false))
                     .thenMany(connection.rollbackTransaction())
                     .thenMany(connection.createStatement(expand(TestStatement.SELECT_VALUE)).execute())
-                    .flatMap(it -> it.map((row, metadata) -> extractColumn(row)))
-                    .concatWith(close(connection))
-            )
+                    .flatMap(it -> it.map((row, metadata) -> extractColumn(row))),
+            Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -294,16 +292,16 @@ public interface TestKit<T> {
     default void batch() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Flux.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.from(connection
 
                 .createBatch()
                 .add(expand(TestStatement.INSERT_VALUE200))
                 .add(expand(TestStatement.SELECT_VALUE))
                 .execute())
 
-                .concatWith(close(connection)))
-            .flatMap(Result::getRowsUpdated)
+                .flatMap(Result::getRowsUpdated),
+            Connection::close)
             .then()
             .as(StepVerifier::create)
             .verifyComplete();
@@ -311,8 +309,8 @@ public interface TestKit<T> {
 
     @Test
     default void bindFails() {
-        Mono.from(getConnectionFactory().create())
-            .flatMap(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
 
                 Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
                 assertThrows(IllegalArgumentException.class, () -> statement.bind(0, null), "bind(0, null) should fail");
@@ -320,24 +318,25 @@ public interface TestKit<T> {
                 assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), null), "bind(identifier, null) should fail");
                 assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), Class.class), "bind(identifier, Class.class) should fail");
                 assertThrows(IllegalArgumentException.class, () -> statement.bind("unknown", ""), "bind(unknown-placeholder, \"\") should fail");
-                return close(connection);
-            })
+                return Mono.empty();
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
 
     @Test
     default void bindNull() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
                 Statement statement = connection
                     .createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
                 bindNull(statement, getIdentifier(0), Integer.class);
                 return Flux.from(statement.add()
                     .execute())
-                    .flatMap(this::extractRowsUpdated)
-                    .concatWith(close(connection));
-            })
+                    .flatMap(this::extractRowsUpdated);
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .expectNextCount(1).as("rows inserted")
             .verifyComplete();
@@ -345,28 +344,29 @@ public interface TestKit<T> {
 
     @Test
     default void bindNullFails() {
-        Mono.from(getConnectionFactory().create())
-            .flatMap(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
 
                 Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
                 assertThrows(IllegalArgumentException.class, () -> statement.bindNull(null, String.class), "bindNull(null, …) should fail");
                 assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), null), "bindNull(identifier, null) should fail");
-                return close(connection);
-            })
+                return Mono.empty();
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
 
     @Test
     default void blobInsert() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
                 Statement statement = connection.createStatement(expand(TestStatement.INSERT_BLOB_VALUE_PLACEHOLDER, getPlaceholder(0)));
                 bind(statement, getIdentifier(0), Blob.from(Mono.just(StandardCharsets.UTF_8.encode("test-value"))));
                 return Flux.from(statement.execute())
-                    .flatMap(this::extractRowsUpdated)
-                    .concatWith(close(connection));
-            })
+                    .flatMap(this::extractRowsUpdated);
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .expectNextCount(1).as("rows inserted")
             .verifyComplete();
@@ -384,8 +384,8 @@ public interface TestKit<T> {
         });
 
         // BLOB as ByteBuffer
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Flux.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.from(connection
 
                 .createStatement(expand(TestStatement.SELECT_BLOB_VALUE))
                 .execute())
@@ -396,8 +396,8 @@ public interface TestKit<T> {
                     byte[] bytes = new byte[buffer.remaining()];
                     buffer.get(bytes);
                     return bytes;
-                })
-                .concatWith(close(connection)))
+                }),
+            Connection::close)
             .as(StepVerifier::create)
             .expectNextMatches(actual -> {
                 ByteBuffer expected = StandardCharsets.UTF_8.encode("test-value");
@@ -406,18 +406,16 @@ public interface TestKit<T> {
             .verifyComplete();
 
         // BLOB as Blob
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Flux.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.from(connection
 
                 .createStatement(expand(TestStatement.SELECT_BLOB_VALUE))
                 .execute())
-                .flatMap(result -> result
-                    .map((row, rowMetadata) -> extractColumn(row, Blob.class)))
-                .flatMap(blob -> Flux.from(blob.stream())
-                    .reduce(ByteBuffer::put)
-                    .concatWith(discard(blob)))
-
-                .concatWith(close(connection)))
+                .flatMap(result -> Flux.usingWhen(result
+                    .map((row, rowMetadata) -> extractColumn(row, Blob.class)),
+                    blob -> Flux.from(blob.stream()).reduce(ByteBuffer::put),
+                    Blob::discard)),
+            Connection::close)
             .as(StepVerifier::create)
             .expectNextMatches(actual -> {
                 ByteBuffer expected = StandardCharsets.UTF_8.encode("test-value");
@@ -428,14 +426,14 @@ public interface TestKit<T> {
 
     @Test
     default void clobInsert() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
                 Statement statement = connection.createStatement(expand(TestStatement.INSERT_CLOB_VALUE_PLACEHOLDER, getPlaceholder(0)));
                 bind(statement, getIdentifier(0), Clob.from(Mono.just("test-value")));
                 return Flux.from(statement.execute())
-                    .flatMap(Result::getRowsUpdated)
-                    .concatWith(close(connection));
-            })
+                    .flatMap(Result::getRowsUpdated);
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .expectNextCount(1).as("rows inserted")
             .verifyComplete();
@@ -453,33 +451,31 @@ public interface TestKit<T> {
         });
 
         // CLOB defaults to String
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Flux.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.from(connection
 
                 .createStatement(expand(TestStatement.SELECT_CLOB_VALUE))
                 .execute())
                 .flatMap(result -> result
-                    .map((row, rowMetadata) -> extractColumn(row)))
-
-                .concatWith(close(connection)))
+                    .map((row, rowMetadata) -> extractColumn(row))),
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext("test-value").as("value from select")
             .verifyComplete();
 
         // CLOB consume as Clob
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Flux.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.from(connection
 
                 .createStatement(expand(TestStatement.SELECT_CLOB_VALUE))
                 .execute())
-                .flatMap(result -> result
-                    .map((row, rowMetadata) -> extractColumn(row, Clob.class)))
-                .flatMap(clob -> Flux.from(clob.stream())
-                    .reduce(new StringBuilder(), StringBuilder::append)
-                    .map(StringBuilder::toString)
-                    .concatWith(discard(clob)))
-
-                .concatWith(close(connection)))
+                .flatMap(result -> Flux.usingWhen(result
+                    .map((row, rowMetadata) -> extractColumn(row, Clob.class)),
+                    clob -> Flux.from(clob.stream())
+                        .reduce(new StringBuilder(), StringBuilder::append)
+                        .map(StringBuilder::toString),
+                    Clob::discard)),
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext("test-value").as("value from select")
             .verifyComplete();
@@ -489,8 +485,8 @@ public interface TestKit<T> {
     default void columnMetadata() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_TWO_COLUMNS));
 
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Flux.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.from(connection
 
                 .createStatement(expand(TestStatement.SELECT_VALUE_TWO_COLUMNS))
                 .execute())
@@ -501,8 +497,8 @@ public interface TestKit<T> {
                             "VALUE"));
                     });
                 })
-                .flatMapIterable(Function.identity())
-                .concatWith(close(connection)))
+                .flatMapIterable(Function.identity()),
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext("value").as("Column label col1")
             .expectNext("value").as("Column label col1 (get by uppercase)")
@@ -515,14 +511,14 @@ public interface TestKit<T> {
     default void rowMetadata() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_TWO_COLUMNS));
 
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Flux.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.from(connection
 
                 .createStatement(expand(TestStatement.SELECT_VALUE_ALIASED_COLUMNS))
                 .execute())
                 .flatMap(result -> result.map((row, rowMetadata) -> new ArrayList<>(rowMetadata.getColumnNames())))
-                .flatMapIterable(Function.identity())
-                .concatWith(close(connection)))
+                .flatMapIterable(Function.identity()),
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext("b").as("First column label: b")
             .expectNext("c").as("First column label: c")
@@ -534,14 +530,13 @@ public interface TestKit<T> {
     default void compoundStatement() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Flux.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.from(connection
 
                 .createStatement(expand(TestStatement.SELECT_VALUE_BATCH))
                 .execute())
-                .flatMap(this::extractColumns)
-
-                .concatWith(close(connection)))
+                .flatMap(this::extractColumns),
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("value from first select")
             .expectNext(collectionOf(100)).as("value from second select")
@@ -551,12 +546,12 @@ public interface TestKit<T> {
     @Test
     default void createStatementFails() {
 
-        Mono.from(getConnectionFactory().create())
-            .flatMap(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
                 assertThrows(IllegalArgumentException.class, () -> connection.createStatement(null));
-
-                return close(connection);
-            })
+                return Mono.empty();
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -565,17 +560,17 @@ public interface TestKit<T> {
     default void duplicateColumnNames() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_TWO_COLUMNS));
 
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Flux.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.from(connection
 
                 .createStatement(expand(TestStatement.SELECT_VALUE_TWO_COLUMNS))
                 .execute())
 
                 .flatMap(result -> result
                     .map((row, rowMetadata) -> Arrays.asList(row.get("value"), row.get("VALUE"))))
-                .flatMapIterable(Function.identity())
+                .flatMapIterable(Function.identity()),
+            Connection::close)
 
-                .concatWith(close(connection)))
             .as(StepVerifier::create)
             .expectNext(100).as("value from col1")
             .expectNext(100).as("value from col1 (upper case)")
@@ -584,8 +579,8 @@ public interface TestKit<T> {
 
     @Test
     default void prepareStatement() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
                 Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
 
                 IntStream.range(0, 10)
@@ -593,9 +588,9 @@ public interface TestKit<T> {
 
                 return Flux.from(statement
                     .execute())
-                    .flatMap(this::extractRowsUpdated)
-                    .concatWith(close(connection));
-            })
+                    .flatMap(this::extractRowsUpdated);
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .expectNextCount(10).as("values from insertions")
             .verifyComplete();
@@ -603,30 +598,32 @@ public interface TestKit<T> {
 
     @Test
     default void prepareStatementWithIncompleteBatchFails() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
                 Statement statement = connection.createStatement(expand(TestStatement.INSERT_TWO_VALUES_PLACEHOLDER, getPlaceholder(0), getPlaceholder(1)));
 
                 bind(statement, getIdentifier(0), 0);
 
                 assertThrows(IllegalStateException.class, statement::add);
-                return close(connection);
-            })
+                return Mono.empty();
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
 
     @Test
     default void prepareStatementWithIncompleteBindingFails() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
                 Statement statement = connection.createStatement(expand(TestStatement.INSERT_TWO_VALUES_PLACEHOLDER, getPlaceholder(0), getPlaceholder(1)));
 
                 bind(statement, getIdentifier(0), 0);
 
                 assertThrows(IllegalStateException.class, statement::execute);
-                return close(connection);
-            })
+                return Mono.empty();
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -637,16 +634,17 @@ public interface TestKit<T> {
         getJdbcOperations().execute(expand(TestStatement.DROP_TABLE));
         getJdbcOperations().execute(getCreateTableWithAutogeneratedKey());
 
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
                 Statement statement = connection.createStatement(getInsertIntoWithAutogeneratedKey());
 
                 statement.returnGeneratedValues();
 
                 return Flux.from(statement
                     .execute())
-                    .concatWith(close(connection)).flatMap(it -> it.map((row, rowMetadata) -> row.get(0)));
-            })
+                    .flatMap(it -> it.map((row, rowMetadata) -> row.get(0)));
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .expectNextCount(1)
             .verifyComplete();
@@ -655,13 +653,14 @@ public interface TestKit<T> {
     @Test
     default void returnGeneratedValuesFails() {
 
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
                 Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE100));
 
                 assertThrows(IllegalArgumentException.class, () -> statement.returnGeneratedValues((String[]) null));
-                return close(connection);
-            })
+                return Mono.empty();
+            },
+            Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -670,8 +669,8 @@ public interface TestKit<T> {
     default void savePoint() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Mono.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Mono.from(connection
 
                 .beginTransaction())
                 .<Object>thenMany(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
@@ -702,9 +701,9 @@ public interface TestKit<T> {
                 .concatWith(connection.rollbackTransactionToSavepoint("test_savepoint"))
                 .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
                     .execute())
-                    .flatMap(this::extractColumns))
+                    .flatMap(this::extractColumns)),
 
-                .concatWith(close(connection)))
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("value from select")
             .expectNext(1).as("rows inserted")
@@ -717,11 +716,11 @@ public interface TestKit<T> {
 
     @Test
     default void savePointStartsTransaction() {
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Mono.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Mono.from(connection
                 .createSavepoint("test_savepoint"))
-                .then(Mono.fromSupplier(connection::isAutoCommit))
-                .concatWith(close(connection)))
+                .then(Mono.fromSupplier(() -> connection.isAutoCommit())),
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext(false).as("createSavepoint starts a transaction")
             .verifyComplete();
@@ -731,8 +730,8 @@ public interface TestKit<T> {
     default void transactionCommit() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Mono.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Mono.from(connection
 
                 .beginTransaction())
                 .<Object>thenMany(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
@@ -752,9 +751,9 @@ public interface TestKit<T> {
                 .concatWith(connection.commitTransaction())
                 .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
                     .execute())
-                    .flatMap(this::extractColumns))
+                    .flatMap(this::extractColumns)),
 
-                .concatWith(close(connection)))
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("value from select")
             .expectNext(1).as("rows inserted")
@@ -767,8 +766,8 @@ public interface TestKit<T> {
     default void transactionRollback() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
-        Mono.from(getConnectionFactory().create())
-            .flatMapMany(connection -> Mono.from(connection
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Mono.from(connection
 
                 .beginTransaction())
                 .<Object>thenMany(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
@@ -788,9 +787,9 @@ public interface TestKit<T> {
                 .concatWith(connection.rollbackTransaction())
                 .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
                     .execute())
-                    .flatMap(this::extractColumns))
+                    .flatMap(this::extractColumns)),
 
-                .concatWith(close(connection)))
+            Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("value from select")
             .expectNext(1).as("rows inserted")
@@ -801,13 +800,12 @@ public interface TestKit<T> {
 
     @Test
     default void validate() {
-
         Mono.from(getConnectionFactory().create())
             .flatMapMany(connection -> Flux.concat(connection.validate(ValidationDepth.LOCAL),
-                connection.validate(ValidationDepth.REMOTE),
-                connection.close(),
-                connection.validate(ValidationDepth.LOCAL),
-                connection.validate(ValidationDepth.REMOTE)))
+                    connection.validate(ValidationDepth.REMOTE),
+                    connection.close(),
+                    connection.validate(ValidationDepth.LOCAL),
+                    connection.validate(ValidationDepth.REMOTE)))
             .as(StepVerifier::create)
             .expectNext(true).as("successful local validation")
             .expectNext(true).as("successful remote validation")
@@ -836,24 +834,6 @@ public interface TestKit<T> {
             return statement.bindNull((Integer) identifier, type);
         }
         throw new IllegalArgumentException(String.format("Identifier %s must be a String or Integer. Was: %s", identifier, identifier.getClass().getName()));
-    }
-
-    static <T> Mono<T> close(Connection connection) {
-        return Mono.from(connection
-            .close())
-            .then(Mono.empty());
-    }
-
-    static <T> Mono<T> discard(Blob blob) {
-        return Mono.from(blob
-            .discard())
-            .then(Mono.empty());
-    }
-
-    static <T> Mono<T> discard(Clob clob) {
-        return Mono.from(clob
-            .discard())
-            .then(Mono.empty());
     }
 
     /**
