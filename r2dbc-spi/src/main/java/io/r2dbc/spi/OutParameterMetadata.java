@@ -22,6 +22,6 @@ package io.r2dbc.spi;
  *
  * @since 0.9
  */
-public interface OutParameterMetadata extends ThingMetadata {
+public interface OutParameterMetadata extends GettableMetadata {
 
 }

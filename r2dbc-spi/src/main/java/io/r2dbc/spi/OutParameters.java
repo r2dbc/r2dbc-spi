@@ -41,7 +41,6 @@ public interface OutParameters extends Gettable {
      * Returns the {@link OutParametersMetadata} for all out parameters.
      *
      * @return the {@link OutParametersMetadata} for all out parameters
-     * @since 0.9
      */
     OutParametersMetadata getMetadata();
 

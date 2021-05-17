@@ -22,9 +22,10 @@ package io.r2dbc.spi;
  * available as by-product of statement execution on a best-effort basis.
  *
  * @see ColumnMetadata
+ * @see OutParameterMetadata
  * @since 0.9
  */
-public interface ThingMetadata {
+public interface GettableMetadata {
 
     /**
      * Returns the primary Java {@link Class type}.  This type can be considered the native representation that is used to exchange values with the least loss in precision.

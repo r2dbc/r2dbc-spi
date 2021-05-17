@@ -49,7 +49,7 @@ public interface Result {
      * @throws IllegalArgumentException if {@code mappingFunction} is {@code null}
      * @throws IllegalStateException    if the result was consumed
      */
-    <T> Publisher<T> map(BiFunction<? super Gettable, ? super ThingMetadata, ? extends T> mappingFunction);
+    <T> Publisher<T> map(BiFunction<Row, RowMetadata, ? extends T> mappingFunction);
 
     /**
      * Returns a mapping of the rows/out parameters that are the results of a query against a database.  May be empty if the query did not return any results.  A {@link Gettable} can be only
@@ -64,7 +64,7 @@ public interface Result {
      * @see OutParameters
      * @since 0.9
      */
-    default <T> Publisher<T> map(Function<Gettable, ? extends T> mappingFunction) {
+    default <T> Publisher<T> map(Function<? super Gettable, ? extends T> mappingFunction) {
         Assert.requireNonNull(mappingFunction, "mappingFunction must not be null");
         return map((row, metadata) -> mappingFunction.apply(row));
     }
