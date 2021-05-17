@@ -1,7 +1,7 @@
 [[statements]]
 = Statements
 
-This section describes the `Statement` interface. It also describes related topics, including parameterized statement and auto-generated keys.
+This section describes the `Statement` interface.It also describes related topics, including parameterized statement and auto-generated keys.
 
 [[statements.interface]]
 == The Statement Interface
@@ -196,7 +196,7 @@ Statement statement = connection.createStatement("INSERT INTO books (author, pub
 Publisher<? extends Result> publisher = statement.execute();
 
 // later
-result.map((row, metadata) -> row.get("id"));
+result.map((gettable) -> gettable.get("id"));
 ----
 ====
 

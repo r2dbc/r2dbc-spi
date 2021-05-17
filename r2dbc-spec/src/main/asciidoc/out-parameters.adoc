@@ -1,0 +1,86 @@
+[[out-parameters]]
+== OUT Parameters
+
+A `OutParameters` object represents a set of `OUT` parameters as result of a stored procedure/server-side function invocation.
+
+[[out-parameters.values]]
+=== Retrieving Values
+
+The `Result` interface provides a `map(…)` method for retrieving values from `Gettable` objects.
+The `map` method accepts a `Function` (also referred to as mapping function) for `Gettable` which can be an implementation of `OutParameters` or `Row` objects or vendor-specific extensions.
+The mapping function is called upon emission with `Gettable` objects.
+A `Gettable` is only valid during the mapping function callback and is invalid outside of the mapping function callback.
+Thus, `Gettable` objects must be entirely consumed by the mapping function.
+
+The <<out-parameter-metadata>> section contains additional details on metadata.
+
+[[out-parameters.methods]]
+== Interface Methods
+
+The following methods are available on the `OutParameters` interface:
+
+* `Object get(int)` (inherited from `Gettable`)
+* `Object get(String)` (inherited from `Gettable`)
+* `<T> T get(int, Class<T>)` (inherited from `Gettable`)
+* `<T> T get(String, Class<T>)` (inherited from `Gettable`)
+* `OutParametersMetadata getMetadata()`
+
+`get(int[, Class])` methods accept parameter indexes starting at `0`, `get(String[, Class])` methods accept parameter names as they are represented in the result.
+Parameter names used as input to the `get` methods are case-insensitive.
+The following example shows how to create and consume `OutParameters` by using its index:
+
+.Creating and Consuming `OutParameters` by obtaining a parameter by index
+====
+[source,java]
+----
+// result is a Result object
+Publisher<Object> values = result.map((gettable) -> gettable.get(0));
+----
+====
+
+The following example shows how to create and consume `OutParameters` by using a parameter name:
+
+.Creating and Consuming a `OutParameters` by obtaining a parameter by name
+====
+[source,java]
+----
+// result is a Result object
+Publisher<Object> titles = result.map((gettable) -> gettable.get("title"));
+----
+====
+
+Calling `get` without specifying a target type returns a suitable value representation according to <<datatypes.mapping>>.
+When specifying a target type, the R2DBC driver tries to convert the value to the target type.
+The following example shows how to create and consume `OutParameters` with type conversion:
+
+.Creating and Consuming `OutParameters` with type conversion
+====
+[source,java]
+----
+// result is a Result object
+Publisher<String> values = result.map((gettable) -> gettable.get(0, String.class));
+----
+====
+
+You can consume multiple parameters from `OutParameters`, as the following example shows:
+
+.Consuming multiple parameters from `OutParameters`
+====
+[source,java]
+----
+// result is a Result object
+Publisher<Book> values = result.map((gettable) -> {
+    String title = gettable.get("title", String.class);
+    String author = gettable.get("author", String.class);
+
+    return new Book(title, author);
+});
+----
+====
+
+When the parameter value in the database is SQL `NULL`, it can be returned to the Java application as `null`.
+
+NOTE: `null` values cannot be returned as Reactive Streams values and must be wrapped for subsequent usage.
+
+NOTE: Invalidating `OutParameters` does *not* release `Blob` and `Clob` objects that were obtained from `OutParameters`.
+These objects remain valid for at least the duration of the transaction in which they were created, unless their `discard()` method is called.
