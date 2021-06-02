@@ -34,7 +34,7 @@ Publisher<Integer> rowsUpdated = result.getRowsUpdated();
 ----
 ====
 
-`Result` represens a stream of result segements.
+`Result` represents a stream of result segements.
 Due to its nature, a result allows consumption of either tabular results, out parameters, or an update count through `map(…)` respective `getRowsUpdated(…)` but not both.
 Depending on how the underlying database materializes results, an R2DBC driver can lift this limitation.
 
