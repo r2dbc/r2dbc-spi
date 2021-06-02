@@ -250,7 +250,7 @@ The actual default data type for LOB data types can be vendor-specific to avoid 
 The `Blob` and `Clob` interfaces declare methods to consume the content of each type.
 Content streams follow Reactive Streams specifications and reflect the stream nature of large objects.
 As a result, `Blob` and `Clob` objects can be consumed only once.
-Large object data consumption can be canceled by calling the `discard()` method if the content stream was not consumed at all.Alternatively, if the content stream was consumed, a `Subscription` cancellation releases resources that are associated with the large object.
+Large object data consumption can be canceled by calling the `discard()` method if the content stream was not consumed at all. Alternatively, if the content stream was consumed, a `Subscription` cancellation releases resources that are associated with the large object.
 
 The following example shows how to consume `Clob` contents:
 
