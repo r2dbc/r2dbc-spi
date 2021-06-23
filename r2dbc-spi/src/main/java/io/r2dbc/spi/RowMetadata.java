@@ -17,6 +17,7 @@
 package io.r2dbc.spi;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -51,7 +52,7 @@ public interface RowMetadata {
      *
      * @return the {@link ColumnMetadata} for all columns in this row
      */
-    Iterable<? extends ColumnMetadata> getColumnMetadatas();
+    List<? extends ColumnMetadata> getColumnMetadatas();
 
     /**
      * Returns an unmodifiable collection of column names.
@@ -61,11 +62,25 @@ public interface RowMetadata {
      * The iteration order of the column names depends on the actual query result.
      * Column names may appear multiple times if the result specifies multiple columns with the same name.
      * Lookups through {@link Collection#contains(Object)} are case-insensitive.
-     * Drivers may enhance comparison sorting rules with escape characters to enforce a particular mode of comparison
+     * Implementations may enhance comparison sorting rules with escape characters to enforce a particular mode of comparison
      * when querying for presence/absence of a column.
      *
      * @return the column names.
+     * @deprecated since 0.9 for removal. Use {@link #contains(String)} or {@link #getColumnMetadatas()} instead.
      */
+    @Deprecated
     Collection<String> getColumnNames();
+
+    /**
+     * Returns whether this object contains metadata for {@code columnName}.
+     * Lookups are case-insensitive. Implementations may allow escape characters to enforce a particular mode of comparison
+     * when querying for presence/absence of a column.
+     *
+     * @return {@code true} if this object contains metadata for {@code columnName}; {@code false} otherwise.
+     * @since 0.9
+     */
+    default boolean contains(String columnName) {
+        return getColumnNames().contains(columnName);
+    }
 
 }

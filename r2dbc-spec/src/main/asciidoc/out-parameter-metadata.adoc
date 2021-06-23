@@ -52,7 +52,7 @@ result.map(new Function<Readable, Object>() {
 * `getParameterMetadata(int)` returns the `OutParameterMetadata` by using a zero-based index.
 See <<compliance.guidelines>>.
 * `getParameterMetadata(String)` returns the `OutParameterMetadata` by using the parameter name.
-* `getParameterMetadatas()` returns an unmodifiable collection of `OutParameterMetadata` objects.
+* `getParameterMetadatas()` returns an unmodifiable `List` of `OutParameterMetadata` objects.
 
 == Retrieving General Information for a OUT Parameter
 

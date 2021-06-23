@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,13 @@ public final class MockRowMetadata implements RowMetadata {
 
     private final List<ColumnMetadata> columnMetadatas;
 
+    private final Set<String> contains = new TreeSet<>(COLLATOR);
+
     private MockRowMetadata(List<ColumnMetadata> columnMetadatas) {
         this.columnMetadatas = Assert.requireNonNull(columnMetadatas, "columnMetadatas must not be null");
+        for (ColumnMetadata columnMetadata : this.columnMetadatas) {
+            this.contains.add(columnMetadata.getName());
+        }
     }
 
     public static Builder builder() {
@@ -78,27 +83,32 @@ public final class MockRowMetadata implements RowMetadata {
     }
 
     @Override
+    @Deprecated
     public Collection<String> getColumnNames() {
-        Set<String> contains = new TreeSet<>(COLLATOR);
+
         List<String> columnNames = new ArrayList<String>() {
 
             @Override
             public boolean contains(Object o) {
-                return contains.contains(o);
+                return MockRowMetadata.this.contains.contains(o);
             }
 
             @Override
             public boolean containsAll(Collection<?> c) {
-                return contains.containsAll(c);
+                return MockRowMetadata.this.contains.containsAll(c);
             }
         };
 
         for (ColumnMetadata columnMetadata : this.columnMetadatas) {
             columnNames.add(columnMetadata.getName());
-            contains.add(columnMetadata.getName());
         }
 
         return Collections.unmodifiableCollection(columnNames);
+    }
+
+    @Override
+    public boolean contains(String columnName) {
+        return this.contains.contains(columnName);
     }
 
     @Override

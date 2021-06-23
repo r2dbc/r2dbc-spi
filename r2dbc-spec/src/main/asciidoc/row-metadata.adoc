@@ -43,8 +43,10 @@ result.map(new BiFunction<Row, RowMetadata, Object>() {
 
 * `getColumnMetadata(int)` returns the `ColumnMetadata` by using a zero-based index.
 See <<compliance.guidelines>>.
-* `getColumnMetadata(String)` returns the `ColumnMetadata` by using the column name.
-* `getColumnMetadatas()` returns an unmodifiable collection of `ColumnMetadata` objects.
+* `getColumnMetadata(String)` returns the `ColumnMetadata` by using the column name (or alias as it is represented in the result).
+* `getColumnMetadatas()` returns an unmodifiable `List` of `ColumnMetadata` objects.
+* `contains(String)` returns whether `RowMetadata` contains metadata for the given column name.
+The column name (or alias as it is represented in the result) uses case-insensitive comparison rules.
 
 == Retrieving General Information for a Column
 

@@ -20,6 +20,7 @@ import io.r2dbc.spi.Blob;
 import io.r2dbc.spi.Clob;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
+import io.r2dbc.spi.ReadableMetadata;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.Statement;
@@ -40,7 +41,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -492,18 +492,14 @@ public interface TestKit<T> {
                 .execute())
                 .flatMap(result -> {
                     return result.map((row, rowMetadata) -> {
-                        Collection<String> columnNames = rowMetadata.getColumnNames();
-                        return Arrays.asList(rowMetadata.getColumnMetadata("value").getName(), rowMetadata.getColumnMetadata("VALUE").getName(), columnNames.contains("value"), columnNames.contains(
-                            "VALUE"));
+                        return Arrays.asList(rowMetadata.contains("value"), rowMetadata.contains("VALUE"));
                     });
                 })
                 .flatMapIterable(Function.identity()),
             Connection::close)
             .as(StepVerifier::create)
-            .expectNext("value").as("Column label col1")
-            .expectNext("value").as("Column label col1 (get by uppercase)")
-            .expectNext(true).as("getColumnNames.contains(value)")
-            .expectNext(true).as("getColumnNames.contains(VALUE)")
+            .expectNext(true).as("rowMetadata.contains(value)")
+            .expectNext(true).as("rowMetadata.contains(VALUE)")
             .verifyComplete();
     }
 
@@ -516,7 +512,7 @@ public interface TestKit<T> {
 
                 .createStatement(expand(TestStatement.SELECT_VALUE_ALIASED_COLUMNS))
                 .execute())
-                .flatMap(result -> result.map((row, rowMetadata) -> new ArrayList<>(rowMetadata.getColumnNames())))
+                .flatMap(result -> result.map((row, rowMetadata) -> rowMetadata.getColumnMetadatas().stream().map(ReadableMetadata::getName).collect(Collectors.toList())))
                 .flatMapIterable(Function.identity()),
             Connection::close)
             .as(StepVerifier::create)
