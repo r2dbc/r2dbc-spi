@@ -20,6 +20,7 @@ import io.r2dbc.spi.Blob;
 import io.r2dbc.spi.Clob;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
+import io.r2dbc.spi.R2dbcNonTransientException;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.Statement;
@@ -331,8 +332,7 @@ public interface TestKit<T> {
                 Statement statement = connection
                     .createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
                 bindNull(statement, getIdentifier(0), Integer.class);
-                return Flux.from(statement.add()
-                    .execute())
+                return Flux.from(statement.execute())
                     .flatMap(this::extractRowsUpdated);
             },
             Connection::close)
@@ -564,7 +564,13 @@ public interface TestKit<T> {
                 Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
 
                 IntStream.range(0, 10)
-                    .forEach(i -> bind(statement, getIdentifier(0), i).add());
+                    .forEach(i -> {
+                        bind(statement, getIdentifier(0), i);
+
+                        if (i != 9) {
+                            statement.add();
+                        }
+                    });
 
                 return Flux.from(statement
                     .execute())
@@ -574,6 +580,24 @@ public interface TestKit<T> {
             .as(StepVerifier::create)
             .expectNextCount(10).as("values from insertions")
             .verifyComplete();
+    }
+
+    // TODO: Enable as @Test for 0.9
+    default void prepareStatementWithTrailingAddShouldFail() {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
+                Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+
+                bind(statement, getIdentifier(0), 0).add();
+
+                return Flux.from(statement
+                    .execute())
+                    .flatMap(this::extractRowsUpdated);
+            },
+            Connection::close)
+            .as(StepVerifier::create)
+            .expectNextCount(1).as("values from insertions")
+            .verifyError(R2dbcNonTransientException.class);
     }
 
     @Test
