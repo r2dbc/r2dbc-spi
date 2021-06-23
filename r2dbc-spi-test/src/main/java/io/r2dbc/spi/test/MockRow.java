@@ -17,6 +17,7 @@
 package io.r2dbc.spi.test;
 
 import io.r2dbc.spi.Row;
+import io.r2dbc.spi.RowMetadata;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +27,11 @@ public final class MockRow implements Row {
 
     private final Map<Identified, Object> identified;
 
-    private MockRow(Map<Identified, Object> identified) {
+    private final RowMetadata rowMetadata;
+
+    private MockRow(Map<Identified, Object> identified, RowMetadata rowMetadata) {
         this.identified = Assert.requireNonNull(identified, "identified must not be null");
+        this.rowMetadata = Assert.requireNonNull(rowMetadata, "rowMetadata must not be null");
     }
 
     public static Builder builder() {
@@ -70,6 +74,11 @@ public final class MockRow implements Row {
     }
 
     @Override
+    public RowMetadata getMetadata() {
+        return this.rowMetadata;
+    }
+
+    @Override
     public String toString() {
         return "MockRow{" +
             "identified=" + this.identified +
@@ -80,11 +89,13 @@ public final class MockRow implements Row {
 
         private final Map<Identified, Object> identified = new HashMap<>();
 
+        private RowMetadata metadata = MockRowMetadata.empty();
+
         private Builder() {
         }
 
         public MockRow build() {
-            return new MockRow(this.identified);
+            return new MockRow(this.identified, this.metadata);
         }
 
         public Builder identified(Object identifier, Class<?> type, @Nullable Object value) {
@@ -95,12 +106,19 @@ public final class MockRow implements Row {
             return this;
         }
 
+        public Builder metadata(RowMetadata rowMetadata) {
+            this.metadata = Assert.requireNonNull(rowMetadata, "rowMetadata must not be null");
+            return this;
+        }
+
         @Override
         public String toString() {
             return "Builder{" +
                 "identified=" + this.identified +
+                "rowMetadata=" + this.metadata +
                 '}';
         }
+
     }
 
     private static final class Identified {

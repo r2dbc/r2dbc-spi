@@ -22,7 +22,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * Represents the results of a query against a database.  Results can be consumed only once by either consuming {@link #getRowsUpdated()}, or {@link #map(BiFunction)}.
+ * Represents the results of a query against a database.  Results can be consumed only once by either consuming {@link #getRowsUpdated()}, {@link #map(BiFunction)}, or {@link #map(Function)}.
  *
  * <p>A {@link Result} object maintains a consumption state that may be backed by a cursor pointing
  * to its current row of data or out parameters.  A {@link Result} allows read-only and forward-only consumption of statement results.
@@ -50,5 +50,23 @@ public interface Result {
      * @throws IllegalStateException    if the result was consumed
      */
     <T> Publisher<T> map(BiFunction<Row, RowMetadata, ? extends T> mappingFunction);
+
+    /**
+     * Returns a mapping of the rows/out parameters that are the results of a query against a database.  May be empty if the query did not return any results.  A {@link Readable} can be only
+     * considered valid within a {@link Function mapping function} callback.
+     *
+     * @param mappingFunction the {@link Function} that maps a {@link Readable} to a value
+     * @param <T>             the type of the mapped value
+     * @return a mapping of the rows that are the results of a query against a database
+     * @throws IllegalArgumentException if {@code mappingFunction} is {@code null}
+     * @throws IllegalStateException    if the result was consumed
+     * @see Row
+     * @see OutParameters
+     * @since 0.9
+     */
+    default <T> Publisher<T> map(Function<? super Readable, ? extends T> mappingFunction) {
+        Assert.requireNonNull(mappingFunction, "mappingFunction must not be null");
+        return map((row, metadata) -> mappingFunction.apply(row));
+    }
 
 }

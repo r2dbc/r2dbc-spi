@@ -39,4 +39,12 @@ import java.util.function.BiFunction;
  */
 public interface Row extends Readable {
 
+    /**
+     * Returns the {@link RowMetadata} for all columns in this row.
+     *
+     * @return the {@link RowMetadata} for all columns in this row
+     * @since 0.9
+     */
+    RowMetadata getMetadata();
+
 }

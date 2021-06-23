@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,19 @@
 
 package io.r2dbc.spi.test;
 
+import io.r2dbc.spi.OutParameters;
+import io.r2dbc.spi.Readable;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public final class MockResult implements Result {
@@ -35,10 +39,13 @@ public final class MockResult implements Result {
 
     private final Flux<Integer> rowsUpdated;
 
-    private MockResult(Mono<RowMetadata> rowMetadata, Flux<Row> rows, Flux<Integer> rowsUpdated) {
+    private final Mono<OutParameters> outParameters;
+
+    private MockResult(Mono<RowMetadata> rowMetadata, Flux<Row> rows, Flux<Integer> rowsUpdated, Mono<OutParameters> outParameters) {
         this.rowMetadata = Assert.requireNonNull(rowMetadata, "rowMetadata must not be null");
         this.rows = Assert.requireNonNull(rows, "rows must not be null");
         this.rowsUpdated = Assert.requireNonNull(rowsUpdated, "rowsUpdated must not be null");
+        this.outParameters = Assert.requireNonNull(outParameters, "outParameters must not be null");
     }
 
     public static Builder builder() {
@@ -69,11 +76,24 @@ public final class MockResult implements Result {
     }
 
     @Override
+    public <T> Publisher<T> map(Function<? super Readable, ? extends T> mappingFunction) {
+        Assert.requireNonNull(mappingFunction, "f must not be null");
+
+        return this.rows
+            .zipWith(this.rowMetadata.repeat())
+            .map((tuple) -> {
+                Row row = tuple.getT1();
+                return (T) mappingFunction.apply(row);
+            }).mergeWith(this.outParameters.map(mappingFunction));
+    }
+
+    @Override
     public String toString() {
         return "MockResult{" +
             "rowMetadata=" + this.rowMetadata +
             ", rows=" + this.rows +
             ", rowsUpdated=" + this.rowsUpdated +
+            ", outParameters=" + this.outParameters +
             '}';
     }
 
@@ -85,11 +105,13 @@ public final class MockResult implements Result {
 
         private RowMetadata rowMetadata;
 
+        private Mono<OutParameters> outParameters = Mono.empty();
+
         private Builder() {
         }
 
         public MockResult build() {
-            return new MockResult(Mono.justOrEmpty(this.rowMetadata), Flux.fromIterable(this.rows), Flux.fromIterable(this.rowsUpdated));
+            return new MockResult(Mono.justOrEmpty(this.rowMetadata), Flux.fromIterable(this.rows), Flux.fromIterable(this.rowsUpdated), this.outParameters);
         }
 
         public Builder row(Row... rows) {
@@ -114,12 +136,21 @@ public final class MockResult implements Result {
             return this;
         }
 
+        public Builder outParameters(OutParameters outParameters) {
+            Assert.requireNonNull(outParameters, "outParameters must not be null");
+
+            this.outParameters = Mono.just(outParameters);
+
+            return this;
+        }
+
         @Override
         public String toString() {
             return "Builder{" +
                 "rowMetadata=" + this.rowMetadata +
                 ", rows=" + this.rows +
                 ", rowsUpdated=" + this.rowsUpdated +
+                ", outParameters=" + this.outParameters +
                 '}';
         }
 
