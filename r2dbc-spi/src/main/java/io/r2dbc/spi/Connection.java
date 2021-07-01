@@ -17,6 +17,9 @@
 package io.r2dbc.spi;
 
 import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+
+import java.time.Duration;
 
 /**
  * A single connection to a database.  SQL statements are executed and results are returned within the context of a connection.  A {@link Connection} object can consist of any number of transport
@@ -165,6 +168,37 @@ public interface Connection extends Closeable {
      * @return a {@link Publisher} that indicates that auto-commit mode has been configured
      */
     Publisher<Void> setAutoCommit(boolean autoCommit);
+
+    /**
+     * Configures the lock acquisition timeout for statements to be executed using the current connection.
+     * The default lock acquisition timeout is vendor-specific and can be specified for new connections through {@code ConnectionFactoryOptions}.
+     * If the timeout is exceeded, a {@link R2dbcTimeoutException} is raised.
+     * <p>
+     * In the case of {@link Batch}/{@link Statement} batching, it is vendor-specific as to whether the timeout is applied to individual SQL commands or the entire batch.
+     *
+     * @param timeout the lock timeout for this connection. Support for {@link Duration#ZERO no timeout} is vendor-specific.
+     * @return a {@link Publisher} that indicates that a lock timeout has been configured
+     * @throws IllegalArgumentException if {@code timeout} is {@code null}
+     * @since 0.9
+     */
+    Publisher<Void> setLockWaitTimeout(Duration timeout);
+
+    /**
+     * Configures the statement timeout for statements to be executed using the current connection.
+     * By default, there is no limit on the amount of time allowed for a running statement to complete unless specified through {@code ConnectionFactoryOptions}.
+     * If the limit is exceeded, a {@link R2dbcTimeoutException} is raised.
+     * <p>
+     * The minimum amount of time can be used to either let the data source cancel the statement or attempt a client-side cancellation.
+     * The timeout applies to statements through a combination of {@link Statement#execute()} and {@link Result} consumption.
+     * In the case of {@link Batch}/{@link Statement} batching, it is vendor-specific whether the timeout is applied to individual SQL commands or the entire batch.
+     * <p>Note that the timeout applies until receiving the first response from the data source and does not span until {@link Subscriber#onComplete() publisher completion}.
+     *
+     * @param timeout the statement timeout for this connection. {@link Duration#ZERO} indicates no timeout.
+     * @return a {@link Publisher} that indicates that a statement timeout has been configured
+     * @throws IllegalArgumentException if {@code timeout} is {@code null}
+     * @since 0.9
+     */
+    Publisher<Void> setStatementTimeout(Duration timeout);
 
     /**
      * Configures the isolation level for the current transaction.

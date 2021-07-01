@@ -35,6 +35,11 @@ Refinement of `RowMetadata`::
 
   * Deprecate `RowMetadata.getColumnNames()` and introduce `RowMetadata.contains(String)` to simplify constraints and usage around column presence checks.
 
+Lock Wait and Statement Timeouts::
+
+  * Introduction of <<connections.lock-acquisition-timeout>> and <<connections.statment-timeout>>.
+  * Introduction of the `Connection.setLockWaitTimeout(Duration)` and `Connection.setStatementTimeout(Duration)` methods.
+
 [[changes.0.8.x]]
 == 0.8
 

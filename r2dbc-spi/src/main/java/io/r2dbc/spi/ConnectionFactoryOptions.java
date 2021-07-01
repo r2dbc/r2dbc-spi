@@ -73,6 +73,13 @@ public final class ConnectionFactoryOptions {
     public static final Option<String> HOST = Option.valueOf("host");
 
     /**
+     * Lock timeout.
+     *
+     * @since 0.9
+     */
+    public static final Option<Duration> LOCK_WAIT_TIMEOUT = Option.valueOf("lockWaitTimeout");
+
+    /**
      * Password for authentication.
      */
     public static final Option<CharSequence> PASSWORD = Option.sensitiveValueOf("password");
@@ -91,6 +98,13 @@ public final class ConnectionFactoryOptions {
      * Whether to require SSL.
      */
     public static final Option<Boolean> SSL = Option.valueOf("ssl");
+
+    /**
+     * Statement timeout.
+     *
+     * @since 0.9
+     */
+    public static final Option<Duration> STATEMENT_TIMEOUT = Option.valueOf("statementTimeout");
 
     /**
      * User for authentication.

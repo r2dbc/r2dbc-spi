@@ -181,6 +181,16 @@ Options are identified by a literal.
 |`connectTimeout`
 |`java.time.Duration`
 |Connection timeout to obtain a connection.
+
+|`LOCK_WAIT_TIMEOUT`
+|`lockWaitTimeout`
+|`java.time.Duration`
+|Lock acquisition timeout.
+
+|`STATEMENT_TIMEOUT`
+|`statementTimeout`
+|`java.time.Duration`
+|Statement timeout.
 |===
 
 The following rules apply:
@@ -278,3 +288,26 @@ Publisher<Void> close = connection.close();
 ====
 
 See the R2DBC SPI Specification for more details.
+
+[[connections.lock-acquisition-timeout]]
+== Limiting the time for lock acquisition
+
+The lock acquisition timeout can be configured on the `Connection` level allowing to associate the connection with a lock acquisition limit.
+The default lock acquisition timeout is vendor-specific and can be specified for new connections through <<connections.factory.options, connection factory options>>.
+
+If the timeout is exceeded, a `R2dbcTimeoutException` is raised to the client.
+Support for transaction-bound timeouts through <<transactions.transaction-definition.usage,`TransactionDefinition`>> is subject to vendor-specific availability.
+
+[[connections.statment-timeout]]
+== Limiting execution time for statements
+
+The statement timeout can be configured on the `Connection` level allowing to associate the connection with a timeout limit.
+By default there is no limit on the amount of time allowed for a running statement to complete unless specified through <<connections.factory.options, connection factory options>>.
+The minimum amount of time can be used to either let the data source cancel the statement or attempt a client-side cancellation.
+
+Once the data source has had an opportunity to process the request to terminate the running command, a `R2dbcTimeoutException` is raised to the client and no additional processing can occur against the previously running command without re-executing a statement.
+
+The timeout applies to statements through a combination of `Statement#execute`, `Batch#execute` and `Result` consumption.
+In the case of `Batch`/`Statement` batching, it is vendor-specific whether the timeout is applied to individual SQL commands or the entire batch.
+
+Support for transaction-bound timeouts through <<transactions.transaction-definition.usage,`TransactionDefinition`>> is subject to vendor-specific availability.

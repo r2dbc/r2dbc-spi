@@ -24,6 +24,8 @@ import io.r2dbc.spi.ValidationDepth;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 public final class MockConnection implements Connection {
 
     private final MockBatch batch;
@@ -49,6 +51,10 @@ public final class MockConnection implements Connection {
     private String rollbackTransactionToSavepointName;
 
     private TransactionDefinition beginTransactionDefinition;
+
+    private Duration lockWaitTimeout;
+
+    private Duration statementTimeout = Duration.ZERO;
 
     private IsolationLevel setTransactionIsolationLevelIsolationLevel;
 
@@ -213,6 +219,27 @@ public final class MockConnection implements Connection {
         return Mono.empty();
     }
 
+    @Nullable
+    public Duration getLockWaitTimeout() {
+        return this.lockWaitTimeout;
+    }
+
+    @Override
+    public Publisher<Void> setLockWaitTimeout(Duration timeout) {
+        this.lockWaitTimeout = timeout;
+        return Mono.empty();
+    }
+
+    public Duration getStatementTimeout() {
+        return this.statementTimeout;
+    }
+
+    @Override
+    public Publisher<Void> setStatementTimeout(Duration timeout) {
+        this.statementTimeout = timeout;
+        return Mono.empty();
+    }
+
     @Override
     public Mono<Void> setTransactionIsolationLevel(IsolationLevel isolationLevel) {
         this.setTransactionIsolationLevelIsolationLevel = Assert.requireNonNull(isolationLevel, "isolation level must not be null");
@@ -239,6 +266,8 @@ public final class MockConnection implements Connection {
             ", releaseSavepointName='" + this.releaseSavepointName + '\'' +
             ", rollbackTransactionCalled=" + this.rollbackTransactionCalled +
             ", rollbackTransactionToSavepointName='" + this.rollbackTransactionToSavepointName + '\'' +
+            ", setLockWaitTimeout=" + this.lockWaitTimeout +
+            ", setStatementTimeout=" + this.statementTimeout +
             ", setTransactionIsolationLevelIsolationLevel=" + this.setTransactionIsolationLevelIsolationLevel +
             ", valid=" + this.valid +
             ", validateCalled=" + this.validateCalled +
