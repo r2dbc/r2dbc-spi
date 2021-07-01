@@ -8,8 +8,32 @@ The following section reflects the history of changes.
 
 Extended transaction definitions::
 
-  Introduction of the <<transactions.transaction-definition,`TransactionDefinition`>> interface.
-  Introduction of the `Connection.beginTransaction(TransactionDefinition)` method.
+  * Introduction of the <<transactions.transaction-definition,`TransactionDefinition`>> interface.
+  * Introduction of the `Connection.beginTransaction(TransactionDefinition)` method.
+
+Improved Bind Parameter declararation::
+
+  * Support to set <<statements.in-out, IN, IN/OUT, and OUT parameters>>.
+  * Introduction of the `Parameter` interface type hierarchy and the `Parameters` class providing factory methods.
+
+Consumption of OUT Parameters::
+
+  * Introduction of <<out-parameters>>.
+  * Introduction of the `OutParameters`, `OutParametersMetadata`, and `OutParameterMetadata` interfaces.
+  * Introduction of the `Readable` and `ReadableMetadata` interfaces and retrofitting of `Row` and `ColumnMetadata` interfaces.
+  * Introduction of the `Result.map(Function<Readable, T>)` method.
+
+Consumption of Result Segments::
+
+  * Introduction of the `Result.Segment` interface type hierarchy and `Result.filter(Predicate<Segment>)` and `Result.flatMap(Function<Segment, Publisher<T>>)` methods.
+
+Refinement of `Option`::
+
+  * Removal of generic type of `Option.get(ConnectionFactoryOption)`.
+
+Refinement of `RowMetadata`::
+
+  * Deprecate `RowMetadata.getColumnNames()` and introduce `RowMetadata.contains(String)` to simplify constraints and usage around column presence checks.
 
 [[changes.0.8.x]]
 == 0.8
