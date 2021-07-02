@@ -7,3 +7,5 @@ Extensions provide features that are not mandatory for R2DBC implementations.
 include::wrapped.adoc[leveloffset=+1]
 
 include::closeable.adoc[leveloffset=+1]
+
+include::lifecycle.adoc[leveloffset=+1]
