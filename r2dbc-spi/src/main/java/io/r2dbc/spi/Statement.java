@@ -29,7 +29,15 @@ import org.reactivestreams.Publisher;
 public interface Statement {
 
     /**
-     * Save the current binding and create a new one.
+     * Save the current binding and create a new one to indicate the statement should be executed again with new bindings provided through subsequent calls to {@code bind} and {@code bindNull}.
+     * For example:
+     *
+     * <pre class="code">
+     * Statement statement = connection.createStatement("INSERT INTO books (author, publisher) VALUES ($1, $2)");
+     * statement.bind(0, "John Doe").bind(1, "Happy Books LLC").add();
+     * statement.bind(0, "Jane Doe").bind(1, "Scary Books Inc");
+     * statement.execute();
+     * </pre>
      *
      * @return this {@link Statement}
      * @throws IllegalStateException if the statement is parametrized and not all parameter values are provided
@@ -81,6 +89,7 @@ public interface Statement {
     /**
      * Executes one or more SQL statements and returns the {@link Result}s.
      * {@link Result} objects must be fully consumed to ensure full execution of the {@link Statement}.
+     * This statement is executed additionally for each binding saved through {@link #add()}.
      *
      * @return the {@link Result}s, returned by each statement
      * @throws IllegalStateException if the statement is parametrized and not all parameter values are provided
