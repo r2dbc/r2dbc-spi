@@ -17,7 +17,7 @@
 package io.r2dbc.spi;
 
 /**
- * Base exception thrown when a retry of the same operation would fail unless the cause of the is corrected.
+ * Base exception thrown when a retry of the same operation would fail unless the cause of the exception is corrected.
  *
  * @see R2dbcBadGrammarException
  * @see R2dbcDataIntegrityViolationException
