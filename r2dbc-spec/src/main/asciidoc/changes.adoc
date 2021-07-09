@@ -33,7 +33,7 @@ Lifecycle extension::
 
 Refinement of `Option`::
 
-* Removal of generic type of `Option.get(ConnectionFactoryOption)`.
+* Removal of generic type of `ConnectionFactoryOptions.getValue(Option)` and ``ConnectionFactoryOptions.getRequiredValue(Option)`.
 
 Refinement of `RowMetadata`::
 
