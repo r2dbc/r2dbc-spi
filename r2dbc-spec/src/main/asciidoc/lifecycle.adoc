@@ -1,0 +1,44 @@
+[[lifecycle]]
+= Lifecycle Interface
+
+The `Lifecycle` interface provides methods to notify a connection resource about its lifecycle state.
+Typically used by resource management components such as connection pools to indicate allocation and release phases so that connections may allocate or release resources as needed.
+
+[[lifecycle.usage]]
+== Usage
+
+The `Lifecycle` interface is typically implemented by `Connection` objects.
+Those are notified by their resource manager such as a pool right before returning a cached connection for usage and after usage, right before returning the connection to the pool or closing the connection.
+Connections implementing `Lifecycle` may allocate resources upon `postAllocate` and release these before going into idle state on `preRelease`.
+Lifecycle methods can be used to clean up unfinished transactions or reset the connection state.
+Over the lifespan of a cached resource, lifecycle methods are called multiple times in the sequence of:
+
+1. `ConnectionFactory.create()`
+2. `postAllocate`
+3. Application-specific work
+4. `preRelease`
+5. Repeat from 2. or `Connection.close()`
+
+Error signals emitted by lifecycle method publishers should be propagated appropriately to the caller.
+
+[[lifecycle.methods]]
+== Interface Methods
+
+The following methods are available on the `Lifecycle` interface:
+
+* `postAllocate`
+* `preRelease`
+
+[[lifecycle.postAllocate]]
+== The `postAllocate` Method
+
+The `postAllocate` method is used to return a `Publisher` to signal allocation to a resource.
+Any application-specific work happens after completion of the `Publisher` returned by this method.
+Successive calls to `postAllocate` are expected to no-op.
+
+[[lifecycle.preRelease]]
+== The `preRelease` Method
+
+The `preRelease` method is used to return a `Publisher` to signal release of a resource to idle state.
+Any application-specific work has completed before subscribing to the `Publisher` returned by this method.
+Successive calls to `preRelease` are expected to no-op.
