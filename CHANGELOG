@@ -1,6 +1,23 @@
 R2DBC SPI Changelog
 =============================
 
+0.9.0.M2
+------------------
+* Fix R2dbcNonTransientException Javadoc typo #236
+* Add  Lifecycle extension #235
+* Reflect that the spec is hosted by the Reactive Foundation #226
+* Correct Java Type for CLOB and NCLOB #222
+* TestKit.Statement.SELECT_VALUE Returns Rows in Inconsistent Order #220
+* Improve inconsistent collection return types in RowMetadata #219
+* Improve API for IN/OUT parameters #216
+* R2dbcType.CLOB/NCLOB have a default mapping of ByteBuffer.class #214
+* Refactor TestKit from using own resource management to reuse `Flux/Mono.usingWhen(…)` #213
+* R2dbcType.TIMESTAMP_WITH_TIME_ZONE lists wrong javaType #211
+* Example code on spec website doesn't compile #208
+* Remove option's generic type as the type safety that it suggests is misleading #205
+* Set statement/lock timeouts #173
+* Allow consuming arbitrary result segments (rows, out parameters, update count, messages) #27
+
 0.9.0.M1
 ------------------
 * Allow configuring auto-commit mode through properties #194
