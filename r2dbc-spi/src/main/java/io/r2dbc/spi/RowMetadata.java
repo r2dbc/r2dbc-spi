@@ -33,7 +33,7 @@ public interface RowMetadata {
      *
      * @param index the column index starting at 0
      * @return the {@link ColumnMetadata} for one column in this row
-     * @throws ArrayIndexOutOfBoundsException if the {@code index} is less than zero or greater than the number of available columns.
+     * @throws IndexOutOfBoundsException if {@code index} is out of range (negative or equals/exceeds {@code getColumnMetadatas().size()})
      */
     ColumnMetadata getColumnMetadata(int index);
 

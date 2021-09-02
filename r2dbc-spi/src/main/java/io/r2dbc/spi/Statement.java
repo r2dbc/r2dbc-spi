@@ -18,6 +18,8 @@ package io.r2dbc.spi;
 
 import org.reactivestreams.Publisher;
 
+import java.util.NoSuchElementException;
+
 /**
  * A statement that can be executed multiple times in a prepared and optimized way.  Bound parameters can be either scalar values (using type inference for the database parameter type) or
  * {@link Parameter} objects.
@@ -64,6 +66,7 @@ public interface Statement {
      * @param value the value to bind
      * @return this {@link Statement}
      * @throws IllegalArgumentException if {@code name} or {@code value} is {@code null}
+     * @throws NoSuchElementException   if {@code name} is not a known name to bind
      */
     Statement bind(String name, Object value);
 
@@ -85,6 +88,7 @@ public interface Statement {
      * @param type the type of null value
      * @return this {@link Statement}
      * @throws IllegalArgumentException if {@code name} or {@code type} is {@code null}
+     * @throws NoSuchElementException if {@code name} is not a known name to bind
      */
     Statement bindNull(String name, Class<?> type);
 

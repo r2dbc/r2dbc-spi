@@ -31,7 +31,7 @@ public interface OutParametersMetadata {
      *
      * @param index the out parameter index starting at 0
      * @return the {@link OutParameterMetadata} for one out parameter
-     * @throws ArrayIndexOutOfBoundsException if the {@code index} is less than zero or greater than the number of available out parameters.
+     * @throws IndexOutOfBoundsException if {@code index} is out of range (negative or equals/exceeds {@code getParameterMetadatas().size()})
      */
     OutParameterMetadata getParameterMetadata(int index);
 

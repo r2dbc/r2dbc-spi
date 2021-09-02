@@ -45,6 +45,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -318,7 +320,7 @@ public interface TestKit<T> {
                 assertThrows(IndexOutOfBoundsException.class, () -> statement.bind(99, ""), "bind(nonexistent-index, null) should fail");
                 assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), null), "bind(identifier, null) should fail");
                 assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), Class.class), "bind(identifier, Class.class) should fail");
-                assertThrows(IllegalArgumentException.class, () -> statement.bind("unknown", ""), "bind(unknown-placeholder, \"\") should fail");
+                assertThrows(NoSuchElementException.class, () -> statement.bind("unknown-placeholder", ""), "bind(unknown-placeholder, \"\") should fail");
                 return Mono.empty();
             },
             Connection::close)
@@ -492,7 +494,10 @@ public interface TestKit<T> {
                 .execute())
                 .flatMap(result -> {
                     return result.map((row, rowMetadata) -> {
-                        return Arrays.asList(rowMetadata.contains("value"), rowMetadata.contains("VALUE"));
+                        return Arrays.asList(rowMetadata.contains("value"), rowMetadata.contains("VALUE"),
+                            captureException(() -> rowMetadata.getColumnMetadata(-1)),
+                            captureException(() -> rowMetadata.getColumnMetadata(100)),
+                            captureException(() -> rowMetadata.getColumnMetadata("unknown")));
                     });
                 })
                 .flatMapIterable(Function.identity()),
@@ -500,6 +505,9 @@ public interface TestKit<T> {
             .as(StepVerifier::create)
             .expectNext(true).as("rowMetadata.contains(value)")
             .expectNext(true).as("rowMetadata.contains(VALUE)")
+            .expectNextMatches(IndexOutOfBoundsException.class::isInstance).as("getColumnMetadata(-1) throws IndexOutOfBoundsException")
+            .expectNextMatches(IndexOutOfBoundsException.class::isInstance).as("getColumnMetadata(100) throws IndexOutOfBoundsException")
+            .expectNextMatches(NoSuchElementException.class::isInstance).as("getColumnMetadata(unknown) throws NoSuchElementException")
             .verifyComplete();
     }
 
@@ -519,6 +527,27 @@ public interface TestKit<T> {
             .expectNext("b").as("First column label: b")
             .expectNext("c").as("First column label: c")
             .expectNext("a").as("First column label: a")
+            .verifyComplete();
+    }
+
+    @Test
+    default void row() {
+        getJdbcOperations().execute(expand(TestStatement.INSERT_TWO_COLUMNS));
+
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> Flux.from(connection
+
+                .createStatement(expand(TestStatement.SELECT_VALUE_ALIASED_COLUMNS))
+                .execute())
+                .flatMap(result -> result.map(readable -> Arrays.asList(captureException(() -> readable.get(-1)),
+                    captureException(() -> readable.get(100)),
+                    captureException(() -> readable.get("unknown")))))
+                .flatMapIterable(Function.identity()),
+            Connection::close)
+            .as(StepVerifier::create)
+            .expectNextMatches(IndexOutOfBoundsException.class::isInstance).as("get(-1) throws IndexOutOfBoundsException")
+            .expectNextMatches(IndexOutOfBoundsException.class::isInstance).as("get(100) throws IndexOutOfBoundsException")
+            .expectNextMatches(NoSuchElementException.class::isInstance).as("get(unknown) throws NoSuchElementException")
             .verifyComplete();
     }
 
@@ -866,6 +895,24 @@ public interface TestKit<T> {
     @SuppressWarnings("varargs")
     static <T> Collection<T> collectionOf(T... values) {
         return new HashSet<>(Arrays.asList(values));
+    }
+
+    /**
+     * Returns an {@link Exception} from a {@link Callable}.
+     *
+     * @param throwingCallable
+     * @return
+     * @throws IllegalStateException if {@code throwingCallable} did not throw an exception.
+     */
+    static Exception captureException(Callable<?> throwingCallable) {
+
+        try {
+            throwingCallable.call();
+        } catch (Exception e) {
+            return e;
+        }
+
+        throw new IllegalStateException("Callable did not throw an exception.");
     }
 
     /**

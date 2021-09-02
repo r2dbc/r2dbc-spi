@@ -20,13 +20,25 @@ R2DBC defines the following general exceptions:
 [[exceptions.iae]]
 === `IllegalArgumentException`
 
-Drivers throw `IllegalArgumentException` if a method has been received an illegal or inappropriate argument (such as values that are out of bounds or an expected parameter is `null`).
+Drivers throw `IllegalArgumentException` if a method has received an illegal or inappropriate argument (such as values that are invalid or an expected parameter is `null`).
+This exception is a generic exception that is not associated with an error code or an `SQLState`.
+
+[[exceptions.iob]]
+=== `IndexOutOfBoundsException`
+
+Drivers throw `IndexOutOfBoundsException` if a method has received an illegal or inappropriate index value (such as negative values or indexes that are greater or equal to the number of elements).
 This exception is a generic exception that is not associated with an error code or an `SQLState`.
 
 [[exceptions.ise]]
 === `IllegalStateException`
 
 Drivers throw `IllegalStateException` if a method has received an argument that is invalid in the current state or when an argument-less method is invoked in a state that does not allow execution in the current state (such as interacting with a closed connection object).
+This exception is a generic exception that is not associated with an error code or an `SQLState`.
+
+[[exceptions.nse]]
+=== `NoSuchElementException`
+
+Drivers throw `NoSuchElementException` if a method has received a column/parameter name that doesn't exist in the collection of items.
 This exception is a generic exception that is not associated with an error code or an `SQLState`.
 
 [[exceptions.nsoe]]

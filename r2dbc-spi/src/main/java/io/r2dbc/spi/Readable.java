@@ -16,6 +16,8 @@
 
 package io.r2dbc.spi;
 
+import java.util.NoSuchElementException;
+
 /**
  * Represents a readable object, for example a set of columns or {@code OUT} parameters from a database query, later on referred to as items.
  * Values can for columns or {@code OUT} parameters be either retrieved by specifying a name or the index.
@@ -44,6 +46,7 @@ public interface Readable {
      *
      * @param index the index of the parameter starting at {@code 0}
      * @return the value.  Value can be {@code null}.
+     * @throws IndexOutOfBoundsException if {@code index} if the index is out of range (negative or equals/exceeds the number of readable objects)
      */
     @Nullable
     default Object get(int index) {
@@ -57,7 +60,8 @@ public interface Readable {
      * @param type  the type of item to return.  This type must be assignable to, and allows for variance.
      * @param <T>   the type of the item being returned.
      * @return the value.  Value can be {@code null}.
-     * @throws IllegalArgumentException if {@code type} is {@code null}
+     * @throws IllegalArgumentException  if {@code type} is {@code null}
+     * @throws IndexOutOfBoundsException if {@code index} is out of range (negative or equals/exceeds the number of readable objects)
      */
     @Nullable
     <T> T get(int index, Class<T> type);
@@ -69,6 +73,7 @@ public interface Readable {
      * @param name the name
      * @return the value.  Value can be {@code null}.
      * @throws IllegalArgumentException if {@code name} is {@code null}
+     * @throws NoSuchElementException   if {@code name} is not a known readable column or out parameter
      */
     @Nullable
     default Object get(String name) {
@@ -83,6 +88,7 @@ public interface Readable {
      * @param <T>  the type of the item being returned.
      * @return the value.  Value can be {@code null}.
      * @throws IllegalArgumentException if {@code name} or {@code type} is {@code null}
+     * @throws NoSuchElementException if {@code name} is not a known readable column or out parameter
      */
     @Nullable
     <T> T get(String name, Class<T> type);
