@@ -57,6 +57,8 @@ The value of the `SQLState` string depends on the underlying data source.
 The code is an integer value that identifies the error that caused the `R2dbcException` to be thrown.
 Its value and meaning are implementation-specific and may be the actual error code returned by the underlying data source.
 You can retrieve the error code by using the `R2dbcException.getErrorCode()` method.
+* The offending SQL.
+If a particular SQL statement results in an exception then you can can retrieve the SQL text using the `R2dbcException.getSql()` method.
 * A cause.
 This is another `Throwable` that caused this `R2dbcException` to occur.
 
