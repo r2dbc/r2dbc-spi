@@ -74,6 +74,19 @@
                     <archive>
                         <manifestEntries>
                             <Automatic-Module-Name>r2dbc.spi</Automatic-Module-Name>
+                            <!-- 
+                                 Headers for use in an OSGi classloading framework
+                                 Note: may need additional work for full OSGi ServiceLoader handling: 
+                                       https://blog.osgi.org/2013/02/javautilserviceloader-in-osgi.html
+                            -->
+                            <Bundle-Category>bundle</Bundle-Category>
+                            <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                            <Bundle-SymbolicName>${project.groupId}_${project.artifactId}</Bundle-SymbolicName>
+                            <Bundle-Name>${project.artifactId}</Bundle-Name>
+                            <Bundle-Version>${project.version}</Bundle-Version>
+                            <Export-Package>io.r2dbc.spi;version="${project.version}"</Export-Package>
+                            <Import-Package>javax.annotation.meta;resolution:=optional,javax.annotation</Import-Package>
+                            <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))", osgi.extender;resolution:=optional;filter:="(osgi.extender=osgi.serviceloader.processor)",osgi.serviceloader;resolution:=optional;filter:="(osgi.serviceloader=io.r2dbc.spi.ConnectionFactoryProvider)";cardinality:=multiple</Require-Capability>
                         </manifestEntries>
                     </archive>
                 </configuration>
