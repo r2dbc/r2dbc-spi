@@ -16,8 +16,6 @@
 
 package io.r2dbc.spi;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ServiceLoader;
 
 /**
@@ -185,8 +183,7 @@ public final class ConnectionFactories {
     }
 
     private static ServiceLoader<ConnectionFactoryProvider> loadProviders() {
-        return AccessController.doPrivileged((PrivilegedAction<ServiceLoader<ConnectionFactoryProvider>>) () -> ServiceLoader.load(ConnectionFactoryProvider.class,
-            ConnectionFactoryProvider.class.getClassLoader()));
+        return ServiceLoader.load(ConnectionFactoryProvider.class, ConnectionFactoryProvider.class.getClassLoader());
     }
 
 }
