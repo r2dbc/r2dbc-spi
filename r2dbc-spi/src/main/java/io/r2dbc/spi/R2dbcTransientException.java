@@ -72,10 +72,38 @@ public abstract class R2dbcTransientException extends R2dbcException {
      * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
+     * @param sql       the SQL statement that caused this error
+     * @since 0.9
+     */
+    public R2dbcTransientException(@Nullable String reason, @Nullable String sqlState, int errorCode, @Nullable String sql) {
+        super(reason, sqlState, errorCode, sql);
+    }
+
+    /**
+     * Creates a new {@link R2dbcTransientException}.
+     *
+     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                  conventions
+     * @param errorCode a vendor-specific error code representing this failure
+     * @param sql       the SQL statement that caused this error
+     * @param cause     the cause
+     * @since 0.9
+     */
+    public R2dbcTransientException(@Nullable String reason, @Nullable String sqlState, int errorCode, @Nullable String sql, @Nullable Throwable cause) {
+        super(reason, sqlState, errorCode, sql, cause);
+    }
+
+    /**
+     * Creates a new {@link R2dbcTransientException}.
+     *
+     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                  conventions
+     * @param errorCode a vendor-specific error code representing this failure
      * @param cause     the cause
      */
-    public R2dbcTransientException(@Nullable String reason, @Nullable String sqlState, int errorCode,
-                                   @Nullable Throwable cause) {
+    public R2dbcTransientException(@Nullable String reason, @Nullable String sqlState, int errorCode, @Nullable Throwable cause) {
         super(reason, sqlState, errorCode, cause);
     }
 

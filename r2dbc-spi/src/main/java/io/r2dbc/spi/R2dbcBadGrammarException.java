@@ -21,14 +21,11 @@ package io.r2dbc.spi;
  */
 public class R2dbcBadGrammarException extends R2dbcNonTransientException {
 
-    private final String offendingSql;
-
     /**
      * Creates a new {@link R2dbcBadGrammarException}.
      */
     public R2dbcBadGrammarException() {
         super();
-        this.offendingSql = null;
     }
 
     /**
@@ -38,7 +35,6 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable String reason) {
         super(reason);
-        this.offendingSql = null;
     }
 
     /**
@@ -50,7 +46,6 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState) {
         super(reason, sqlState);
-        this.offendingSql = null;
     }
 
     /**
@@ -63,7 +58,6 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode) {
         super(reason, sqlState, errorCode);
-        this.offendingSql = null;
     }
 
     /**
@@ -73,12 +67,25 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
      *                  conventions
      * @param errorCode a vendor-specific error code representing this failure
-     * @param offendingSql the SQL statement that caused this error
+     * @param sql       the SQL statement that caused this error
+     */
+    public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode, @Nullable String sql) {
+        super(reason, sqlState, errorCode, sql);
+    }
+
+    /**
+     * Creates a new {@link R2dbcBadGrammarException}.
+     *
+     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                  conventions
+     * @param errorCode a vendor-specific error code representing this failure
+     * @param sql       the SQL statement that caused this error
+     * @param cause     the cause
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode,
-                                    @Nullable String offendingSql) {
-        super(reason, sqlState, errorCode);
-        this.offendingSql = offendingSql;
+                                    @Nullable String sql, @Nullable Throwable cause) {
+        super(reason, sqlState, errorCode, sql, cause);
     }
 
     /**
@@ -90,26 +97,8 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      * @param errorCode a vendor-specific error code representing this failure
      * @param cause     the cause
      */
-    public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode,
-                                    @Nullable Throwable cause) {
+    public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode, @Nullable Throwable cause) {
         super(reason, sqlState, errorCode, cause);
-        this.offendingSql = null;
-    }
-
-    /**
-     * Creates a new {@link R2dbcBadGrammarException}.
-     *
-     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
-     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
-     *                  conventions
-     * @param errorCode a vendor-specific error code representing this failure
-     * @param offendingSql the SQL statement that caused this error
-     * @param cause     the cause
-     */
-    public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, int errorCode,
-                                    @Nullable String offendingSql, @Nullable Throwable cause) {
-        super(reason, sqlState, errorCode, cause);
-        this.offendingSql = offendingSql;
     }
 
     /**
@@ -122,7 +111,6 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable String sqlState, @Nullable Throwable cause) {
         super(reason, sqlState, cause);
-        this.offendingSql = null;
     }
 
     /**
@@ -133,7 +121,6 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable String reason, @Nullable Throwable cause) {
         super(reason, cause);
-        this.offendingSql = null;
     }
 
     /**
@@ -143,16 +130,17 @@ public class R2dbcBadGrammarException extends R2dbcNonTransientException {
      */
     public R2dbcBadGrammarException(@Nullable Throwable cause) {
         super(cause);
-        this.offendingSql = null;
     }
 
     /**
-     * Returns the offending SQL String.
+     * Returns the SQL that led to the problem (if known).
      *
-     * @return offendingSql
+     * @return the SQL
+     * @see #getSql()
      */
     @Nullable
     public String getOffendingSql() {
-        return this.offendingSql;
+        return super.getSql();
     }
+
 }

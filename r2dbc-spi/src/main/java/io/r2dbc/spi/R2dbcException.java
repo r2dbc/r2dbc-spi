@@ -23,7 +23,11 @@ public abstract class R2dbcException extends RuntimeException {
 
     private final int errorCode;
 
+    @Nullable
     private final String sqlState;
+
+    @Nullable
+    private final String sql;
 
     /**
      * Creates a new {@link R2dbcException}.
@@ -61,7 +65,39 @@ public abstract class R2dbcException extends RuntimeException {
      * @param errorCode a vendor-specific error code representing this failure
      */
     public R2dbcException(@Nullable String reason, @Nullable String sqlState, int errorCode) {
-        this(reason, sqlState, errorCode, null);
+        this(reason, sqlState, errorCode, null, null);
+    }
+
+    /**
+     * Creates a new {@link R2dbcException}.
+     *
+     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                  conventions
+     * @param errorCode a vendor-specific error code representing this failure
+     * @param sql       the SQL statement that caused this error
+     * @since 0.9
+     */
+    public R2dbcException(@Nullable String reason, @Nullable String sqlState, int errorCode, @Nullable String sql) {
+        this(reason, sqlState, errorCode, sql, null);
+    }
+
+    /**
+     * Creates a new {@link R2dbcException}.
+     *
+     * @param reason    the reason for the error.  Set as the exception's message and retrieved with {@link #getMessage()}.
+     * @param sqlState  the "SQLState" string, which follows either the XOPEN SQLState conventions or the SQL:2003
+     *                  conventions
+     * @param errorCode a vendor-specific error code representing this failure
+     * @param sql       the SQL statement that caused this error
+     * @param cause     the cause
+     * @since 0.9
+     */
+    public R2dbcException(@Nullable String reason, @Nullable String sqlState, int errorCode, @Nullable String sql, @Nullable Throwable cause) {
+        super(reason, cause);
+        this.sqlState = sqlState;
+        this.errorCode = errorCode;
+        this.sql = sql;
     }
 
     /**
@@ -74,9 +110,7 @@ public abstract class R2dbcException extends RuntimeException {
      * @param cause     the cause
      */
     public R2dbcException(@Nullable String reason, @Nullable String sqlState, int errorCode, @Nullable Throwable cause) {
-        super(reason, cause);
-        this.sqlState = sqlState;
-        this.errorCode = errorCode;
+        this(reason, sqlState, errorCode, null, cause);
     }
 
     /**
@@ -116,7 +150,7 @@ public abstract class R2dbcException extends RuntimeException {
      * @return the vendor-specific error code
      */
     public final int getErrorCode() {
-        return errorCode;
+        return this.errorCode;
     }
 
     /**
@@ -127,6 +161,17 @@ public abstract class R2dbcException extends RuntimeException {
     @Nullable
     public final String getSqlState() {
         return this.sqlState;
+    }
+
+    /**
+     * Returns the SQL that led to the problem (if known).
+     *
+     * @return the SQL
+     * @since 0.9
+     */
+    @Nullable
+    public final String getSql() {
+        return this.sql;
     }
 
     @Override
