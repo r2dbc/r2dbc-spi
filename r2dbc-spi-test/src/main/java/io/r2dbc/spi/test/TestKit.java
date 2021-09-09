@@ -20,6 +20,7 @@ import io.r2dbc.spi.Blob;
 import io.r2dbc.spi.Clob;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
+import io.r2dbc.spi.R2dbcNonTransientException;
 import io.r2dbc.spi.ReadableMetadata;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
@@ -332,8 +333,7 @@ public interface TestKit<T> {
                 Statement statement = connection
                     .createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
                 bindNull(statement, getIdentifier(0), Integer.class);
-                return Flux.from(statement.add()
-                    .execute())
+                return Flux.from(statement.execute())
                     .flatMap(this::extractRowsUpdated);
             },
             Connection::close)
@@ -412,7 +412,7 @@ public interface TestKit<T> {
                 .createStatement(expand(TestStatement.SELECT_BLOB_VALUE))
                 .execute())
                 .flatMap(result -> Flux.usingWhen(result
-                    .map((row, rowMetadata) -> extractColumn(row, Blob.class)),
+                        .map((row, rowMetadata) -> extractColumn(row, Blob.class)),
                     blob -> Flux.from(blob.stream()).reduce(ByteBuffer::put),
                     Blob::discard)),
             Connection::close)
@@ -470,7 +470,7 @@ public interface TestKit<T> {
                 .createStatement(expand(TestStatement.SELECT_CLOB_VALUE))
                 .execute())
                 .flatMap(result -> Flux.usingWhen(result
-                    .map((row, rowMetadata) -> extractColumn(row, Clob.class)),
+                        .map((row, rowMetadata) -> extractColumn(row, Clob.class)),
                     clob -> Flux.from(clob.stream())
                         .reduce(new StringBuilder(), StringBuilder::append)
                         .map(StringBuilder::toString),
@@ -580,7 +580,13 @@ public interface TestKit<T> {
                 Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
 
                 IntStream.range(0, 10)
-                    .forEach(i -> bind(statement, getIdentifier(0), i).add());
+                    .forEach(i -> {
+                        bind(statement, getIdentifier(0), i);
+
+                        if (i != 9) {
+                            statement.add();
+                        }
+                    });
 
                 return Flux.from(statement
                     .execute())
@@ -590,6 +596,23 @@ public interface TestKit<T> {
             .as(StepVerifier::create)
             .expectNextCount(10).as("values from insertions")
             .verifyComplete();
+    }
+
+    default void prepareStatementWithTrailingAddShouldFail() {
+        Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
+                Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+
+                bind(statement, getIdentifier(0), 0).add();
+
+                return Flux.from(statement
+                    .execute())
+                    .flatMap(this::extractRowsUpdated);
+            },
+            Connection::close)
+            .as(StepVerifier::create)
+            .expectNextCount(1).as("values from insertions")
+            .verifyError(R2dbcNonTransientException.class);
     }
 
     @Test
@@ -798,10 +821,10 @@ public interface TestKit<T> {
     default void validate() {
         Mono.from(getConnectionFactory().create())
             .flatMapMany(connection -> Flux.concat(connection.validate(ValidationDepth.LOCAL),
-                    connection.validate(ValidationDepth.REMOTE),
-                    connection.close(),
-                    connection.validate(ValidationDepth.LOCAL),
-                    connection.validate(ValidationDepth.REMOTE)))
+                connection.validate(ValidationDepth.REMOTE),
+                connection.close(),
+                connection.validate(ValidationDepth.LOCAL),
+                connection.validate(ValidationDepth.REMOTE)))
             .as(StepVerifier::create)
             .expectNext(true).as("successful local validation")
             .expectNext(true).as("successful remote validation")
@@ -834,7 +857,8 @@ public interface TestKit<T> {
 
     /**
      * Returns an unordered {@code Collection} containing 0 or more {@code values}.
-     * @param <T> Class of objects in {@code values}
+     *
+     * @param <T>    Class of objects in {@code values}
      * @param values 0 or more values
      * @return {@code Collection} containing {@code values}
      */
