@@ -1,6 +1,12 @@
 R2DBC SPI Changelog
 =============================
 
+0.8.6.RELEASE
+------------------
+* Fix R2dbcNonTransientException Javadoc typo #236
+* Specification request on Statement::add #229
+* Release 0.8.5.RELEASE #225
+
 0.8.5.RELEASE
 ------------------
 * Reflect that the spec is hosted by the Reactive Foundation #226
@@ -9,7 +15,6 @@ R2DBC SPI Changelog
 * Refactor TestKit from using own resource management to reuse `Flux/Mono.usingWhen(…)` #213
 * Example code on spec website doesn't compile #208
 * Backport create-release script to 0.8.x #202
-
 
 0.8.4.RELEASE
 ------------------
