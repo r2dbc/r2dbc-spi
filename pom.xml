@@ -48,6 +48,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <reactive-streams.version>1.0.3</reactive-streams.version>
         <reactor.version>Dysprosium-SR12</reactor.version>
+        <spring.version>5.2.6.RELEASE</spring.version>
     </properties>
 
     <licenses>
@@ -148,6 +149,31 @@
                             -noextraheaders: true
                             -snapshot: SNAPSHOT
                         ]]></bnd>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>biz.aQute.bnd</groupId>
+                    <artifactId>bnd-resolver-maven-plugin</artifactId>
+                    <version>${bnd.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>resolve</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <bndruns>
+                            <bndrun>verifyOSGi.bndrun</bndrun>
+                        </bndruns>
+                        <failOnChanges>false</failOnChanges>
+                        <reportOptional>false</reportOptional>
+                        <scopes>
+                            <scope>compile</scope>
+                            <scope>test</scope>
+                        </scopes>
+                        <writeOnChanges>false</writeOnChanges>
                     </configuration>
                 </plugin>
                 <plugin>
