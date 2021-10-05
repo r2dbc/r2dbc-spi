@@ -41,6 +41,9 @@
         <jsr305.version>3.0.2</jsr305.version>
         <junit.version>5.7.0</junit.version>
         <assertj.version>3.17.2</assertj.version>
+        <bnd.version>6.0.0</bnd.version>
+        <osgi.annotation.version>8.0.0</osgi.annotation.version>
+        <project.build.outputTimestamp>1</project.build.outputTimestamp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <reactive-streams.version>1.0.3</reactive-streams.version>
@@ -62,18 +65,22 @@
 
     <developers>
         <developer>
+            <id>nebhale</id>
             <name>Ben Hale</name>
             <email>bhale@pivotal.io</email>
         </developer>
         <developer>
+            <id>mp911de</id>
             <name>Mark Paluch</name>
             <email>mpaluch@vmware.com</email>
         </developer>
         <developer>
+            <id>mirromutth</id>
             <name>Mirro Mutth</name>
             <email>mirromutth@gmail.com</email>
         </developer>
         <developer>
+            <id>gregturn</id>
             <name>Greg Turnquist</name>
             <email>gturnquist@pivotal.io</email>
         </developer>
@@ -107,6 +114,43 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>biz.aQute.bnd</groupId>
+                    <artifactId>bnd-maven-plugin</artifactId>
+                    <version>${bnd.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>bnd-process</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <bnd><![CDATA[
+                            # Vars are ignored from the output
+                            spec.version = ${version;===;${project.version}}
+
+                            Automatic-Module-Name: ${replacestring;${project.artifactId};-;.}
+
+                            # Don't import findbugs annotation packages since they are never runtime dependency
+                            Import-Package:\
+                                 !javax.annotation.*,\
+                                 *
+
+                            # Automatically export all packages in the resulting jar at spec version
+                            -exportcontents: *;version=${spec.version}
+
+                            # Add default specification headers
+                            -namesection: io/r2dbc/spi*/;\
+                                Specification-Title="${project.name}";\
+                                Specification-Version="${spec.version}"
+
+                            # Ensure repeatable builds if desired
+                            -noextraheaders: true
+                            -snapshot: SNAPSHOT
+                        ]]></bnd>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
@@ -129,12 +173,7 @@
                     <version>3.2.0</version>
                     <configuration>
                         <archive>
-                            <manifest>
-                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            </manifest>
-                            <manifestEntries>
-                                <R2DBC-Specification-Version>${project.version}</R2DBC-Specification-Version>
-                            </manifestEntries>
+                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                         </archive>
                     </configuration>
                 </plugin>

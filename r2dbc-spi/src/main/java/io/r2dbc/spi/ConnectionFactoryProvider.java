@@ -16,7 +16,12 @@
 
 package io.r2dbc.spi;
 
+import static aQute.bnd.annotation.Cardinality.MULTIPLE;
+import static aQute.bnd.annotation.Resolution.OPTIONAL;
+
 import java.util.ServiceLoader;
+
+import aQute.bnd.annotation.spi.ServiceConsumer;
 
 /**
  * A Java Service interface for implementations to examine a collection of {@link ConnectionFactoryOptions} and optionally return an implementation of {@link ConnectionFactory}.
@@ -27,6 +32,15 @@ import java.util.ServiceLoader;
  * @see ConnectionFactories
  * @see ServiceLoader
  */
+
+@ServiceConsumer(
+    // This instance enables resolving a provider at _assembly_ without incurring a strict runtime
+    // dependency on Service Loader Mediator (SML) impl
+    cardinality = MULTIPLE, effective = "active", value = ConnectionFactoryProvider.class)
+@ServiceConsumer(
+    // This instance enables SML to instrument ServiceLoader calls _if SML is present_
+    // (without preventing the bundles from resolving if it is not)
+    cardinality = MULTIPLE, resolution = OPTIONAL, value = ConnectionFactoryProvider.class)
 public interface ConnectionFactoryProvider {
 
     /**
