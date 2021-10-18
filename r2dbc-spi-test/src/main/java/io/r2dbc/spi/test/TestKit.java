@@ -765,12 +765,74 @@ public interface TestKit<T> {
     @Test
     default void savePointStartsTransaction() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Mono.from(connection
-                .createSavepoint("test_savepoint"))
-                .then(Mono.fromSupplier(() -> connection.isAutoCommit())),
-            Connection::close)
+                connection -> Mono.from(connection
+                        .createSavepoint("test_savepoint"))
+                    .then(Mono.fromSupplier(() -> connection.isAutoCommit())),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext(false).as("createSavepoint starts a transaction")
+            .verifyComplete();
+    }
+
+    @Test
+    default void segmentInsertEmitsUpdateCount() {
+        Flux.usingWhen(getConnectionFactory().create(),
+                connection -> Flux.from(connection
+                        .createStatement(expand(TestStatement.INSERT_VALUE100))
+                        .execute())
+                    .flatMap(result -> result.flatMap(segment -> Mono.just(((Result.UpdateCount) segment).value()))),
+                Connection::close)
+            .as(StepVerifier::create)
+            .expectNext(1L).as("insert of a single row")
+            .verifyComplete();
+    }
+
+    @Test
+    default void segmentInsertWithFilterCompletesWithoutOnNext() {
+        Flux.usingWhen(getConnectionFactory().create(),
+                connection -> Flux.from(connection
+                        .createStatement(expand(TestStatement.INSERT_VALUE100))
+                        .execute())
+                    .flatMap(result -> result
+                        .filter(it -> false)
+                        .flatMap(segment -> Mono.just(false))),
+                Connection::close)
+            .as(StepVerifier::create)
+            .as("filter(it -> false) should complete without data signals")
+            .verifyComplete();
+    }
+
+    @Test
+    default void segmentSelectWithFilterCompletesWithoutOnNext() {
+        getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
+
+        Flux.usingWhen(getConnectionFactory().create(),
+                connection -> Flux.from(connection
+                        .createStatement(expand(TestStatement.SELECT_VALUE))
+                        .execute())
+                    .flatMap(result -> result
+                        .filter(it -> false)
+                        .flatMap(segment -> Mono.just(false))),
+                Connection::close)
+            .as(StepVerifier::create)
+            .as("filter(it -> false) should complete without data signals")
+            .verifyComplete();
+    }
+
+    @Test
+    default void segmentSelectWithEmitsRow() {
+        getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
+
+        Flux.usingWhen(getConnectionFactory().create(),
+                connection -> Flux.from(connection
+                        .createStatement(expand(TestStatement.SELECT_VALUE))
+                        .execute())
+                    .flatMap(result -> result
+                        .filter(Result.RowSegment.class::isInstance)
+                        .flatMap(segment -> Mono.just(extractColumn(((Result.RowSegment) segment).row())))),
+                Connection::close)
+            .as(StepVerifier::create)
+            .expectNext(100).as("value from select")
             .verifyComplete();
     }
 
@@ -779,17 +841,17 @@ public interface TestKit<T> {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Mono.from(connection
+                connection -> Mono.from(connection
 
-                .beginTransaction())
-                .<Object>thenMany(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
-                    .execute())
-                    .flatMap(this::extractColumns))
+                        .beginTransaction())
+                    .<Object>thenMany(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                            .execute())
+                        .flatMap(this::extractColumns))
 
-                .concatWith(Flux.defer(() -> {
-                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
-                    bind(statement, getIdentifier(0), 200);
-                    return statement.execute();
+                    .concatWith(Flux.defer(() -> {
+                            Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                            bind(statement, getIdentifier(0), 200);
+                            return statement.execute();
                 })
                     .flatMap(this::extractRowsUpdated))
                 .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
