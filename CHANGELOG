@@ -1,6 +1,14 @@
 R2DBC SPI Changelog
 =============================
 
+0.9.0.RC1
+------------------
+* Remove usage of `AccessController.doPrivileged(…)` #243
+* Add sql to R2DBC exception hierarchy #238
+* Extend TCK for Result Segment API #237
+* Specification request on Statement::add #229
+* Specify what should happen if Row.get(…) is called with a negative/out of bounds index/non-existing column name #184
+
 0.9.0.M2
 ------------------
 * Fix R2dbcNonTransientException Javadoc typo #236
