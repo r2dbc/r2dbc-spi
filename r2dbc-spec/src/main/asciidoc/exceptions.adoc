@@ -12,9 +12,11 @@ R2DBC differentiates between generic and data-source-specific error cases.
 R2DBC defines the following general exceptions:
 
 * <<exceptions.iae>>
+* <<exceptions.iob>>
 * <<exceptions.ise>>
-* <<exceptions.uoe>>
+* <<exceptions.nse>>
 * <<exceptions.nsoe>>
+* <<exceptions.uoe>>
 * <<exceptions.r2e>>
 
 [[exceptions.iae]]
