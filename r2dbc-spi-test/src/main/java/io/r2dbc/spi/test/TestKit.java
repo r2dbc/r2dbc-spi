@@ -20,7 +20,6 @@ import io.r2dbc.spi.Blob;
 import io.r2dbc.spi.Clob;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
-import io.r2dbc.spi.R2dbcNonTransientException;
 import io.r2dbc.spi.ReadableMetadata;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
@@ -627,21 +626,21 @@ public interface TestKit<T> {
             .verifyComplete();
     }
 
+    @Test
     default void prepareStatementWithTrailingAddShouldFail() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                connection -> {
+                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
 
-                bind(statement, getIdentifier(0), 0).add();
+                    bind(statement, getIdentifier(0), 0).add();
 
-                return Flux.from(statement
-                    .execute())
-                    .flatMap(this::extractRowsUpdated);
-            },
-            Connection::close)
+                    return Flux.from(statement
+                            .execute())
+                        .flatMap(this::extractRowsUpdated).then();
+                },
+                Connection::close)
             .as(StepVerifier::create)
-            .expectNextCount(1).as("values from insertions")
-            .verifyError(R2dbcNonTransientException.class);
+            .verifyError();
     }
 
     @Test
