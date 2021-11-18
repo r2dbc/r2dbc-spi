@@ -110,7 +110,7 @@ public interface ReadableMetadata {
      * Returns the scale.
      * <p>
      * This is the number of digits to right of the decimal point.
-     * Returns {@code null} for data types where the scale is not applicable or if the precision cannot be provided.
+     * Returns {@code null} for data types where the scale is not applicable or if the scale cannot be provided.
      * <p>
      * <strong>Implementation notes</strong>
      * Implementation of this method is optional.  The default implementation returns {@code null}.
