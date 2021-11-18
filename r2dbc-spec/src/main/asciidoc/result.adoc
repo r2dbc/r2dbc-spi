@@ -34,9 +34,14 @@ Publisher<Integer> rowsUpdated = result.getRowsUpdated();
 ----
 ====
 
-`Result` represens a stream of result segements.
+`Result` represents a stream of result segments.
 Due to its nature, a result allows consumption of either tabular results, out parameters, or an update count through `map(…)` respective `getRowsUpdated(…)` but not both.
 Depending on how the underlying database materializes results, an R2DBC driver can lift this limitation.
+A `Result` is comprised from segments (rows, out parameters, update counts, messages).
+Segments can be filtered through `Result.filter(…)` affecting the available input to `Result` operators (`map`, `filter`, `getRowsUpdated`, `flatMap`).
+Segments can be consumed through `Result.flatMap(…)` by returning a mapped `Publisher` in a mapping function to consume various result inputs.
+Mapped publishers are concatenated sequentially preserving ordering.
+Segments are only valid within the `flatMap` mapping function callback until the mapped `Publisher` subscription terminates (successfully, with an error signal or cancel signal).
 
 A `Result` object is emitted for each statement result in a forward-only direction.
 A statement can lead to multiple `Result` objects caused by either multiple bindings or by running a statement that materializes multiple result sets.

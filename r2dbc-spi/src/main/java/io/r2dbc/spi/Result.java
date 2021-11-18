@@ -91,10 +91,10 @@ public interface Result {
      * Returns a mapping of the {@link Segment result segments} that are the results of a query against a database.  May be empty if the query did not return any segments.  A {@link Segment} can be
      * only considered valid within a {@link Function mapping function} callback.
      * <p>Consuming result {@link Segment segments} does not emit {@link Subscriber#onError(Throwable) error signals} from {@link Message message segments representing an error}.  Translation of
-     * error segments
-     * is subject to the {@code mappingFunction}.
+     * error segments is subject to the {@code mappingFunction}.
+     * <p>Signals from mapped {@link Publisher publishers} are replayed sequentially preserving ordering by concatenating publishers.
      *
-     * @param mappingFunction the {@link Function} that maps a {@link Segment} a to a value
+     * @param mappingFunction the {@link Function} that maps a {@link Segment} a to a {@link Publisher}
      * @param <T>             the type of the mapped value
      * @return a mapping of the segments that are the results of a query against a database
      * @throws IllegalArgumentException if {@code mappingFunction} is {@code null}
