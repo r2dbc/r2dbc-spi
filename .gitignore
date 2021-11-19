@@ -9,6 +9,11 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
+# Eclipse
+.project
+.classpath
+.settings
+
 # IntelliJ
 out/
 build/

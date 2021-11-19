@@ -1,0 +1,8 @@
+-runfw: org.eclipse.osgi
+-resolve.effective: resolve, active
+
+-runsystempackages: \
+    sun.misc
+
+-runsystemcapabilities: \
+    osgi.serviceloader;osgi.serviceloader=io.r2dbc.spi.ConnectionFactoryProvider
