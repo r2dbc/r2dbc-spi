@@ -106,7 +106,7 @@ public interface TestKit<T> {
      */
     @Nullable
     default Object extractColumn(Row row) {
-        return row.get("value");
+        return row.get("test_value");
     }
 
     /**
@@ -119,7 +119,7 @@ public interface TestKit<T> {
      */
     @Nullable
     default <V> V extractColumn(Row row, Class<V> type) {
-        return row.get("value", type);
+        return row.get("test_value", type);
     }
 
     /**
@@ -461,7 +461,7 @@ public interface TestKit<T> {
                     .map((row, rowMetadata) -> extractColumn(row))),
             Connection::close)
             .as(StepVerifier::create)
-            .expectNext("test-value").as("value from select")
+            .expectNext("test-value").as("test_value from select")
             .verifyComplete();
 
         // CLOB consume as Clob
@@ -478,7 +478,7 @@ public interface TestKit<T> {
                     Clob::discard)),
             Connection::close)
             .as(StepVerifier::create)
-            .expectNext("test-value").as("value from select")
+            .expectNext("test-value").as("test_value from select")
             .verifyComplete();
     }
 
@@ -493,7 +493,7 @@ public interface TestKit<T> {
                 .execute())
                 .flatMap(result -> {
                     return result.map((row, rowMetadata) -> {
-                        return Arrays.asList(rowMetadata.contains("value"), rowMetadata.contains("VALUE"),
+                        return Arrays.asList(rowMetadata.contains("test_value"), rowMetadata.contains("TEST_VALUE"),
                             captureException(() -> rowMetadata.getColumnMetadata(-1)),
                             captureException(() -> rowMetadata.getColumnMetadata(100)),
                             captureException(() -> rowMetadata.getColumnMetadata("unknown")));
@@ -562,8 +562,8 @@ public interface TestKit<T> {
                 .flatMap(this::extractColumns),
             Connection::close)
             .as(StepVerifier::create)
-            .expectNext(collectionOf(100)).as("value from first select")
-            .expectNext(collectionOf(100)).as("value from second select")
+            .expectNext(collectionOf(100)).as("test_value from first select")
+            .expectNext(collectionOf(100)).as("test_value from second select")
             .verifyComplete();
     }
 
@@ -591,13 +591,13 @@ public interface TestKit<T> {
                 .execute())
 
                 .flatMap(result -> result
-                    .map((row, rowMetadata) -> Arrays.asList(row.get("value"), row.get("VALUE"))))
+                    .map((row, rowMetadata) -> Arrays.asList(row.get("test_value"), row.get("TEST_VALUE"))))
                 .flatMapIterable(Function.identity()),
             Connection::close)
 
             .as(StepVerifier::create)
-            .expectNext(100).as("value from col1")
-            .expectNext(100).as("value from col1 (upper case)")
+            .expectNext(100).as("test_value from col1")
+            .expectNext(100).as("test_value from col1 (upper case)")
             .verifyComplete();
     }
 
@@ -626,22 +626,22 @@ public interface TestKit<T> {
             .verifyComplete();
     }
 
-    @Test
-    default void prepareStatementWithTrailingAddShouldFail() {
-        Flux.usingWhen(getConnectionFactory().create(),
-                connection -> {
-                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+@Test
+default void prepareStatementWithTrailingAddShouldFail() {
+    Flux.usingWhen(getConnectionFactory().create(),
+            connection -> {
+                Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
 
-                    bind(statement, getIdentifier(0), 0).add();
+                bind(statement, getIdentifier(0), 0).add();
 
-                    return Flux.from(statement
-                            .execute())
-                        .flatMap(this::extractRowsUpdated).then();
-                },
-                Connection::close)
-            .as(StepVerifier::create)
-            .verifyError();
-    }
+                return Flux.from(statement
+                        .execute())
+                    .flatMap(this::extractRowsUpdated).then();
+            },
+            Connection::close)
+        .as(StepVerifier::create)
+        .verifyError();
+}
 
     @Test
     default void prepareStatementWithIncompleteBatchFails() {
@@ -752,7 +752,7 @@ public interface TestKit<T> {
 
             Connection::close)
             .as(StepVerifier::create)
-            .expectNext(collectionOf(100)).as("value from select")
+            .expectNext(collectionOf(100)).as("test_value from select")
             .expectNext(1).as("rows inserted")
             .expectNext(collectionOf(100, 200)).as("values from select")
             .expectNext(1).as("rows inserted")
@@ -831,7 +831,7 @@ public interface TestKit<T> {
                         .flatMap(segment -> Mono.just(extractColumn(((Result.RowSegment) segment).row())))),
                 Connection::close)
             .as(StepVerifier::create)
-            .expectNext(100).as("value from select")
+            .expectNext(100).as("test_value from select")
             .verifyComplete();
     }
 
@@ -864,7 +864,7 @@ public interface TestKit<T> {
 
             Connection::close)
             .as(StepVerifier::create)
-            .expectNext(collectionOf(100)).as("value from select")
+            .expectNext(collectionOf(100)).as("test_value from select")
             .expectNext(1).as("rows inserted")
             .expectNext(collectionOf(100, 200)).as("values from select")
             .expectNext(collectionOf(100, 200)).as("values from select")
@@ -900,10 +900,10 @@ public interface TestKit<T> {
 
             Connection::close)
             .as(StepVerifier::create)
-            .expectNext(collectionOf(100)).as("value from select")
+            .expectNext(collectionOf(100)).as("test_value from select")
             .expectNext(1).as("rows inserted")
             .expectNext(collectionOf(100, 200)).as("values from select")
-            .expectNext(collectionOf(100)).as("value from select")
+            .expectNext(collectionOf(100)).as("test_value from select")
             .verifyComplete();
     }
 
@@ -989,30 +989,30 @@ public interface TestKit<T> {
         INSERT_VALUE100("INSERT INTO test VALUES(100)"),
         INSERT_VALUE200("INSERT INTO test VALUES(200)"),
         INSERT_TWO_VALUES_PLACEHOLDER("INSERT INTO test VALUES(%s,%s)"),
-        SELECT_VALUE("SELECT value FROM test"),
-        CREATE_TABLE("CREATE TABLE test ( value INTEGER )"),
+        SELECT_VALUE("SELECT test_value FROM test"),
+        CREATE_TABLE("CREATE TABLE test ( test_value INTEGER )"),
         DROP_TABLE("DROP TABLE test"),
-        SELECT_VALUE_BATCH("SELECT value FROM test; SELECT value FROM test"),
+        SELECT_VALUE_BATCH("SELECT test_value FROM test; SELECT test_value FROM test"),
 
         INSERT_VALUE_AUTOGENERATED_KEY("INSERT INTO test VALUES(100)"),
-        CREATE_TABLE_AUTOGENERATED_KEY("CREATE TABLE test ( id INTEGER IDENTITY,  value INTEGER )"),
+        CREATE_TABLE_AUTOGENERATED_KEY("CREATE TABLE test ( id INTEGER IDENTITY,  test_value INTEGER )"),
 
         //-------------------------------------------------------------------------
         // Methods dealing with a single-column BLOB table.
         //-------------------------------------------------------------------------
 
         INSERT_BLOB_VALUE_PLACEHOLDER("INSERT INTO blob_test VALUES (%s)"),
-        CREATE_BLOB_TABLE("CREATE TABLE blob_test ( value %s )"),
+        CREATE_BLOB_TABLE("CREATE TABLE blob_test ( test_value %s )"),
         DROP_BLOB_TABLE("DROP TABLE blob_test"),
-        SELECT_BLOB_VALUE("SELECT value FROM blob_test"),
+        SELECT_BLOB_VALUE("SELECT test_value FROM blob_test"),
 
         //-------------------------------------------------------------------------
         // Methods dealing with a single-column CLOB table.
         //-------------------------------------------------------------------------
 
         INSERT_CLOB_VALUE_PLACEHOLDER("INSERT INTO clob_test VALUES (%s)"),
-        SELECT_CLOB_VALUE("SELECT value FROM clob_test"),
-        CREATE_CLOB_TABLE("CREATE TABLE clob_test ( value %s )"),
+        SELECT_CLOB_VALUE("SELECT test_value FROM clob_test"),
+        CREATE_CLOB_TABLE("CREATE TABLE clob_test ( test_value %s )"),
         DROP_CLOB_TABLE("DROP TABLE clob_test"),
 
         //-------------------------------------------------------------------------
@@ -1020,7 +1020,7 @@ public interface TestKit<T> {
         //-------------------------------------------------------------------------
 
         INSERT_TWO_COLUMNS("INSERT INTO test_two_column VALUES (100, 'hello')"),
-        SELECT_VALUE_TWO_COLUMNS("SELECT col1 AS value, col2 AS value FROM test_two_column"),
+        SELECT_VALUE_TWO_COLUMNS("SELECT col1 AS test_value, col2 AS test_value FROM test_two_column"),
         SELECT_VALUE_ALIASED_COLUMNS("SELECT col1 AS b, col1 AS c, col1 AS a FROM test_two_column"),
         CREATE_TABLE_TWO_COLUMNS("CREATE TABLE test_two_column ( col1 INTEGER, col2 VARCHAR(100) )"),
         DROP_TABLE_TWO_COLUMNS("DROP TABLE test_two_column");
