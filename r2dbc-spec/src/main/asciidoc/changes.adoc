@@ -33,7 +33,7 @@ Lifecycle extension::
 
 Refinement of `Option`::
 
-* Removal of generic type of `ConnectionFactoryOptions.getValue(Option)` and ``ConnectionFactoryOptions.getRequiredValue(Option)`.
+* Removal of generic type of `ConnectionFactoryOptions.getValue(Option)` and `ConnectionFactoryOptions.getRequiredValue(Option)`.
 
 Refinement of `RowMetadata`::
 
@@ -41,8 +41,12 @@ Refinement of `RowMetadata`::
 
 Lock Wait and Statement Timeouts::
 
-  * Introduction of <<connections.lock-acquisition-timeout>> and <<connections.statment-timeout>>.
-  * Introduction of the `Connection.setLockWaitTimeout(Duration)` and `Connection.setStatementTimeout(Duration)` methods.
+* Introduction of <<connections.lock-acquisition-timeout>> and <<connections.statment-timeout>>.
+* Introduction of the `Connection.setLockWaitTimeout(Duration)` and `Connection.setStatementTimeout(Duration)` methods.
+
+Refined Exceptions for `Readable.get(…)` and `Statement.bind(…)`::
+
+* Consistent set of exceptions is being used across implementations to avoid the need to catch different exception types.
 
 [[changes.0.8.x]]
 == 0.8

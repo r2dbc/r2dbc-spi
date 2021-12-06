@@ -3,7 +3,7 @@
 :email: r2dbc@googlegroups.com
 :revnumber: {version}
 :revdate: {localdate}
-:revremark: Under review
+:revremark: Final
 ifdef::backend-pdf[]
 :pagenums:
 :toc:
