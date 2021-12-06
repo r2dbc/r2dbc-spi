@@ -94,7 +94,7 @@ public interface TestKit<T> {
      */
     default Mono<Collection<Integer>> extractColumns(Result result) {
         return Flux.from(result
-            .map((row, rowMetadata) -> extractColumn(row, Integer.class)))
+                .map((row, rowMetadata) -> extractColumn(row, Integer.class)))
             .collect(Collectors.toSet());
     }
 
@@ -249,8 +249,8 @@ public interface TestKit<T> {
     @Test
     default void autoCommitByDefault() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.just(connection.isAutoCommit()),
-            Connection::close)
+                connection -> Flux.just(connection.isAutoCommit()),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext(true).as("new connections are in auto-commit mode")
             .verifyComplete();
@@ -259,15 +259,15 @@ public interface TestKit<T> {
     @Test
     default void changeAutoCommitCommitsTransaction() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection ->
-                Flux.from(connection.setAutoCommit(false))
-                    .thenMany(connection.beginTransaction())
-                    .thenMany(connection.createStatement(expand(TestStatement.INSERT_VALUE200)).execute())
-                    .flatMap(Result::getRowsUpdated)
-                    .thenMany(connection.setAutoCommit(true))
-                    .thenMany(connection.createStatement(expand(TestStatement.SELECT_VALUE)).execute())
-                    .flatMap(it -> it.map((row, metadata) -> extractColumn(row))),
-            Connection::close)
+                connection ->
+                    Flux.from(connection.setAutoCommit(false))
+                        .thenMany(connection.beginTransaction())
+                        .thenMany(connection.createStatement(expand(TestStatement.INSERT_VALUE200)).execute())
+                        .flatMap(Result::getRowsUpdated)
+                        .thenMany(connection.setAutoCommit(true))
+                        .thenMany(connection.createStatement(expand(TestStatement.SELECT_VALUE)).execute())
+                        .flatMap(it -> it.map((row, metadata) -> extractColumn(row))),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext(200).as("autoCommit(true) committed the transaction. Expecting a value to be present")
             .verifyComplete();
@@ -276,16 +276,16 @@ public interface TestKit<T> {
     @Test
     default void sameAutoCommitLeavesTransactionUnchanged() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection ->
-                Flux.from(connection.setAutoCommit(false))
-                    .thenMany(connection.beginTransaction())
-                    .thenMany(connection.createStatement(expand(TestStatement.INSERT_VALUE200)).execute())
-                    .flatMap(Result::getRowsUpdated)
-                    .thenMany(connection.setAutoCommit(false))
-                    .thenMany(connection.rollbackTransaction())
-                    .thenMany(connection.createStatement(expand(TestStatement.SELECT_VALUE)).execute())
-                    .flatMap(it -> it.map((row, metadata) -> extractColumn(row))),
-            Connection::close)
+                connection ->
+                    Flux.from(connection.setAutoCommit(false))
+                        .thenMany(connection.beginTransaction())
+                        .thenMany(connection.createStatement(expand(TestStatement.INSERT_VALUE200)).execute())
+                        .flatMap(Result::getRowsUpdated)
+                        .thenMany(connection.setAutoCommit(false))
+                        .thenMany(connection.rollbackTransaction())
+                        .thenMany(connection.createStatement(expand(TestStatement.SELECT_VALUE)).execute())
+                        .flatMap(it -> it.map((row, metadata) -> extractColumn(row))),
+                Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -295,15 +295,15 @@ public interface TestKit<T> {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.from(connection
+                connection -> Flux.from(connection
 
-                .createBatch()
-                .add(expand(TestStatement.INSERT_VALUE200))
-                .add(expand(TestStatement.SELECT_VALUE))
-                .execute())
+                        .createBatch()
+                        .add(expand(TestStatement.INSERT_VALUE200))
+                        .add(expand(TestStatement.SELECT_VALUE))
+                        .execute())
 
-                .flatMap(Result::getRowsUpdated),
-            Connection::close)
+                    .flatMap(Result::getRowsUpdated),
+                Connection::close)
             .then()
             .as(StepVerifier::create)
             .verifyComplete();
@@ -312,17 +312,17 @@ public interface TestKit<T> {
     @Test
     default void bindFails() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
+                connection -> {
 
-                Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
-                assertThrows(IllegalArgumentException.class, () -> statement.bind(0, null), "bind(0, null) should fail");
-                assertThrows(IndexOutOfBoundsException.class, () -> statement.bind(99, ""), "bind(nonexistent-index, null) should fail");
-                assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), null), "bind(identifier, null) should fail");
-                assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), Class.class), "bind(identifier, Class.class) should fail");
-                assertThrows(NoSuchElementException.class, () -> statement.bind("unknown-placeholder", ""), "bind(unknown-placeholder, \"\") should fail");
-                return Mono.empty();
-            },
-            Connection::close)
+                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                    assertThrows(IllegalArgumentException.class, () -> statement.bind(0, null), "bind(0, null) should fail");
+                    assertThrows(IndexOutOfBoundsException.class, () -> statement.bind(99, ""), "bind(nonexistent-index, null) should fail");
+                    assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), null), "bind(identifier, null) should fail");
+                    assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), Class.class), "bind(identifier, Class.class) should fail");
+                    assertThrows(NoSuchElementException.class, () -> statement.bind("unknown-placeholder", ""), "bind(unknown-placeholder, \"\") should fail");
+                    return Mono.empty();
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -330,14 +330,14 @@ public interface TestKit<T> {
     @Test
     default void bindNull() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                Statement statement = connection
-                    .createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
-                bindNull(statement, getIdentifier(0), Integer.class);
-                return Flux.from(statement.execute())
-                    .flatMap(this::extractRowsUpdated);
-            },
-            Connection::close)
+                connection -> {
+                    Statement statement = connection
+                        .createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                    bindNull(statement, getIdentifier(0), Integer.class);
+                    return Flux.from(statement.execute())
+                        .flatMap(this::extractRowsUpdated);
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .expectNextCount(1).as("rows inserted")
             .verifyComplete();
@@ -346,14 +346,14 @@ public interface TestKit<T> {
     @Test
     default void bindNullFails() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
+                connection -> {
 
-                Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
-                assertThrows(IllegalArgumentException.class, () -> statement.bindNull(null, String.class), "bindNull(null, …) should fail");
-                assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), null), "bindNull(identifier, null) should fail");
-                return Mono.empty();
-            },
-            Connection::close)
+                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                    assertThrows(IllegalArgumentException.class, () -> statement.bindNull(null, String.class), "bindNull(null, …) should fail");
+                    assertThrows(IllegalArgumentException.class, () -> bind(statement, getIdentifier(0), null), "bindNull(identifier, null) should fail");
+                    return Mono.empty();
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -361,13 +361,13 @@ public interface TestKit<T> {
     @Test
     default void blobInsert() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                Statement statement = connection.createStatement(expand(TestStatement.INSERT_BLOB_VALUE_PLACEHOLDER, getPlaceholder(0)));
-                bind(statement, getIdentifier(0), Blob.from(Mono.just(StandardCharsets.UTF_8.encode("test-value"))));
-                return Flux.from(statement.execute())
-                    .flatMap(this::extractRowsUpdated);
-            },
-            Connection::close)
+                connection -> {
+                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_BLOB_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                    bind(statement, getIdentifier(0), Blob.from(Mono.just(StandardCharsets.UTF_8.encode("test-value"))));
+                    return Flux.from(statement.execute())
+                        .flatMap(this::extractRowsUpdated);
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .expectNextCount(1).as("rows inserted")
             .verifyComplete();
@@ -386,19 +386,19 @@ public interface TestKit<T> {
 
         // BLOB as ByteBuffer
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.from(connection
+                connection -> Flux.from(connection
 
-                .createStatement(expand(TestStatement.SELECT_BLOB_VALUE))
-                .execute())
-                .flatMap(result -> result
-                    .map((row, rowMetadata) -> extractColumn(row)))
-                .cast(ByteBuffer.class)
-                .map(buffer -> {
-                    byte[] bytes = new byte[buffer.remaining()];
-                    buffer.get(bytes);
-                    return bytes;
-                }),
-            Connection::close)
+                        .createStatement(expand(TestStatement.SELECT_BLOB_VALUE))
+                        .execute())
+                    .flatMap(result -> result
+                        .map((row, rowMetadata) -> extractColumn(row)))
+                    .cast(ByteBuffer.class)
+                    .map(buffer -> {
+                        byte[] bytes = new byte[buffer.remaining()];
+                        buffer.get(bytes);
+                        return bytes;
+                    }),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNextMatches(actual -> {
                 ByteBuffer expected = StandardCharsets.UTF_8.encode("test-value");
@@ -408,15 +408,15 @@ public interface TestKit<T> {
 
         // BLOB as Blob
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.from(connection
+                connection -> Flux.from(connection
 
-                .createStatement(expand(TestStatement.SELECT_BLOB_VALUE))
-                .execute())
-                .flatMap(result -> Flux.usingWhen(result
-                        .map((row, rowMetadata) -> extractColumn(row, Blob.class)),
-                    blob -> Flux.from(blob.stream()).reduce(ByteBuffer::put),
-                    Blob::discard)),
-            Connection::close)
+                        .createStatement(expand(TestStatement.SELECT_BLOB_VALUE))
+                        .execute())
+                    .flatMap(result -> Flux.usingWhen(result
+                            .map((row, rowMetadata) -> extractColumn(row, Blob.class)),
+                        blob -> Flux.from(blob.stream()).reduce(ByteBuffer::put),
+                        Blob::discard)),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNextMatches(actual -> {
                 ByteBuffer expected = StandardCharsets.UTF_8.encode("test-value");
@@ -428,13 +428,13 @@ public interface TestKit<T> {
     @Test
     default void clobInsert() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                Statement statement = connection.createStatement(expand(TestStatement.INSERT_CLOB_VALUE_PLACEHOLDER, getPlaceholder(0)));
-                bind(statement, getIdentifier(0), Clob.from(Mono.just("test-value")));
-                return Flux.from(statement.execute())
-                    .flatMap(Result::getRowsUpdated);
-            },
-            Connection::close)
+                connection -> {
+                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_CLOB_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                    bind(statement, getIdentifier(0), Clob.from(Mono.just("test-value")));
+                    return Flux.from(statement.execute())
+                        .flatMap(Result::getRowsUpdated);
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .expectNextCount(1).as("rows inserted")
             .verifyComplete();
@@ -453,30 +453,30 @@ public interface TestKit<T> {
 
         // CLOB defaults to String
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.from(connection
+                connection -> Flux.from(connection
 
-                .createStatement(expand(TestStatement.SELECT_CLOB_VALUE))
-                .execute())
-                .flatMap(result -> result
-                    .map((row, rowMetadata) -> extractColumn(row))),
-            Connection::close)
+                        .createStatement(expand(TestStatement.SELECT_CLOB_VALUE))
+                        .execute())
+                    .flatMap(result -> result
+                        .map((row, rowMetadata) -> extractColumn(row))),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext("test-value").as("test_value from select")
             .verifyComplete();
 
         // CLOB consume as Clob
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.from(connection
+                connection -> Flux.from(connection
 
-                .createStatement(expand(TestStatement.SELECT_CLOB_VALUE))
-                .execute())
-                .flatMap(result -> Flux.usingWhen(result
-                        .map((row, rowMetadata) -> extractColumn(row, Clob.class)),
-                    clob -> Flux.from(clob.stream())
-                        .reduce(new StringBuilder(), StringBuilder::append)
-                        .map(StringBuilder::toString),
-                    Clob::discard)),
-            Connection::close)
+                        .createStatement(expand(TestStatement.SELECT_CLOB_VALUE))
+                        .execute())
+                    .flatMap(result -> Flux.usingWhen(result
+                            .map((row, rowMetadata) -> extractColumn(row, Clob.class)),
+                        clob -> Flux.from(clob.stream())
+                            .reduce(new StringBuilder(), StringBuilder::append)
+                            .map(StringBuilder::toString),
+                        Clob::discard)),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext("test-value").as("test_value from select")
             .verifyComplete();
@@ -487,20 +487,20 @@ public interface TestKit<T> {
         getJdbcOperations().execute(expand(TestStatement.INSERT_TWO_COLUMNS));
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.from(connection
+                connection -> Flux.from(connection
 
-                .createStatement(expand(TestStatement.SELECT_VALUE_TWO_COLUMNS))
-                .execute())
-                .flatMap(result -> {
-                    return result.map((row, rowMetadata) -> {
-                        return Arrays.asList(rowMetadata.contains("test_value"), rowMetadata.contains("TEST_VALUE"),
-                            captureException(() -> rowMetadata.getColumnMetadata(-1)),
-                            captureException(() -> rowMetadata.getColumnMetadata(100)),
-                            captureException(() -> rowMetadata.getColumnMetadata("unknown")));
-                    });
-                })
-                .flatMapIterable(Function.identity()),
-            Connection::close)
+                        .createStatement(expand(TestStatement.SELECT_VALUE_TWO_COLUMNS))
+                        .execute())
+                    .flatMap(result -> {
+                        return result.map((row, rowMetadata) -> {
+                            return Arrays.asList(rowMetadata.contains("test_value"), rowMetadata.contains("TEST_VALUE"),
+                                captureException(() -> rowMetadata.getColumnMetadata(-1)),
+                                captureException(() -> rowMetadata.getColumnMetadata(100)),
+                                captureException(() -> rowMetadata.getColumnMetadata("unknown")));
+                        });
+                    })
+                    .flatMapIterable(Function.identity()),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext(true).as("rowMetadata.contains(value)")
             .expectNext(true).as("rowMetadata.contains(VALUE)")
@@ -515,13 +515,13 @@ public interface TestKit<T> {
         getJdbcOperations().execute(expand(TestStatement.INSERT_TWO_COLUMNS));
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.from(connection
+                connection -> Flux.from(connection
 
-                .createStatement(expand(TestStatement.SELECT_VALUE_ALIASED_COLUMNS))
-                .execute())
-                .flatMap(result -> result.map((row, rowMetadata) -> rowMetadata.getColumnMetadatas().stream().map(ReadableMetadata::getName).collect(Collectors.toList())))
-                .flatMapIterable(Function.identity()),
-            Connection::close)
+                        .createStatement(expand(TestStatement.SELECT_VALUE_ALIASED_COLUMNS))
+                        .execute())
+                    .flatMap(result -> result.map((row, rowMetadata) -> rowMetadata.getColumnMetadatas().stream().map(ReadableMetadata::getName).collect(Collectors.toList())))
+                    .flatMapIterable(Function.identity()),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext("b").as("First column label: b")
             .expectNext("c").as("First column label: c")
@@ -534,15 +534,15 @@ public interface TestKit<T> {
         getJdbcOperations().execute(expand(TestStatement.INSERT_TWO_COLUMNS));
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.from(connection
+                connection -> Flux.from(connection
 
-                .createStatement(expand(TestStatement.SELECT_VALUE_ALIASED_COLUMNS))
-                .execute())
-                .flatMap(result -> result.map(readable -> Arrays.asList(captureException(() -> readable.get(-1)),
-                    captureException(() -> readable.get(100)),
-                    captureException(() -> readable.get("unknown")))))
-                .flatMapIterable(Function.identity()),
-            Connection::close)
+                        .createStatement(expand(TestStatement.SELECT_VALUE_ALIASED_COLUMNS))
+                        .execute())
+                    .flatMap(result -> result.map(readable -> Arrays.asList(captureException(() -> readable.get(-1)),
+                        captureException(() -> readable.get(100)),
+                        captureException(() -> readable.get("unknown")))))
+                    .flatMapIterable(Function.identity()),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNextMatches(IndexOutOfBoundsException.class::isInstance).as("get(-1) throws IndexOutOfBoundsException")
             .expectNextMatches(IndexOutOfBoundsException.class::isInstance).as("get(100) throws IndexOutOfBoundsException")
@@ -555,12 +555,12 @@ public interface TestKit<T> {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.from(connection
+                connection -> Flux.from(connection
 
-                .createStatement(expand(TestStatement.SELECT_VALUE_BATCH))
-                .execute())
-                .flatMap(this::extractColumns),
-            Connection::close)
+                        .createStatement(expand(TestStatement.SELECT_VALUE_BATCH))
+                        .execute())
+                    .flatMap(this::extractColumns),
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("test_value from first select")
             .expectNext(collectionOf(100)).as("test_value from second select")
@@ -571,11 +571,11 @@ public interface TestKit<T> {
     default void createStatementFails() {
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                assertThrows(IllegalArgumentException.class, () -> connection.createStatement(null));
-                return Mono.empty();
-            },
-            Connection::close)
+                connection -> {
+                    assertThrows(IllegalArgumentException.class, () -> connection.createStatement(null));
+                    return Mono.empty();
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -585,15 +585,15 @@ public interface TestKit<T> {
         getJdbcOperations().execute(expand(TestStatement.INSERT_TWO_COLUMNS));
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Flux.from(connection
+                connection -> Flux.from(connection
 
-                .createStatement(expand(TestStatement.SELECT_VALUE_TWO_COLUMNS))
-                .execute())
+                        .createStatement(expand(TestStatement.SELECT_VALUE_TWO_COLUMNS))
+                        .execute())
 
-                .flatMap(result -> result
-                    .map((row, rowMetadata) -> Arrays.asList(row.get("test_value"), row.get("TEST_VALUE"))))
-                .flatMapIterable(Function.identity()),
-            Connection::close)
+                    .flatMap(result -> result
+                        .map((row, rowMetadata) -> Arrays.asList(row.get("test_value"), row.get("TEST_VALUE"))))
+                    .flatMapIterable(Function.identity()),
+                Connection::close)
 
             .as(StepVerifier::create)
             .expectNext(100).as("test_value from col1")
@@ -604,57 +604,57 @@ public interface TestKit<T> {
     @Test
     default void prepareStatement() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                connection -> {
+                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
 
-                IntStream.range(0, 10)
-                    .forEach(i -> {
-                        bind(statement, getIdentifier(0), i);
+                    IntStream.range(0, 10)
+                        .forEach(i -> {
+                            bind(statement, getIdentifier(0), i);
 
-                        if (i != 9) {
-                            statement.add();
-                        }
-                    });
+                            if (i != 9) {
+                                statement.add();
+                            }
+                        });
 
-                return Flux.from(statement
-                    .execute())
-                    .flatMap(this::extractRowsUpdated);
-            },
-            Connection::close)
+                    return Flux.from(statement
+                            .execute())
+                        .flatMap(this::extractRowsUpdated);
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .expectNextCount(10).as("values from insertions")
             .verifyComplete();
     }
 
-@Test
-default void prepareStatementWithTrailingAddShouldFail() {
-    Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+    @Test
+    default void prepareStatementWithTrailingAddShouldFail() {
+        Flux.usingWhen(getConnectionFactory().create(),
+                connection -> {
+                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
 
-                bind(statement, getIdentifier(0), 0).add();
+                    bind(statement, getIdentifier(0), 0).add();
 
-                return Flux.from(statement
-                        .execute())
-                    .flatMap(this::extractRowsUpdated).then();
-            },
-            Connection::close)
-        .as(StepVerifier::create)
-        .verifyError();
-}
+                    return Flux.from(statement
+                            .execute())
+                        .flatMap(this::extractRowsUpdated).then();
+                },
+                Connection::close)
+            .as(StepVerifier::create)
+            .verifyError();
+    }
 
     @Test
     default void prepareStatementWithIncompleteBatchFails() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                Statement statement = connection.createStatement(expand(TestStatement.INSERT_TWO_VALUES_PLACEHOLDER, getPlaceholder(0), getPlaceholder(1)));
+                connection -> {
+                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_TWO_VALUES_PLACEHOLDER, getPlaceholder(0), getPlaceholder(1)));
 
-                bind(statement, getIdentifier(0), 0);
+                    bind(statement, getIdentifier(0), 0);
 
-                assertThrows(IllegalStateException.class, statement::add);
-                return Mono.empty();
-            },
-            Connection::close)
+                    assertThrows(IllegalStateException.class, statement::add);
+                    return Mono.empty();
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -662,15 +662,15 @@ default void prepareStatementWithTrailingAddShouldFail() {
     @Test
     default void prepareStatementWithIncompleteBindingFails() {
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                Statement statement = connection.createStatement(expand(TestStatement.INSERT_TWO_VALUES_PLACEHOLDER, getPlaceholder(0), getPlaceholder(1)));
+                connection -> {
+                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_TWO_VALUES_PLACEHOLDER, getPlaceholder(0), getPlaceholder(1)));
 
-                bind(statement, getIdentifier(0), 0);
+                    bind(statement, getIdentifier(0), 0);
 
-                assertThrows(IllegalStateException.class, statement::execute);
-                return Mono.empty();
-            },
-            Connection::close)
+                    assertThrows(IllegalStateException.class, statement::execute);
+                    return Mono.empty();
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -682,16 +682,16 @@ default void prepareStatementWithTrailingAddShouldFail() {
         getJdbcOperations().execute(getCreateTableWithAutogeneratedKey());
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                Statement statement = connection.createStatement(getInsertIntoWithAutogeneratedKey());
+                connection -> {
+                    Statement statement = connection.createStatement(getInsertIntoWithAutogeneratedKey());
 
-                statement.returnGeneratedValues();
+                    statement.returnGeneratedValues();
 
-                return Flux.from(statement
-                    .execute())
-                    .flatMap(it -> it.map((row, rowMetadata) -> row.get(0)));
-            },
-            Connection::close)
+                    return Flux.from(statement
+                            .execute())
+                        .flatMap(it -> it.map((row, rowMetadata) -> row.get(0)));
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .expectNextCount(1)
             .verifyComplete();
@@ -701,13 +701,13 @@ default void prepareStatementWithTrailingAddShouldFail() {
     default void returnGeneratedValuesFails() {
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> {
-                Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE100));
+                connection -> {
+                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE100));
 
-                assertThrows(IllegalArgumentException.class, () -> statement.returnGeneratedValues((String[]) null));
-                return Mono.empty();
-            },
-            Connection::close)
+                    assertThrows(IllegalArgumentException.class, () -> statement.returnGeneratedValues((String[]) null));
+                    return Mono.empty();
+                },
+                Connection::close)
             .as(StepVerifier::create)
             .verifyComplete();
     }
@@ -717,40 +717,40 @@ default void prepareStatementWithTrailingAddShouldFail() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Mono.from(connection
+                connection -> Mono.from(connection
 
-                .beginTransaction())
-                .<Object>thenMany(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
-                    .execute())
-                    .flatMap(this::extractColumns))
+                        .beginTransaction())
+                    .<Object>thenMany(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                            .execute())
+                        .flatMap(this::extractColumns))
 
-                .concatWith(Flux.defer(() -> {
-                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
-                    bind(statement, getIdentifier(0), 200);
-                    return statement.execute();
-                })
-                    .flatMap(this::extractRowsUpdated))
-                .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
-                    .execute())
-                    .flatMap(this::extractColumns))
+                    .concatWith(Flux.defer(() -> {
+                            Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                            bind(statement, getIdentifier(0), 200);
+                            return statement.execute();
+                        })
+                        .flatMap(this::extractRowsUpdated))
+                    .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                            .execute())
+                        .flatMap(this::extractColumns))
 
-                .concatWith(connection.createSavepoint("test_savepoint"))
-                .concatWith(Flux.defer(() -> {
-                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
-                    bind(statement, getIdentifier(0), 300);
-                    return statement.execute();
-                })
-                    .flatMap(this::extractRowsUpdated))
-                .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
-                    .execute())
-                    .flatMap(this::extractColumns))
+                    .concatWith(connection.createSavepoint("test_savepoint"))
+                    .concatWith(Flux.defer(() -> {
+                            Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                            bind(statement, getIdentifier(0), 300);
+                            return statement.execute();
+                        })
+                        .flatMap(this::extractRowsUpdated))
+                    .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                            .execute())
+                        .flatMap(this::extractColumns))
 
-                .concatWith(connection.rollbackTransactionToSavepoint("test_savepoint"))
-                .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
-                    .execute())
-                    .flatMap(this::extractColumns)),
+                    .concatWith(connection.rollbackTransactionToSavepoint("test_savepoint"))
+                    .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                            .execute())
+                        .flatMap(this::extractColumns)),
 
-            Connection::close)
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("test_value from select")
             .expectNext(1).as("rows inserted")
@@ -851,18 +851,18 @@ default void prepareStatementWithTrailingAddShouldFail() {
                             Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
                             bind(statement, getIdentifier(0), 200);
                             return statement.execute();
-                })
-                    .flatMap(this::extractRowsUpdated))
-                .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
-                    .execute())
-                    .flatMap(this::extractColumns))
+                        })
+                        .flatMap(this::extractRowsUpdated))
+                    .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                            .execute())
+                        .flatMap(this::extractColumns))
 
-                .concatWith(connection.commitTransaction())
-                .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
-                    .execute())
-                    .flatMap(this::extractColumns)),
+                    .concatWith(connection.commitTransaction())
+                    .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                            .execute())
+                        .flatMap(this::extractColumns)),
 
-            Connection::close)
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("test_value from select")
             .expectNext(1).as("rows inserted")
@@ -876,29 +876,29 @@ default void prepareStatementWithTrailingAddShouldFail() {
         getJdbcOperations().execute(expand(TestStatement.INSERT_VALUE100));
 
         Flux.usingWhen(getConnectionFactory().create(),
-            connection -> Mono.from(connection
+                connection -> Mono.from(connection
 
-                .beginTransaction())
-                .<Object>thenMany(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
-                    .execute())
-                    .flatMap(this::extractColumns))
+                        .beginTransaction())
+                    .<Object>thenMany(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                            .execute())
+                        .flatMap(this::extractColumns))
 
-                .concatWith(Flux.defer(() -> {
-                    Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
-                    bind(statement, getIdentifier(0), 200);
-                    return statement.execute();
-                })
-                    .flatMap(this::extractRowsUpdated))
-                .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
-                    .execute())
-                    .flatMap(this::extractColumns))
+                    .concatWith(Flux.defer(() -> {
+                            Statement statement = connection.createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                            bind(statement, getIdentifier(0), 200);
+                            return statement.execute();
+                        })
+                        .flatMap(this::extractRowsUpdated))
+                    .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                            .execute())
+                        .flatMap(this::extractColumns))
 
-                .concatWith(connection.rollbackTransaction())
-                .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
-                    .execute())
-                    .flatMap(this::extractColumns)),
+                    .concatWith(connection.rollbackTransaction())
+                    .concatWith(Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                            .execute())
+                        .flatMap(this::extractColumns)),
 
-            Connection::close)
+                Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("test_value from select")
             .expectNext(1).as("rows inserted")
