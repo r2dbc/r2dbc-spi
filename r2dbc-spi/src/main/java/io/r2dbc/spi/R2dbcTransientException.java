@@ -137,4 +137,5 @@ public abstract class R2dbcTransientException extends R2dbcException {
     public R2dbcTransientException(@Nullable Throwable cause) {
         super(cause);
     }
+
 }

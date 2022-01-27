@@ -467,6 +467,7 @@ abstract class ConnectionUrlParser {
         private static boolean isWhitespace(char ch) {
             return ch == SPACE || ch == TAB || ch == CR || ch == LF;
         }
+
     }
 
     /**

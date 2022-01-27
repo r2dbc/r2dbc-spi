@@ -31,4 +31,5 @@ public enum ValidationDepth {
      * database queries.  Any query submitted by the driver to validate the connection is executed in the context of the current transaction.
      */
     REMOTE
+
 }

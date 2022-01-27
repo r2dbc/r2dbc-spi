@@ -132,4 +132,5 @@ public class R2dbcNonTransientResourceException extends R2dbcNonTransientExcepti
     public R2dbcNonTransientResourceException(@Nullable Throwable cause) {
         super(cause);
     }
+
 }

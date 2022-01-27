@@ -70,4 +70,5 @@ public interface Blob {
      * @return a {@link Publisher} that termination is complete
      */
     Publisher<Void> discard();
+
 }
