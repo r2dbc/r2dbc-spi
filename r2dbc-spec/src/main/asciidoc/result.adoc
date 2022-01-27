@@ -30,7 +30,7 @@ The following example shows how to get a count of updated rows:
 [source,java]
 ----
 // result is a Result object
-Publisher<Integer> rowsUpdated = result.getRowsUpdated();
+Publisher<Long> rowsUpdated = result.getRowsUpdated();
 ----
 ====
 

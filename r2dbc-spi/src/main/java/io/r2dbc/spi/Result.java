@@ -40,7 +40,7 @@ public interface Result {
      * @return the number of rows updated by a query against a database
      * @throws IllegalStateException if the result was consumed
      */
-    Publisher<Integer> getRowsUpdated();
+    Publisher<Long> getRowsUpdated();
 
     /**
      * Returns a mapping of the rows that are the results of a query against a database.  May be empty if the query did not return any rows.  A {@link Row} can be only considered valid within a

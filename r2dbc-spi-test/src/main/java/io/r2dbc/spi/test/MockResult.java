@@ -50,8 +50,8 @@ public final class MockResult implements Result {
     }
 
     @Override
-    public Flux<Integer> getRowsUpdated() {
-        return this.segments.filter(UpdateCount.class::isInstance).cast(UpdateCount.class).map(UpdateCount::value).collect(Collectors.summingInt(Long::intValue)).flux();
+    public Flux<Long> getRowsUpdated() {
+        return this.segments.filter(UpdateCount.class::isInstance).cast(UpdateCount.class).map(UpdateCount::value).collect(Collectors.summingLong(Long::longValue)).flux();
     }
 
     @Override

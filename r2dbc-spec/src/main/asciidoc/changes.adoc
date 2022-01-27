@@ -3,6 +3,13 @@
 
 The following section reflects the history of changes.
 
+[[changes.1.0.0]]
+== 1.0
+
+Revised `Result.getRowsUpdated()` signature::
+
+* `Result.getRowsUpdated()` now returns a `Long` value instead of `Integer` to allow for large update counts.
+
 [[changes.0.9.x]]
 == 0.9
 

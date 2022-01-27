@@ -83,7 +83,7 @@ public interface TestKit<T> {
      * @param result the result object
      * @return mono emitting the update row count.
      */
-    default Mono<Integer> extractRowsUpdated(Result result) {
+    default Mono<Long> extractRowsUpdated(Result result) {
         return Mono.from(result.getRowsUpdated());
     }
 
@@ -795,9 +795,9 @@ public interface TestKit<T> {
                 Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("test_value from select")
-            .expectNext(1).as("rows inserted")
+            .expectNext(1L).as("rows inserted")
             .expectNext(collectionOf(100, 200)).as("values from select")
-            .expectNext(1).as("rows inserted")
+            .expectNext(1L).as("rows inserted")
             .expectNext(collectionOf(100, 200, 300)).as("values from select")
             .expectNext(collectionOf(100, 200)).as("values from select")
             .verifyComplete();
@@ -907,7 +907,7 @@ public interface TestKit<T> {
                 Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("test_value from select")
-            .expectNext(1).as("rows inserted")
+            .expectNext(1L).as("rows inserted")
             .expectNext(collectionOf(100, 200)).as("values from select")
             .expectNext(collectionOf(100, 200)).as("values from select")
             .verifyComplete();
@@ -943,7 +943,7 @@ public interface TestKit<T> {
                 Connection::close)
             .as(StepVerifier::create)
             .expectNext(collectionOf(100)).as("test_value from select")
-            .expectNext(1).as("rows inserted")
+            .expectNext(1L).as("rows inserted")
             .expectNext(collectionOf(100, 200)).as("values from select")
             .expectNext(collectionOf(100)).as("test_value from select")
             .verifyComplete();
