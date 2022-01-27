@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 the original author or authors.
+ * Copyright 2017-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import io.r2dbc.spi.Blob;
 import io.r2dbc.spi.Clob;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
+import io.r2dbc.spi.Parameters;
 import io.r2dbc.spi.ReadableMetadata;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
@@ -324,6 +325,47 @@ public interface TestKit<T> {
                 },
                 Connection::close)
             .as(StepVerifier::create)
+            .verifyComplete();
+    }
+
+    @Test
+    default void bindValueAsParameter() {
+        Flux.usingWhen(getConnectionFactory().create(),
+                connection -> {
+                    Statement statement = connection
+                        .createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                    bind(statement, getIdentifier(0), Parameters.in(100));
+                    return Flux.from(statement.execute())
+                        .flatMap(this::extractRowsUpdated);
+                },
+                Connection::close)
+            .as(StepVerifier::create)
+            .expectNextCount(1).as("rows inserted")
+            .verifyComplete();
+
+        Flux.usingWhen(getConnectionFactory().create(),
+                connection -> Flux.from(connection.createStatement(expand(TestStatement.SELECT_VALUE))
+                        .execute())
+                    .flatMap(this::extractColumns),
+                Connection::close)
+            .as(StepVerifier::create)
+            .expectNext(collectionOf(100)).as("test_value from select")
+            .verifyComplete();
+    }
+
+    @Test
+    default void bindNullAsParameter() {
+        Flux.usingWhen(getConnectionFactory().create(),
+                connection -> {
+                    Statement statement = connection
+                        .createStatement(expand(TestStatement.INSERT_VALUE_PLACEHOLDER, getPlaceholder(0)));
+                    bind(statement, getIdentifier(0), Parameters.in(Integer.class));
+                    return Flux.from(statement.execute())
+                        .flatMap(this::extractRowsUpdated);
+                },
+                Connection::close)
+            .as(StepVerifier::create)
+            .expectNextCount(1).as("rows inserted")
             .verifyComplete();
     }
 
