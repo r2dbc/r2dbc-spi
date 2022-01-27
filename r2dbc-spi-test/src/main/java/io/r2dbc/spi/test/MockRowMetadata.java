@@ -21,8 +21,6 @@ import io.r2dbc.spi.RowMetadata;
 
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -80,30 +78,6 @@ public final class MockRowMetadata implements RowMetadata {
     @Override
     public List<ColumnMetadata> getColumnMetadatas() {
         return this.columnMetadatas;
-    }
-
-    @Override
-    @Deprecated
-    public Collection<String> getColumnNames() {
-
-        List<String> columnNames = new ArrayList<String>() {
-
-            @Override
-            public boolean contains(Object o) {
-                return MockRowMetadata.this.contains.contains(o);
-            }
-
-            @Override
-            public boolean containsAll(Collection<?> c) {
-                return MockRowMetadata.this.contains.containsAll(c);
-            }
-        };
-
-        for (ColumnMetadata columnMetadata : this.columnMetadatas) {
-            columnNames.add(columnMetadata.getName());
-        }
-
-        return Collections.unmodifiableCollection(columnNames);
     }
 
     @Override

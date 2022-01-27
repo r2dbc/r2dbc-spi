@@ -10,6 +10,11 @@ Revised `Result.getRowsUpdated()` signature::
 
 * `Result.getRowsUpdated()` now returns a `Long` value instead of `Integer` to allow for large update counts.
 
+Removed `RowMetadata.getColumnNames()` method::
+
+* The deprecated `RowMetadata.getColumnNames()` was removed.
+Use either `RowMetadata.contains(…)` or `RowMetadata.getColumnMetadatas()` instead.
+
 [[changes.0.9.x]]
 == 0.9
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 the original author or authors.
+ * Copyright 2017-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package io.r2dbc.spi;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -55,23 +54,6 @@ public interface RowMetadata {
     List<? extends ColumnMetadata> getColumnMetadatas();
 
     /**
-     * Returns an unmodifiable collection of column names.
-     * <p>
-     * Any attempts to modify the returned collection, whether direct or via its iterator, result in an {@link UnsupportedOperationException}.
-     * <p>
-     * The iteration order of the column names depends on the actual query result.
-     * Column names may appear multiple times if the result specifies multiple columns with the same name.
-     * Lookups through {@link Collection#contains(Object)} are case-insensitive.
-     * Implementations may enhance comparison sorting rules with escape characters to enforce a particular mode of comparison
-     * when querying for presence/absence of a column.
-     *
-     * @return the column names.
-     * @deprecated since 0.9 for removal. Use {@link #contains(String)} or {@link #getColumnMetadatas()} instead.
-     */
-    @Deprecated
-    Collection<String> getColumnNames();
-
-    /**
      * Returns whether this object contains metadata for {@code columnName}.
      * Lookups are case-insensitive. Implementations may allow escape characters to enforce a particular mode of comparison
      * when querying for presence/absence of a column.
@@ -80,7 +62,12 @@ public interface RowMetadata {
      * @since 0.9
      */
     default boolean contains(String columnName) {
-        return getColumnNames().contains(columnName);
+        for (ColumnMetadata columnMetadata : getColumnMetadatas()) {
+            if (columnMetadata.getName().equalsIgnoreCase(columnName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
