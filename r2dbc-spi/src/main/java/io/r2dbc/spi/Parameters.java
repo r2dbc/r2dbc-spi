@@ -169,6 +169,31 @@ public final class Parameters {
         public Object getValue() {
             return this.value;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Parameter)) {
+                return false;
+            }
+
+            Parameter that = (Parameter) o;
+
+            if (!getType().equals(that.getType())) {
+                return false;
+            }
+            return getValue() != null ? getValue().equals(that.getValue()) : that.getValue() == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = getType().hashCode();
+            result = 31 * result + (getValue() != null ? getValue().hashCode() : 0);
+            return result;
+        }
+
     }
 
     private static class InParameter extends DefaultParameter implements Parameter.In {
@@ -183,6 +208,12 @@ public final class Parameters {
                 getType() +
                 '}';
         }
+
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof In && !(o instanceof Out) && super.equals(o);
+        }
+
     }
 
     private static class OutParameter extends DefaultParameter implements Parameter.Out {
@@ -194,9 +225,15 @@ public final class Parameters {
         @Override
         public String toString() {
             return "Out{" +
-                   getType() +
-                   '}';
+                getType() +
+                '}';
         }
+
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof Out && !(o instanceof In) && super.equals(o);
+        }
+
     }
 
     private static class InOutParameter extends DefaultParameter implements Parameter.In, Parameter.Out {
@@ -208,9 +245,15 @@ public final class Parameters {
         @Override
         public String toString() {
             return "InOut{" +
-                   getType() +
-                   '}';
+                getType() +
+                '}';
         }
+
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof In && o instanceof Out && super.equals(o);
+        }
+
     }
 
     private static class DefaultInferredType implements Type.InferredType, Type {
@@ -232,8 +275,28 @@ public final class Parameters {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Type.InferredType)) {
+                return false;
+            }
+
+            Type.InferredType that = (Type.InferredType) o;
+
+            return getJavaType().equals(that.getJavaType());
+        }
+
+        @Override
+        public int hashCode() {
+            return getJavaType().hashCode();
+        }
+
+        @Override
         public String toString() {
             return "Inferred: " + getJavaType().getName();
         }
+
     }
 }
