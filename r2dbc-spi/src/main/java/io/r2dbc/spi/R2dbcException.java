@@ -199,4 +199,5 @@ public abstract class R2dbcException extends RuntimeException {
 
         return builder.toString();
     }
+
 }

@@ -35,4 +35,5 @@ public enum Nullability {
      * Indicating that the nullability of a column's values is unknown.
      */
     UNKNOWN
+
 }

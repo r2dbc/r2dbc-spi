@@ -69,4 +69,5 @@ public interface Clob {
      * @return a {@link Publisher} that termination is complete
      */
     Publisher<Void> discard();
+
 }

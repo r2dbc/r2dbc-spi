@@ -133,4 +133,5 @@ public final class Option<T> {
     boolean sensitive() {
         return this.sensitive;
     }
+
 }

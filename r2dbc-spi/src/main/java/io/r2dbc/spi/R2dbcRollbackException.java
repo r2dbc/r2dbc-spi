@@ -133,4 +133,5 @@ public class R2dbcRollbackException extends R2dbcTransientException {
     public R2dbcRollbackException(@Nullable Throwable cause) {
         super(cause);
     }
+
 }

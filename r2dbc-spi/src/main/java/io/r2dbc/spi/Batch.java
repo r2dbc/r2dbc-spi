@@ -38,4 +38,5 @@ public interface Batch {
      * @return the {@link Result}s, returned by each statement
      */
     Publisher<? extends Result> execute();
+
 }

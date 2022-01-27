@@ -40,4 +40,5 @@ public interface Type {
     interface InferredType extends Type {
 
     }
+
 }
