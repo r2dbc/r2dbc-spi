@@ -3,6 +3,7 @@ R2DBC SPI Changelog
 
 0.9.1.RELEASE
 ------------------
+* Fix `TestKit` encoding where `ByteBuffer.array` may not exactly represent UTF8 encoded bytes #264
 * `DefaultParameter` does not implement `equals` and `hashCode` methods #260
 
 0.9.0.RELEASE
