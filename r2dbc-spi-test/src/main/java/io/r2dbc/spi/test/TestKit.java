@@ -421,7 +421,7 @@ public interface TestKit<T> {
 
             @Override
             protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
-                lobCreator.setBlobAsBytes(ps, 1, StandardCharsets.UTF_8.encode("test-value").array());
+                lobCreator.setBlobAsBytes(ps, 1, "test-value".getBytes(StandardCharsets.UTF_8));
             }
 
         });
@@ -443,7 +443,7 @@ public interface TestKit<T> {
                 Connection::close)
             .as(StepVerifier::create)
             .expectNextMatches(actual -> {
-                ByteBuffer expected = StandardCharsets.UTF_8.encode("test-value");
+                ByteBuffer expected = ByteBuffer.wrap("test-value".getBytes(StandardCharsets.UTF_8));
                 return Arrays.equals(expected.array(), actual);
             })
             .verifyComplete();
@@ -462,7 +462,7 @@ public interface TestKit<T> {
             .as(StepVerifier::create)
             .expectNextMatches(actual -> {
                 ByteBuffer expected = StandardCharsets.UTF_8.encode("test-value");
-                return Arrays.equals(expected.array(), actual.array());
+                return actual.compareTo(expected) == 0;
             })
             .verifyComplete();
     }
