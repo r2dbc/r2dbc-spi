@@ -1,6 +1,10 @@
 R2DBC SPI Changelog
 =============================
 
+0.9.1.RELEASE
+------------------
+* `DefaultParameter` does not implement `equals` and `hashCode` methods #260
+
 0.9.0.RELEASE
 ------------------
 * Switch from `VALUE` column name in TCK to `TEST_VALUE` to avoid keyword clashes #257
