@@ -10,7 +10,16 @@ on:
 jobs:
   build:
     if: github.repository == 'r2dbc/r2dbc-spi'
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+            include:
+                - os: ubuntu-latest
+                  mvn: ./mvnw
+                - os: windows-latest
+                  mvn: mvn
+                - os: macos-latest
+                  mvn: ./mvnw
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
@@ -28,4 +37,4 @@ jobs:
       env:
         SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
         SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-      run: ./mvnw -B deploy -P snapshot -s settings.xml
+      run: ${{ matrix.mvn }} -B deploy -P snapshot -s settings.xml
