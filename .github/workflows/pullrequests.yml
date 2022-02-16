@@ -7,7 +7,16 @@ on: [pull_request]
 
 jobs:
   pr-build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+            include:
+                - os: ubuntu-latest
+                  mvn: ./mvnw
+                - os: windows-latest
+                  mvn: mvn
+                - os: macos-latest
+                  mvn: ./mvnw
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
@@ -22,4 +31,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-pr-
       - name: Build with Maven
-        run: ./mvnw -B verify
+        run: ${{ matrix.mvn }} -B verify
