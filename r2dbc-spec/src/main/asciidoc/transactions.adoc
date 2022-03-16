@@ -40,7 +40,7 @@ The following example shows how to start a transaction:
 // connection is a Connection object
 // definition is a TransactionDefinition object
 Publisher<Void> begin = connection.beginTransaction(definition);
-----                                    
+----
 ====
 
 NOTE: Drivers may reject attributes based on the connection configuration. An example would be the use of read-write transactions with connections in read-only mode.
@@ -55,7 +55,7 @@ The following methods are available on the `TransactionDefinition` interface:
 [[transactions.transaction-definition.get-attribute]]
 ==== The `getAttribute` Method
 
-R2DBC drivers invoke the `getAttribute` method to query for transaction attributes. Attributes that have no configuration value attached are considered unconfigured and therefore represented with a `null` value. The value type follows the actual attribute identified by a `Option` constant.  
+R2DBC drivers invoke the `getAttribute` method to query for transaction attributes. Attributes that have no configuration value attached are considered unconfigured and therefore represented with a `null` value. The value type follows the actual attribute identified by a `Option` constant.
 
 [[transactions.auto-commit]]
 == Auto-commit Mode
@@ -98,6 +98,8 @@ The `Connection` interface provides two methods to interact with transaction iso
 R2DBC applications should change transaction isolation levels by invoking the `setTransactionIsolationLevel` method instead of running SQL commands to change the connection configuration.
 
 Changing transaction isolation levels typically involves database activity.
+When called outside a transaction, then the isolation level applies for all subsequent transactions.
+Setting the isolation level within a transaction results in vendor-specific behavior.
 Therefore, the method returns a `Publisher`.
 Changing an isolation level during an active transaction results in implementation-specific behavior.
 Querying transaction isolation levels is typically a local operation that involves driver state without database communication.

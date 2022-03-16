@@ -201,7 +201,8 @@ public interface Connection extends Closeable {
     Publisher<Void> setStatementTimeout(Duration timeout);
 
     /**
-     * Configures the isolation level for the current transaction.
+     * Configures the isolation level for the connection. When called outside a transaction, then the isolation level applies for all subsequent transactions.
+     * Setting the isolation level within a transaction results in vendor-specific behavior.
      * <p>Isolation level is typically one of the following constants:
      *
      * <ul>
