@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
  * Values can for columns or {@code OUT} parameters be either retrieved by specifying a name or the index.
  * Indexes are {@code 0}-based.
  *
- * <p> Column and {@code OUT} parameter names used as input to getter methods are case insensitive.
+ * <p> Column and {@code OUT} parameter names used as input to getter methods are case-insensitive.
  * When a {@code get} method is called with a name and several items have the same name, then the value of the first matching item will be returned.
  * Items that are not explicitly named in the query should be referenced through indexes.
  *

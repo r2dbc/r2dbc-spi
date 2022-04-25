@@ -24,7 +24,7 @@ import java.util.function.BiFunction;
  * Column indexes are {@code 0}-based.  Column names do not necessarily reflect the column names how they are in the underlying tables but rather how columns are represented (e.g. aliased) in the
  * result.
  *
- * <p> Column names used as input to getter methods are case insensitive.
+ * <p> Column names used as input to getter methods are case-insensitive.
  * When a get method is called with a column name and several columns have the same name, then the value of the first matching column will be returned.
  * The column name option is designed to be used when column names are used in the SQL query that generated the result set.
  * Columns that are not explicitly named in the query should be referenced through column indexes.

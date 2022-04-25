@@ -21,7 +21,7 @@ package io.r2dbc.spi;
  * Values from out parameters can be either retrieved by specifying a parameter name or the parameter index.
  * Parameter indexes are {@code 0}-based.
  *
- * <p> Parameter names used as input to getter methods are case insensitive.
+ * <p> Parameter names used as input to getter methods are case-insensitive.
  * When a get method is called with a parameter name and several parameters have the same name, then the value of the first matching parameter will be returned.
  * Parameters that are not explicitly named in the query should be referenced through parameter indexes.
  *

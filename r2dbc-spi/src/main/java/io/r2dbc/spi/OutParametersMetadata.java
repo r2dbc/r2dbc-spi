@@ -38,7 +38,7 @@ public interface OutParametersMetadata {
     /**
      * Returns the {@link OutParameterMetadata} for one parameter.
      *
-     * @param name the name of the out parameter.  Parameter names are case insensitive.
+     * @param name the name of the out parameter.  Parameter names are case-insensitive.
      * @return the {@link OutParameterMetadata} for one out parameter
      * @throws IllegalArgumentException if {@code name} is {@code null}
      * @throws NoSuchElementException   if there is no out parameter with the {@code name}

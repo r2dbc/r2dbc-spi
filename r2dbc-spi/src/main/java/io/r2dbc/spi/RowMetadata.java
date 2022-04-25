@@ -39,7 +39,7 @@ public interface RowMetadata {
     /**
      * Returns the {@link ColumnMetadata} for one column in this row.
      *
-     * @param name the name of the column.  Column names are case insensitive.  When a get method contains several columns with same name, then the value of the first matching column will be returned
+     * @param name the name of the column.  Column names are case-insensitive.  When a get method contains several columns with same name, then the value of the first matching column will be returned
      * @return the {@link ColumnMetadata} for one column in this row
      * @throws IllegalArgumentException if {@code name} is {@code null}
      * @throws NoSuchElementException   if there is no column with the {@code name}
@@ -58,6 +58,7 @@ public interface RowMetadata {
      * Lookups are case-insensitive. Implementations may allow escape characters to enforce a particular mode of comparison
      * when querying for presence/absence of a column.
      *
+     * @param columnName the name of the column.  Column names are case-insensitive.  When a get method contains several columns with same name, then the value of the first matching column will be returned
      * @return {@code true} if this object contains metadata for {@code columnName}; {@code false} otherwise.
      * @since 0.9
      */

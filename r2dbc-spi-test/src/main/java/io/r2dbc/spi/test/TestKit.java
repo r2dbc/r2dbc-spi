@@ -1003,8 +1003,8 @@ public interface TestKit<T> {
     /**
      * Returns an {@link Exception} from a {@link Callable}.
      *
-     * @param throwingCallable
-     * @return
+     * @param throwingCallable the callable code block
+     * @return the thrown exception
      * @throws IllegalStateException if {@code throwingCallable} did not throw an exception.
      */
     static Exception captureException(Callable<?> throwingCallable) {

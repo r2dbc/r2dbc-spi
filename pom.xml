@@ -152,6 +152,7 @@
                         <links>
                             <link>https://www.reactive-streams.org/reactive-streams-${reactive-streams.version}-javadoc/</link>
                         </links>
+                        <doclint>html,reference,missing,syntax</doclint>
                     </configuration>
                     <executions>
                         <execution>
@@ -168,7 +169,7 @@
                     <version>3.2.1</version>
                     <executions>
                         <execution>
-                            <id>attach-javadocs</id>
+                            <id>attach-source</id>
                             <goals>
                                 <goal>jar</goal>
                             </goals>
@@ -310,5 +311,12 @@
         </profile>
 
     </profiles>
+
+    <repositories>
+        <repository>
+            <id>spring-libs-milestone</id>
+            <url>https://repo.spring.io/libs-milestone</url>
+        </repository>
+    </repositories>
 
 </project>
