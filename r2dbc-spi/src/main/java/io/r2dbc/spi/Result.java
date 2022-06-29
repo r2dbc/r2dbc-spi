@@ -178,7 +178,7 @@ public interface Result {
         /**
          * Returns the message text.
          *
-         * @return the message text.                                                                                MockResult.java
+         * @return the message text.
          */
         String message();
 
