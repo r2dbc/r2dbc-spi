@@ -16,6 +16,8 @@
 
 package io.r2dbc.spi;
 
+import org.reactivestreams.Publisher;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,6 +107,11 @@ public final class ConnectionFactoryOptions {
      * @since 0.9
      */
     public static final Option<Duration> STATEMENT_TIMEOUT = Option.valueOf("statementTimeout");
+
+    /**
+     * A Credential publisher, which supports dynamic credential usage.
+     */
+    public static final Option<Publisher<? extends Credential>> CREDENTIAL_PUBLISHER = Option.valueOf("credentialPublisher");
 
     /**
      * User for authentication.
