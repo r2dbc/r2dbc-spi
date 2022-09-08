@@ -1,6 +1,6 @@
 package io.r2dbc.spi;
 
-public class UserPasswordCredentialImpl implements UserPasswordCredential {
+class UserPasswordCredentialImpl implements UserPasswordCredential {
 
     private String user;
 
