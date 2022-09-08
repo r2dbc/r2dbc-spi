@@ -1,7 +1,9 @@
 package io.r2dbc.spi;
 
 /** Factory for creating {@link Credential} objects */
-public class CredentialFactory {
+public final class CredentialFactory {
+
+    private CredentialFactory() { }
 
     /**
      * Returns a new {@link UserPasswordCredential}
