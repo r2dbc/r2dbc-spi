@@ -49,8 +49,8 @@ If you'd rather like the latest snapshots of the upcoming major version, use our
 Having trouble with R2DBC? We'd love to help!
 
 * The R2DBC website https://r2dbc.io/ gives you an overview over the entire R2DBC eco-system.
-* Check the [spec documentation](https://r2dbc.io/spec/0.8.1.RELEASE/spec/html/), and [Javadoc](https://r2dbc.io/spec/0.8.1.RELEASE/api/).
-* If you are upgrading, check out the [changelog](https://r2dbc.io/spec/0.8.1.RELEASE/CHANGELOG.txt) for "new and noteworthy" features.
+* Check the [spec documentation](https://r2dbc.io/spec/1.0.0.RELEASE/spec/html/), and [Javadoc](https://r2dbc.io/spec/1.0.0.RELEASE/api/).
+* If you are upgrading, check out the [changelog](https://r2dbc.io/spec/1.0.0.RELEASE/CHANGELOG.txt) for "new and noteworthy" features.
 * Ask a question - we monitor [stackoverflow.com](https://stackoverflow.com) for questions
   tagged with [`r2dbc`](https://stackoverflow.com/tags/r2dbc). 
   You can also chat with the community on [Gitter](https://gitter.im/r2dbc/r2dbc).
