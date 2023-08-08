@@ -59,7 +59,20 @@ public final class Parameters {
      */
     public static Parameter in(Object value) {
         Assert.requireNonNull(value, "Value must not be null");
-        return in(new DefaultInferredType(value.getClass()), value);
+        return in(value.getClass(), value);
+    }
+
+    /**
+     * Create a {@code IN} parameter using type inference and the given {@link Class type} hint and {@code value}.  The actual {@link Type} is inferred during statement execution.^
+     *
+     * @param type the type to be used for type inference.
+     * @param value the value associated with the parameter, can be {@code null}.
+     * @return the in parameter.
+     * @throws IllegalArgumentException if {@code type} is {@code null}.
+     */
+    public static Parameter in(Class<?> type, @Nullable Object value) {
+        Assert.requireNonNull(type, "Type must not be null");
+        return in(new DefaultInferredType(type), value);
     }
 
     /**
@@ -124,6 +137,19 @@ public final class Parameters {
     }
 
     /**
+     * Create a {@code IN/OUT} parameter using type inference and the given {@link Class type} hint and {@code value}.  The actual {@link Type} is inferred during statement execution.^
+     *
+     * @param type the type to be used for type inference.
+     * @param value the value associated with the parameter, can be {@code null}.
+     * @return the in/out parameter.
+     * @throws IllegalArgumentException if {@code type} is {@code null}.
+     */
+    public static Parameter inOut(Class<?> type, @Nullable Object value) {
+        Assert.requireNonNull(value, "Value must not be null");
+        return inOut(new DefaultInferredType(type), value);
+    }
+
+    /**
      * Create a {@code IN/OUT} parameter using the given {@code value}.  The actual {@link Type} is inferred during statement execution.^
      *
      * @param value the value to be used for type inference.
@@ -132,7 +158,7 @@ public final class Parameters {
      */
     public static Parameter inOut(Object value) {
         Assert.requireNonNull(value, "Value must not be null");
-        return inOut(new DefaultInferredType(value.getClass()), value);
+        return inOut(value.getClass(), value);
     }
 
     /**

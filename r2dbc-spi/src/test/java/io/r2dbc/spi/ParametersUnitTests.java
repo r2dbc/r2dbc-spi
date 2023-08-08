@@ -49,5 +49,4 @@ public class ParametersUnitTests {
         assertThat(Parameters.in(String.class)).isNotEqualTo(Parameters.inOut(String.class));
         assertThat(Parameters.out(String.class)).isNotEqualTo(Parameters.inOut(String.class));
     }
-
 }
