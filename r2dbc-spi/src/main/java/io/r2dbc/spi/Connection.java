@@ -164,7 +164,7 @@ public interface Connection extends Closeable {
      * Calling this method during an active transaction and the
      * auto-commit mode is changed, the transaction is committed.  Calling this method without changing auto-commit mode this invocation results in a no-op.
      *
-     * @param autoCommit the isolation level for this transaction
+     * @param autoCommit the auto-commit mode to set for this connection
      * @return a {@link Publisher} that indicates that auto-commit mode has been configured
      */
     Publisher<Void> setAutoCommit(boolean autoCommit);
