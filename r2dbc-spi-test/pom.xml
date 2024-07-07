@@ -33,6 +33,10 @@
 
     <name>Reactive Relational Database Connectivity - SPI Test</name>
 
+    <properties>
+        <spring-jdbc.version>6.1.10</spring-jdbc.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -66,7 +70,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>5.3.19</version>
+            <version>${spring-jdbc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
