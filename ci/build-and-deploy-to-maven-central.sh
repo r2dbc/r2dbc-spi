@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version -o | grep -v INFO)
+VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.4.1:evaluate -Dexpression=project.version -o | grep -v INFO)
 
 if [[ $VERSION =~ [^.*-SNAPSHOT$] ]] ; then
 
@@ -16,8 +16,8 @@ if [[ $VERSION =~ [^(\d+\.)+(RC(\d+)|M(\d+)|RELEASE)$] ]] ; then
   # Prepare GPG Key is expected to be in base64
   # Exported with gpg -a --export-secret-keys "your@email" | base64 > gpg.base64
   #
-  printf "$GPG_KEY_BASE64" | base64 --decode > gpg.asc
-  echo ${GPG_PASSPHRASE} | gpg --batch --yes --passphrase-fd 0 --import gpg.asc
+  printf "%s" "$GPG_KEY_BASE64" | base64 --decode > gpg.asc
+  echo "${GPG_PASSPHRASE}" | gpg --batch --yes --passphrase-fd 0 --import gpg.asc
   gpg -k
 
   #
@@ -29,11 +29,10 @@ if [[ $VERSION =~ [^(\d+\.)+(RC(\d+)|M(\d+)|RELEASE)$] ]] ; then
       -s settings.xml \
       -Pcentral \
       -Dmaven.test.skip=true \
-      -Dgpg.passphrase=${GPG_PASSPHRASE} \
+      -Dgpg.passphrase="${GPG_PASSPHRASE}" \
       clean deploy -B
 else
 
   echo "Not a release: $VERSION"
   exit 1
 fi
-
