@@ -70,7 +70,7 @@ To follow developer activity, look for the mailing list information on the R2DBC
 If you encounter a bug or want to suggest an improvement, please create a ticket on the R2DBC issue tracker.
 R2DBC has an open-source organization on GitHub that bundles the various projects (SPI and drivers) under R2DBC.
 
-To stay up to date with the latest news and announcements in the R2DBC eco system, you can subscribe to the mailing list. You can also follow the project team on Twitter (https://twitter.com/r2dbc[@R2DBC]).
+To stay up to date with the latest news and announcements in the R2DBC ecosystem, you can subscribe to the mailing list. You can also follow the project team on Twitter (https://twitter.com/r2dbc[@R2DBC]).
 
 [[introduction.project-metadata]]
 == Project Metadata
@@ -79,4 +79,4 @@ To stay up to date with the latest news and announcements in the R2DBC eco syste
 * Mailing list: link:++https://groups.google.com/forum/#!forum/r2dbc++[++https://groups.google.com/forum/#!forum/r2dbc++]
 * Issue tracker: https://github.com/r2dbc/r2dbc-spi/issues
 * Release repository: https://repo1.maven.org/maven2
-* Snapshot repository: https://oss.sonatype.org/content/repositories/snapshots
+* Snapshot repository: https://central.sonatype.com/repository/maven-snapshots/

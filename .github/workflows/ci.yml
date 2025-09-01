@@ -35,6 +35,6 @@ jobs:
           ${{ runner.os }}-maven-
     - name: Build with Maven
       env:
-        SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
-        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        CENTRAL_TOKEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+        CENTRAL_TOKEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
       run: ${{ matrix.mvn }} -B deploy -P snapshot -s settings.xml
