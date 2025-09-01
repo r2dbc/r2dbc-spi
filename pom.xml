@@ -214,6 +214,15 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.8.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <publishingServerId>central</publishingServerId>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -228,12 +237,14 @@
 
         <profile>
             <id>snapshot</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>sonatype</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
         <profile>
@@ -265,20 +276,9 @@
                             </executions>
                         </plugin>
 
-                        <!-- Deploy to Sonatype OSS Nexus -->
-
                         <plugin>
-                            <groupId>org.sonatype.plugins</groupId>
-                            <artifactId>nexus-staging-maven-plugin</artifactId>
-                            <version>1.6.8</version>
-                            <extensions>true</extensions>
-                            <configuration>
-                                <serverId>sonatype</serverId>
-                                <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                                <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                                <keepStagingRepositoryOnFailure>true</keepStagingRepositoryOnFailure>
-                                <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
-                            </configuration>
+                            <groupId>org.sonatype.central</groupId>
+                            <artifactId>central-publishing-maven-plugin</artifactId>
                         </plugin>
                     </plugins>
 
@@ -291,22 +291,9 @@
                         <artifactId>maven-gpg-plugin</artifactId>
                     </plugin>
 
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                    </plugin>
-
                 </plugins>
 
             </build>
-
-            <distributionManagement>
-                <repository>
-                    <id>sonatype</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
-
         </profile>
 
     </profiles>

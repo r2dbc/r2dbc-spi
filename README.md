@@ -1,4 +1,4 @@
-# Reactive Relational Database Connectivity Service Provider Interface (R2DBC SPI) [![Build Status](https://travis-ci.org/r2dbc/r2dbc-spi.svg?branch=0.8.x)](https://travis-ci.org/r2dbc/r2dbc-spi) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.r2dbc/r2dbc-spi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.r2dbc/r2dbc-spi)
+# Reactive Relational Database Connectivity Service Provider Interface (R2DBC SPI) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.r2dbc/r2dbc-spi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.r2dbc/r2dbc-spi)
 
 The Reactive Relational Database Connectivity (R2DBC) project brings reactive programming APIs to relational databases.
 
@@ -18,7 +18,7 @@ This project is governed by the [R2DBC Code of Conduct](https://github.com/r2dbc
 
 ### Maven configuration
 
-Artifacts can be found on [Maven Central](https://search.maven.org/search?q=r2dbc-spi).
+Artifacts can be found on [Maven Central](https://central.sonatype.com/search?q=r2dbc-spi).
 
 ```xml
 <dependency>
@@ -38,9 +38,9 @@ If you'd rather like the latest snapshots of the upcoming major version, use our
 </dependency>
 
 <repository>
-  <id>sonatype-nexus-snapshots</id>
-  <name>Sonatype OSS Snapshot Repository</name>
-  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  <id>central-portal-snapshots</id>
+  <name>Central Portal Snapshots</name>
+  <url>https://central.sonatype.com/repository/maven-snapshots/</url>
 </repository>
 ```
 
@@ -91,7 +91,7 @@ To do that, run:
 $ ci/create-release.sh <github issue> <new-release-version> <next-snapshot-version>
 ```
 
-For example, to release `0.8.5.RELEASE` against github issue #200, and then continue onto `0.8.6.BUILD-SNAPSHOT`, you'd run this:
+For example, to release `0.8.5.RELEASE` against GitHub issue #200, and then continue onto `0.8.6.BUILD-SNAPSHOT`, you'd run this:
 
 ```bash
 $ ci/create-release.sh 200 0.8.5.RELEASE 0.8.6.BUILD-SNAPSHOT
