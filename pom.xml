@@ -109,7 +109,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.10.1</version>
                     <configuration>
                         <compilerArgs>
                             <arg>-Werror</arg>
@@ -117,10 +117,11 @@
                             <arg>-Xlint:-options</arg>
                             <arg>-Xlint:-processing</arg>
                             <arg>-Xlint:-serial</arg>
+                            <arg>-Xlint:-deprecation</arg>
+                            <arg>-Xlint:-removal</arg>
                         </compilerArgs>
                         <showWarnings>true</showWarnings>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
+                        <release>8</release>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -152,6 +153,8 @@
                         <links>
                             <link>https://www.reactive-streams.org/reactive-streams-${reactive-streams.version}-javadoc/</link>
                         </links>
+                        <javadocVersion>1.8</javadocVersion>
+                        <doclint>-missing,-html</doclint>
                     </configuration>
                     <executions>
                         <execution>
